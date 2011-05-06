@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Task>
+	<!-- List of components, data: 29.04.11 -->
+	<Components>
+
+		
+		<Seq type="CameraOpenCV"  thread="Exec1" group="s1">
+			<device></device>
+		</Seq>
+
+		<Window1 type="CvWindow" thread="Exec2" group="s1">
+			<colorful>true</colorful>
+		</Window1>
+		
+		<Window2 type="CvWindow" thread="Exec2" group="s1">
+
+		</Window2>
+		
+		<Window4 type="CvWindow" thread="Exec2" group="s1">
+
+		</Window4>
+
+		<Filtr type="KW_MAP3_InitialFilter" thread="Exec1" group="s1">
+				
+		</Filtr> 
+
+		<ConColor type="KW_RGB_TSL" thread="Exec1" group="s1">
+				
+		</ConColor> 
+		
+	
+		<SkinDec type="KW_MAP3_SkinDetection" thread="Exec1" group="s1">
+		</SkinDec>
+		
+		<BW type="CvColorConv" thread="Exec1" group="s1">
+		<type>BGR2GRAY</type>
+		</BW>
+		
+		<MorphClose type="CvMorphology" thread="Exec1" group="s1">
+			<type>MORPH_OPEN</type>
+			<iterations>3</iterations>
+		</MorphClose>	
+		
+		<Blob type="BlobExtractor" thread="Exec1" group="s1">
+			<min_size>5000</min_size>
+		</Blob>
+		
+		<MAP type="KW_MAP2" thread="Exec1" group="s1">
+		</MAP>
+		
+		<Window3 type="CvWindow" thread="Exec2" group="s1">
+
+		</Window3>
+		
+	
+	</Components>
+
+	<!-- Threads of execution -->
+	<Executors>
+		  
+		
+		<Exec1 type="continuous">
+			<main_component>Seq</main_component>
+
+		</Exec1>
+
+		<Exec2 type="continuous">
+			<main_component>Window1</main_component>
+
+		</Exec2>
+
+
+	</Executors>
+
+	<!-- Event connections -->
+	<Events>
+		
+
+		<Event source="Seq.newImage" destination="Filtr.onNewImage"/>
+		<Event source="Filtr.newImage" destination="Window2.onNewImage"/>
+		
+		<Event source="Filtr.newImage" destination="ConColor.onNewImage"/>
+		<Event source="ConColor.newImage" destination="SkinDec.onNewImage"/>
+		<Event source="SkinDec.newImage" destination="Window3.onNewImage"/>
+		
+		<Event source="SkinDec.newImage" destination="BW.onNewImage"/>
+		<Event source="BW.newImage" destination="MorphClose.onNewImage"/>
+			
+		<Event source="MorphClose.newImage" destination="Blob.onNewImage"/>
+		<Event source="Blob.newBlobs" destination="MAP.onNewBlobs"/>
+		<Event source="MAP.newImage" destination="Window1.onNewImage"/>
+		<Event source="Seq.newImage" destination="Window1.onNewImage"/>
+		
+		<Event source="MAP.newImage" destination="Window4.onNewImage"/>
+		<Event source="Seq.newImage" destination="Window4.onNewImage"/>
+	
+	
+	</Events>
+
+	<!-- Data stream assignments -->
+	<DataStreams>
+		<Seq>
+			<out_img type="out" group="Con1"/>
+		</Seq>
+		
+		
+		<Filtr>
+				<in_img  type="in" group="Con1"/>
+				<out_img type="out" group="Con2"/>
+		</Filtr> 
+
+		
+		<Window2>
+			<in_img0 type="in" group="Con2"/>
+		</Window2>
+				
+		<ConColor>
+				<in_img  type="in" group="Con2"/>
+				<out_img type="out" group="Con3"/>
+		</ConColor> 
+		
+		<SkinDec>
+				<in_img  type="in" group="Con3"/>
+				<out_img type="out" group="Con4"/>
+		</SkinDec> 
+			
+		
+		<Window3>
+			<in_img0 type="in" group="Con6"/>
+		</Window3>
+		
+		<BW>
+				<in_img  type="in" group="Con4"/>
+				<out_img type="out" group="Con5"/>
+		</BW> 
+		
+		<MorphClose>
+				<in_img  type="in" group="Con5"/>
+				<out_img type="out" group="Con6"/>
+		</MorphClose> 
+		
+	
+		<Blob>
+				<in_img  type="in" group="Con6"/>
+				<out_blobs type="out" group="Con7"/>
+		</Blob> 
+
+						
+		<MAP>
+			<in_img type="in" group="Con6"/>
+			<in_blobs type="in" group="Con7"/>
+			<out_signs type="out" group="Con8"/>
+		</MAP>
+	
+		<Window1>
+			<in_img type="in" group="Con1"/>
+			<in_draw type="in" group="Con8"/>	
+		</Window1>	
+		
+		<Window4>
+			<in_img type="in" group="Con4"/>
+			<in_draw type="in" group="Con7"/>	
+		</Window4>	
+	
+
+	
+
+
+		
+	</DataStreams>
+
+</Task>

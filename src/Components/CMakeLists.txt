@@ -1,0 +1,14 @@
+# Add all components here using ADD_COMPONENT(<COMPONENT_DIRECTORY>)
+ADD_COMPONENT(Skin_Detection_TSL2)
+
+ADD_COMPONENT(MAP3_InitialFilter)
+
+ADD_COMPONENT(MAP3_SkinDetection)
+
+ADD_COMPONENT(InitialFilterAkademik)
+
+ADD_COMPONENT(MAP2_Samples)
+
+ADD_COMPONENT(RGB_TSL)
+
+ADD_COMPONENT(MAP2)

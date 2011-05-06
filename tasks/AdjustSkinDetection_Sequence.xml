@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Task>
+	<!-- List of components, data: 01.03.10 -->
+	<Components>
+
+		<Movie type="CameraOpenCV" thread="Exec1" group="s1">
+		</Movie>
+		
+		<Seq1 type="Sequence" thread="Exec1" group="s1">
+			<directory>/home/kasia/Pobrane/</directory> 
+			<pattern>.*\.png</pattern>
+			<loop>false</loop>
+		</Seq1>
+		
+
+		<Window1 type="CvWindow" thread="Exec2" group="s1">
+
+		</Window1>
+		
+		<Window2 type="CvWindow" thread="Exec2" group="s1">
+
+		</Window2>
+
+		<Filtr type="KW_InitialFilterAkademik" thread="Exec1" group="s1">
+				
+		</Filtr> 
+
+		<ConColor type="KW_RGB_TSL" thread="Exec1" group="s1">
+				
+		</ConColor> 
+		
+		
+		<SkinDec type="KW_Skin_Detection_TSL2" thread="Exec1" group="s1">
+		</SkinDec>
+		
+		<BW type="CvColorConv" thread="Exec1" group="s1">
+		<type>BGR2GRAY</type>
+		</BW>
+		
+		<MorphClose1 type="CvMorphology" thread="Exec1" group="s1">
+			<type>MORPH_CLOSE</type>
+			<iterations>0</iterations>
+		</MorphClose1>
+		
+		<MorphOpen type="CvMorphology" thread="Exec1" group="s1">
+			<type>MORPH_OPEN</type>
+			<iterations>0</iterations>
+		</MorphOpen>	
+		
+		<MorphClose2 type="CvMorphology" thread="Exec1" group="s1">
+			<type>MORPH_CLOSE</type>
+			<iterations>0</iterations>
+		</MorphClose2>
+		
+		<Window3 type="CvWindow" thread="Exec2" group="s1">
+
+		</Window3>
+		
+		<Blob type="BlobExtractor" thread="Exec1" group="s1">
+			<min_size>5000</min_size>
+		</Blob>
+		
+		<Window4 type="CvWindow" thread="Exec2" group="s1">
+
+		</Window4>
+		
+		<Window5 type="CvWindow" thread="Exec2" group="s1">
+
+		</Window5>
+	
+	
+		<Sink type="CvVideoWriter" thread="Exec1" group="s1">
+			<filename>/home/kasia/output2.avi</filename>
+			<fourcc>XVID</fourcc>
+		</Sink>
+	
+
+	
+	</Components>
+
+	<!-- Threads of execution -->
+	<Executors>
+		  
+		
+		<Exec1 type="periodic">
+			<main_component>Seq1</main_component>
+			<interval>0.01</interval>
+		</Exec1>
+
+		<Exec2 type="periodic">
+			<main_component>Window1</main_component>
+			<interval>0.2</interval>
+		</Exec2>
+
+
+	</Executors>
+
+	<!-- Event connections -->
+	<Events>
+
+		<Event source="Seq1.newImage" destination="Filtr.onNewImage"/>
+		<Event source="Seq1.newImage" destination="Window1.onNewImage"/>
+		<Event source="Filtr.newImage" destination="Window5.onNewImage"/>
+		
+		<Event source="Filtr.newImage" destination="ConColor.onNewImage"/>
+		<Event source="ConColor.newImage" destination="SkinDec.onNewImage"/>
+		<Event source="SkinDec.newImage" destination="Window2.onNewImage"/>
+		
+		<Event source="SkinDec.newImage" destination="BW.onNewImage"/>
+			
+		<Event source="BW.newImage" destination="MorphClose1.onNewImage"/>
+		<Event source="MorphClose1.newImage" destination="MorphOpen.onNewImage"/>
+		<Event source="MorphOpen.newImage" destination="MorphClose2.onNewImage"/>
+		<Event source="MorphClose2.newImage" destination="Window3.onNewImage"/>
+		
+		<Event source="MorphClose2.newImage" destination="Blob.onNewImage"/>
+		<Event source="Blob.newBlobs" destination="Window4.onNewImage"/>
+
+		<Event source="Movie.newImage" destination="Window4.onNewImage"/>
+<!--		<Event source="Blob.newBlobs" destination="Sink.onNewImage"/>
+
+
+	
+		<Event source="Blob.newBlobs" destination="Sink.onNewImage"/>
+
+-->
+	<!--
+
+		<Event source="SkinDec.newImage" destination="Split.onNewImage"/>
+		<Event source="Split.newImage" destination="Window.onNewImage0"/>
+		<Event source="Split.newImage" destination="Window.onNewImage1"/>
+		<Event source="Split.newImage" destination="Window.onNewImage2"/>
+-->
+
+	
+	
+	</Events>
+
+	<!-- Data stream assignments -->
+	<DataStreams>
+		<Seq1>
+			<out_img type="out" group="Con1"/>
+		</Seq1>
+		
+		
+		<Filtr>
+				<in_img  type="in" group="Con1"/>
+				<out_img type="out" group="Con2"/>
+		</Filtr> 
+
+		<Window1>
+			<in_img0 type="in" group="Con1"/>
+		</Window1>
+		
+		<Window5>
+			<in_img0 type="in" group="Con2"/>
+		</Window5>
+				
+		<ConColor>
+				<in_img  type="in" group="Con2"/>
+				<out_img type="out" group="Con3"/>
+		</ConColor> 
+		
+		<SkinDec>
+				<in_img  type="in" group="Con3"/>
+				<out_img type="out" group="Con4"/>
+		</SkinDec> 
+		
+	
+		
+		<Window2>
+			<in_img0 type="in" group="Con4"/>
+		</Window2>
+		
+		<BW>
+				<in_img  type="in" group="Con4"/>
+				<out_img type="out" group="Con5"/>
+		</BW> 
+		
+		
+		<MorphClose1>
+				<in_img  type="in" group="Con5"/>
+				<out_img type="out" group="Con6"/>
+		</MorphClose1> 
+
+				
+		<MorphOpen>
+				<in_img  type="in" group="Con6"/>
+				<out_img type="out" group="Con7"/>
+		</MorphOpen> 
+		
+		<MorphClose2>
+				<in_img  type="in" group="Con7"/>
+				<out_img type="out" group="Con8"/>
+		</MorphClose2> 
+		
+		<Window3>
+			<in_img0 type="in" group="Con8"/>
+		</Window3>
+		
+		<Blob>
+				<in_img  type="in" group="Con8"/>
+				<out_blobs type="out" group="Con9"/>
+		</Blob> 
+		
+
+
+
+		
+		<Window4>
+			<in_img type="in" group="Con1"/>
+			<in_draw type="in" group="Con9"/>	
+
+		</Window4>
+		
+		
+	<!--	<Split>
+			<in_img type="in" group="Con4"/>
+			<out_img_0 type="out" group="Con00"/>
+			<out_img_1 type="out" group="Con01"/>
+			<out_img_2 type="out" group="Con02"/>
+
+		</Split>
+		
+		<Window>
+			<in_img0 type="in" group="Con00"/>
+			<in_img1 type="in" group="Con01"/>
+			<in_img2 type="in" group="Con02"/>
+
+		</Window>
+-->
+
+
+		
+	</DataStreams>
+
+</Task>
