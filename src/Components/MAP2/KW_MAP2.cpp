@@ -87,21 +87,25 @@ bool KW_MAP2::onStep()
 
 	try {
 
-		if(MAP == true)
+		drawcont.clear();
+
+		//czubki palców
+		fingertips.clear();
+		idFingertips.clear();
+
+		//srodkowy palec
+		z_MFinger.clear();
+		h_z_MFinger.clear();
+		diff_MFinger.clear();
+		sTest2.clear();
+	//	s_MFinger.clear();
+
+
+		getObservation();
+		projectionFingertips();
+
+		if((MAP == true) && (idFingertips.size()) == 5)
 		{
-			drawcont.clear();
-
-
-			//czubki palców
-			fingertips.clear();
-			idFingertips.clear();
-
-			//srodkowy palec
-			z_MFinger.clear();
-			h_z_MFinger.clear();
-			diff_MFinger.clear();
-			sTest2.clear();
-		//	s_MFinger.clear();
 
 			//palec wskazujacy
 			z_FFinger.clear();
@@ -140,8 +144,7 @@ bool KW_MAP2::onStep()
 				diff.clear();
 				sTest.clear();
 
-				getObservation();
-			//	projectionFingertips();
+
 			//	projectionObservation(z, 255, 255, 255);
 				observationToState();
 				projectionState(sTest, 0, 255, 255);
@@ -186,8 +189,8 @@ bool KW_MAP2::onStep()
 				//kciuk
 				z_TFinger = getFingerObservation(4);
 			//	projectionFingerObservation(z_TFinger, 200, 200, 200);
-				sTest3 = observationFingerToState(z_TFinger, 0.72, 0.56);
-				projectionFingerState(sTest3, 0, 255, 255);
+				sTest4 = observationFingerToState(z_TFinger, 0.72, 0.56);
+				projectionFingerState(sTest4, 0, 255, 255);
 				projectionFingerState(s_TFinger, 255, 255, 255);
 				h_z_TFinger = stateFingerToObservation(s_TFinger, 9.0/7.0);
 			//	projectionFingerObservation(h_z_TFinger, 255, 255, 0);
@@ -198,8 +201,8 @@ bool KW_MAP2::onStep()
 				//mały palec
 				z_SFinger = getFingerObservation(0);
 			//	projectionFingerObservation(z_SFinger, 200, 200, 200);
-				sTest4 = observationFingerToState(z_SFinger, 0.82, 0.36);
-				projectionFingerState(sTest4, 0, 255, 255);
+				sTest5 = observationFingerToState(z_SFinger, 0.82, 0.36);
+				projectionFingerState(sTest5, 0, 255, 255);
 				projectionFingerState(s_SFinger, 255, 255, 255);
 				h_z_SFinger = stateFingerToObservation(s_SFinger, 41.0/18.0);
 			//	projectionFingerObservation(h_z_SFinger, 255, 255, 0);
@@ -232,9 +235,10 @@ bool KW_MAP2::onStep()
 			}
 
 			cout<<"Error"<<error<<"\n";
-			out_draw.write(drawcont);
-			newImage->raise();
 		}
+
+		out_draw.write(drawcont);
+		newImage->raise();
 		return true;
 	} catch (...) {
 		LOG(LERROR) << "KW_MAP::getCharPoints failed\n";
@@ -269,13 +273,20 @@ void KW_MAP2::onNewBlobs() {
 
 	blobs_ready = true;
 	blobs = in_blobs.read();
+	LOG(LNOTICE) << "Got blobs: " << blobs.GetNumBlobs();
 	if (blobs_ready && img_ready)
 		onStep();
 }
 
+void KW_MAP2::getMaxBlob()
+{
+
+}
+
+
 void KW_MAP2::getObservation(){
 
-	LOG(LTRACE) << "KW_MAP::getCharPoints\n";
+	LOG(LNOTICE) << "KW_MAP::getObservation\n";
 
 	try {
 
@@ -316,10 +327,17 @@ void KW_MAP2::getObservation(){
 
 		double height, width;
 		MaxArea = 0;
-		MaxY = 0;
-		MaxX = 0;
-		MinY = 1000000000.0;
-		MinX = 1000000000.0;
+//		MaxY = 0;
+//		MaxX = 0;
+//		MinY = 1000000000.0;
+//		MinX = 1000000000.0;
+
+		id = -1;
+
+		if (blobs.GetNumBlobs() < 1) {
+			LOG(LNOTICE) << "Blobs: " << blobs.GetNumBlobs();
+			return;
+		}
 
 		//największy blob to dłoń
 		for (int i = 0; i < blobs.GetNumBlobs(); i++) {
@@ -422,13 +440,25 @@ void KW_MAP2::getObservation(){
 					//maksiumum - czubek palca, funkcja rosła i zaczeła maleć
 					if ((dist[i] - dist[i-1]) < 0 && lastSign == 1)
 					{
-						if (((contourPoints[i-1].x - contourPoints[idLastExtreme].x) * (contourPoints[i-1].x - contourPoints[idLastExtreme].x) + (contourPoints[i-1].y - contourPoints[idLastExtreme].y) * (contourPoints[i-1].y - contourPoints[idLastExtreme].y)) > 5000)
+						if (((contourPoints[i-1].x - contourPoints[idLastExtreme].x) * (contourPoints[i-1].x - contourPoints[idLastExtreme].x) + (contourPoints[i-1].y - contourPoints[idLastExtreme].y) * (contourPoints[i-1].y - contourPoints[idLastExtreme].y)) > 3000)
 						{
 							if((dist[i-1]>20000) && (idFingertips.size()<5))
 							{
-								idFingertips.push_back(i-1);
-								lastSign = -1;
-								idLastExtreme = i-1;
+								newFingertip = true;
+
+								for(unsigned int j = 0; j < idFingertips.size(); j++)
+								{
+									if(((contourPoints[i-1].x - contourPoints[idFingertips[j]].x) * (contourPoints[i-1].x - contourPoints[idFingertips[j]].x) + (contourPoints[i-1].y - contourPoints[idFingertips[j]].y) * (contourPoints[i-1].y - contourPoints[idFingertips[j]].y)) < 500)
+									{
+									//	newFingertip = false;
+									}
+								}
+									if(newFingertip == true)
+									{
+										idFingertips.push_back(i-1);
+										lastSign = -1;
+										idLastExtreme = i-1;
+									}
 							}
 						}
 					}
@@ -489,6 +519,9 @@ void KW_MAP2::getObservation(){
 
 		result.AddBlob(blobs.GetBlob(id));
 		out_signs.write(result);
+
+
+		LOG(LNOTICE) << "Fingertips: " << idFingertips.size();
 
 	} catch (...) {
 		LOG(LERROR) << "KW_MAP::getCharPoints failed\n";

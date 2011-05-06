@@ -9,12 +9,12 @@
 		<filename>/home/kasia/Filmy/4.05/4.05.avi</filename>
 		<loop>true</loop>
 	-->
-		
+		<device>1</device>
 		</Movie>
 
 		
 		<Window4 type="CvWindow" thread="Exec2" group="s1">
-
+			<count>2</count>
 		</Window4>
 
 		<Filtr type="KW_MAP3_InitialFilter" thread="Exec1" group="s1">
@@ -35,7 +35,7 @@
 		
 		<MorphClose1 type="CvMorphology" thread="Exec1" group="s1">
 			<type>MORPH_OPEN</type>
-			<iterations>3</iterations>
+			<iterations>1</iterations>
 		</MorphClose1>
 		
 		<Blob type="BlobExtractor" thread="Exec1" group="s1">
@@ -95,19 +95,19 @@
 	<!-- Event connections -->
 	<Events>
 		
-		<Event source="Movie.newImage" destination="Filtr.onNewImage"/>
-		<Event source="Filtr.newImage" destination="ConColor.onNewImage"/>
-		<Event source="ConColor.newImage" destination="SkinDec.onNewImage"/>	
-		<Event source="SkinDec.newImage" destination="BW.onNewImage"/>			
-		<Event source="BW.newImage" destination="MorphClose1.onNewImage"/>		
+		<Event source="Movie.newImage"       destination="Filtr.onNewImage"/>
+		<Event source="Filtr.newImage"       destination="ConColor.onNewImage"/>
+		<Event source="ConColor.newImage"    destination="SkinDec.onNewImage"/>	
+		<Event source="SkinDec.newImage"     destination="BW.onNewImage"/>			
+		<Event source="BW.newImage"          destination="MorphClose1.onNewImage"/>		
 		<Event source="MorphClose1.newImage" destination="Blob.onNewImage"/>
 
-		<Event source="Movie.newImage" destination="Window4.onNewImage"/>
 		<Event source="MorphClose1.newImage" destination="DecPalm.onNewImage"/>
-		<Event source="Blob.newBlobs"       destination="DecPalm.onNewBlobs"/>
+		<Event source="Blob.newBlobs"        destination="DecPalm.onNewBlobs"/>
 		
-		<Event source="Kbd1.t_Pressed" destination="DecPalm.onTrigger"/>
-		<Event source="DecPalm.newImage"       destination="Window4.onNewImage"/>
+		<Event source="Kbd1.t_Pressed"       destination="DecPalm.onTrigger"/>
+		<Event source="DecPalm.newImage"     destination="Window4.onNewImage0"/>
+		<Event source="DecPalm.newImage"     destination="Window4.onNewImage1"/>
 		
 	
 		
@@ -158,11 +158,15 @@
 		</DecPalm>
 		
 		<Window4>
-			<in_img type="in" group="Con1"/>
-			<in_draw type="in" group="Con10"/>	
+			<in_img0 type="in" group="Con1"/>
+			<in_draw0 type="in" group="Con9"/>
+			
+			
+			<in_img1 type="in" group="Con1"/>
+			<in_draw1 type="in" group="Con10"/>	
 
 		</Window4>
-
+		
 		
 	</DataStreams>
 

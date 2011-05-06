@@ -161,6 +161,11 @@ protected:
 
 
 	/*!
+	 * Szukanie max Bloba
+	 */
+	void getMaxBlob();
+
+	/*!
 	 * Otrzymanie obserwacji dłoni
 	 */
 	void getObservation();
@@ -241,6 +246,8 @@ private:
 	vector<int> idFingertips;
 
 	vector<cv::Point> fingertips;
+
+	bool newFingertip;
 
 	// czy funkcja jest pierwszy raz uruchomiana
 	bool first;
