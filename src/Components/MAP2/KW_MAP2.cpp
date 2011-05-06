@@ -71,6 +71,8 @@ void KW_MAP2::onTrigger() {
 			MAP = true;
 
 			error = 100;
+			error2 = 100;
+
 			s.clear();
 			s_RFinger.clear();
 			s_MFinger.clear();
@@ -191,9 +193,11 @@ bool KW_MAP2::onStep()
 			sTest6.clear();
 
 		//	cout<<"STOP "<<STOP<<"\n";
-			if(error > 12.0)
+			if(error2 > 20.0)
 			{
 				error = 0.0;
+				error2 = 0.0;
+
 				z.clear();
 				h_z.clear();
 				diff.clear();
@@ -291,6 +295,7 @@ bool KW_MAP2::onStep()
 			}
 
 			cout<<"Error"<<error<<"\n";
+			cout<<"Error2"<<error2<<"\n";
 		}
 
 		out_draw.write(drawcont);
@@ -852,6 +857,7 @@ void KW_MAP2::calculateDiff()
 	{
 		//różnica miedzy punktami charakterystycznymi aktualnego obraz
 		D[i] =  h_z[i] - z[i];
+		error2 += abs(D[i]);
 	//	cout<<"\nD"<<D[i];
 	}
 
@@ -1079,6 +1085,7 @@ vector <double> KW_MAP2::calculateFingerDiff(vector <double> h_z_Finger, vector 
 	{
 		//różnica miedzy punktami charakterystycznymi aktualnego obraz
 		D[i] =  h_z_Finger[i] - z_Finger[i];
+		error2 += abs(D[i]);
 	}
 
 	double t1[6];

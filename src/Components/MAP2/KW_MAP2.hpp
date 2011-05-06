@@ -235,6 +235,8 @@ private:
 
 	double error;
 
+	double error2;
+
 
 	cv::Mat tsl_img;
 	cv::Mat segments;
