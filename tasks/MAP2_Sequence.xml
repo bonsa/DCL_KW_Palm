@@ -50,6 +50,7 @@
 		</Blob>
 
 		<DecPalm type="KW_MAP2" thread="Exec1" group="s1"> 
+			<triggered>true</triggered>	
 		</DecPalm>
 		
 
@@ -86,7 +87,7 @@
 	<!-- Event connections -->
 	<Events>
 
-		<Event source="Kbd1.t_Pressed" destination="Seq.onTrigger"/>
+	
 		<Event source="Seq.newImage" destination="Filtr.onNewImage"/>
 		
 		<Event source="Filtr.newImage" destination="ConColor.onNewImage"/>
@@ -97,6 +98,7 @@
 		<Event source="Seq.newImage" destination="Window4.onNewImage"/>
 		<Event source="MorphClose1.newImage" destination="DecPalm.onNewImage"/>
 		<Event source="Blob.newBlobs"       destination="DecPalm.onNewBlobs"/>
+		<Event source="Kbd1.t_Pressed" destination="DecPalm.onTrigger"/>
 		<Event source="DecPalm.newImage"       destination="Window4.onNewImage"/>
 		
 	

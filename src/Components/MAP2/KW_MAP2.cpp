@@ -67,7 +67,62 @@ void KW_MAP2::onTrigger() {
 		if(MAP == true)
 			MAP = false;
 		else
+		{
 			MAP = true;
+
+			error = 100;
+			s.clear();
+			s_RFinger.clear();
+			s_MFinger.clear();
+			s_FFinger.clear();
+			s_TFinger.clear();
+			s_SFinger.clear();
+
+			//wew czesc dloni
+			s.push_back(352.18);
+			s.push_back(331.46);
+			s.push_back(1.6848);
+			s.push_back(152.78);
+			s.push_back(178.57);
+
+
+			//palec serdeczny
+			s_RFinger.push_back(299.59);
+			s_RFinger.push_back(174.02);
+			s_RFinger.push_back(1.929);
+			s_RFinger.push_back(151.26);
+			s_RFinger.push_back(42.858);
+
+			//srodkowy palec
+			s_MFinger.push_back(347.62);
+			s_MFinger.push_back(159.3);
+			s_MFinger.push_back(1.6848);
+			s_MFinger.push_back(177.87);
+			s_MFinger.push_back(42.858);
+
+			//palec wskazujacy
+			s_FFinger.push_back(409.44);
+			s_FFinger.push_back(162.31);
+			s_FFinger.push_back(1.3846);
+			s_FFinger.push_back(160.73);
+			s_FFinger.push_back(42.858);
+
+			//kciuk
+			s_TFinger.push_back(497.46);
+			s_TFinger.push_back(299.07);
+			s_TFinger.push_back(0.48356);
+			s_TFinger.push_back(111.02);
+			s_TFinger.push_back(42.858);
+
+			//mały palec
+			s_SFinger.push_back(230.25);
+			s_SFinger.push_back(229.59);
+			s_SFinger.push_back(2.3748);
+			s_SFinger.push_back(86.064);
+			s_SFinger.push_back(42.858);
+
+
+		}
 }
 
 void KW_MAP2::map()
@@ -136,9 +191,9 @@ bool KW_MAP2::onStep()
 			sTest6.clear();
 
 		//	cout<<"STOP "<<STOP<<"\n";
-			if(error > 3.0)
+			if(error > 12.0)
 			{
-				error = 0;
+				error = 0.0;
 				z.clear();
 				h_z.clear();
 				diff.clear();
@@ -167,7 +222,7 @@ bool KW_MAP2::onStep()
 
 				calculateFingerH(s_MFinger, H_MFinger, 7.0/6.0);
 
-				diff_MFinger = calculateFingerDiff(h_z_MFinger, z_MFinger, invR_MFinger, H_MFinger, P_MFinger);
+				diff_MFinger = calculateFingerDiff(h_z_MFinger, z_MFinger, invR_MFinger, H_MFinger, P_MFinger, factor2);
 				s_MFinger = updateFingerState(diff_MFinger,s_MFinger, P_MFinger);
 
 
@@ -182,7 +237,7 @@ bool KW_MAP2::onStep()
 			//	projectionFingerObservation(h_z_FFinger, 255, 255, 0);
 
 				calculateFingerH(s_FFinger, H_FFinger, 9.0/7.0);
-				diff_FFinger = calculateFingerDiff(h_z_FFinger, z_FFinger, invR_FFinger, H_FFinger, P_FFinger);
+				diff_FFinger = calculateFingerDiff(h_z_FFinger, z_FFinger, invR_FFinger, H_FFinger, P_FFinger, factor2);
 				s_FFinger = updateFingerState(diff_FFinger,s_FFinger, P_FFinger);
 
 
@@ -195,7 +250,7 @@ bool KW_MAP2::onStep()
 				h_z_TFinger = stateFingerToObservation(s_TFinger, 9.0/7.0);
 			//	projectionFingerObservation(h_z_TFinger, 255, 255, 0);
 				calculateFingerH(s_TFinger, H_TFinger, 9.0/7.0);
-				diff_TFinger = calculateFingerDiff(h_z_TFinger, z_TFinger, invR_TFinger, H_TFinger, P_TFinger);
+				diff_TFinger = calculateFingerDiff(h_z_TFinger, z_TFinger, invR_TFinger, H_TFinger, P_TFinger, 0.05);
 				s_TFinger = updateFingerState(diff_TFinger,s_TFinger, P_TFinger);
 
 				//mały palec
@@ -207,7 +262,7 @@ bool KW_MAP2::onStep()
 				h_z_SFinger = stateFingerToObservation(s_SFinger, 41.0/18.0);
 			//	projectionFingerObservation(h_z_SFinger, 255, 255, 0);
 				calculateFingerH(s_SFinger, H_SFinger, 41.0/18.0);
-				diff_SFinger = calculateFingerDiff(h_z_SFinger, z_SFinger, invR_SFinger, H_SFinger, P_SFinger);
+				diff_SFinger = calculateFingerDiff(h_z_SFinger, z_SFinger, invR_SFinger, H_SFinger, P_SFinger, factor2);
 				s_SFinger = updateFingerState(diff_SFinger,s_SFinger, P_SFinger);
 
 				//palec serdeczny
@@ -220,9 +275,10 @@ bool KW_MAP2::onStep()
 				h_z_RFinger = stateFingerToObservation(s_RFinger,73.0/54.0);
 			//	projectionFingerObservation(h_z_RFinger, 255, 255, 0);
 				calculateFingerH(s_RFinger, H_RFinger, 73.0/54.0);
-				diff_RFinger = calculateFingerDiff(h_z_RFinger, z_RFinger, invR_RFinger, H_RFinger, P_RFinger);
+				diff_RFinger = calculateFingerDiff(h_z_RFinger, z_RFinger, invR_RFinger, H_RFinger, P_RFinger, factor2);
 				s_RFinger = updateFingerState(diff_RFinger,s_RFinger, P_RFinger);
 
+				cout<<error<<"\n";
 			}
 			else
 			{
@@ -1012,7 +1068,7 @@ void KW_MAP2::projectionFingerState(vector<double> s, int R, int G, int B)
 }
 
 
-vector <double> KW_MAP2::calculateFingerDiff(vector <double> h_z_Finger, vector <double> z_Finger, double invR_Finger[6][6], double  H_Finger[5][6], double P_Finger[5][5])
+vector <double> KW_MAP2::calculateFingerDiff(vector <double> h_z_Finger, vector <double> z_Finger, double invR_Finger[6][6], double  H_Finger[5][6], double P_Finger[5][5], double factor2)
 {
 	//różnicaiedzy wektorami h(s) i z
 	double D[6];
@@ -1359,7 +1415,7 @@ KW_MAP2::KW_MAP2(const std::string & name) :
 	//MAP3
 
 	factor = 0.001;
-	factor2 = 0.03;
+	factor2 = 0.1;
 
 	//dla MAP2_Sequence
 	//factor2 = 0.04;

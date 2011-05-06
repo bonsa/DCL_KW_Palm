@@ -218,7 +218,7 @@ protected:
 
 	void calculateFingerH(vector<double> s_Finger, double H_Finger[5][6], float a);
 
-	vector <double> calculateFingerDiff(vector <double> h_z_Finger, vector <double> z_Finger, double invR_Finger[6][6], double H_Finger[5][6], double P_Finger[5][5]);
+	vector <double> calculateFingerDiff(vector <double> h_z_Finger, vector <double> z_Finger, double invR_Finger[6][6], double H_Finger[5][6], double P_Finger[5][5], double factor2);
 
 	vector <double> updateFingerState(vector <double> diff_Finger, vector <double> s_Finger, double P_Finger[5][5]);
 

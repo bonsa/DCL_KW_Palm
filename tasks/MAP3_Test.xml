@@ -14,7 +14,7 @@
 
 		
 		<Window4 type="CvWindow" thread="Exec2" group="s1">
-			<count>2</count>
+			<count>5</count>
 		</Window4>
 
 		<Filtr type="KW_MAP3_InitialFilter" thread="Exec1" group="s1">
@@ -33,10 +33,15 @@
 		<type>BGR2GRAY</type>
 		</BW>
 		
-		<MorphClose1 type="CvMorphology" thread="Exec1" group="s1">
-			<type>MORPH_OPEN</type>
+		<MorphClose type="CvMorphology" thread="Exec1" group="s1">
+			<type>MORPH_CLOSE</type>
 			<iterations>1</iterations>
-		</MorphClose1>
+		</MorphClose>
+		
+		<MorphOpen type="CvMorphology" thread="Exec1" group="s1">
+			<type>MORPH_Open</type>
+			<iterations>1</iterations>
+		</MorphOpen>
 		
 		<Blob type="BlobExtractor" thread="Exec1" group="s1">
 			<min_size>7000</min_size>
@@ -99,15 +104,19 @@
 		<Event source="Filtr.newImage"       destination="ConColor.onNewImage"/>
 		<Event source="ConColor.newImage"    destination="SkinDec.onNewImage"/>	
 		<Event source="SkinDec.newImage"     destination="BW.onNewImage"/>			
-		<Event source="BW.newImage"          destination="MorphClose1.onNewImage"/>		
-		<Event source="MorphClose1.newImage" destination="Blob.onNewImage"/>
+		<Event source="BW.newImage"          destination="MorphClose.onNewImage"/>		
+		<Event source="MorphClose.newImage" destination="MorphOpen.onNewImage"/>
+		<Event source="MorphOpen.newImage" destination="Blob.onNewImage"/>
 
-		<Event source="MorphClose1.newImage" destination="DecPalm.onNewImage"/>
+		<Event source="MorphClose.newImage" destination="DecPalm.onNewImage"/>
 		<Event source="Blob.newBlobs"        destination="DecPalm.onNewBlobs"/>
 		
 		<Event source="Kbd1.t_Pressed"       destination="DecPalm.onTrigger"/>
 		<Event source="DecPalm.newImage"     destination="Window4.onNewImage0"/>
 		<Event source="DecPalm.newImage"     destination="Window4.onNewImage1"/>
+		<Event source="Filtr.newImage"     destination="Window4.onNewImage2"/>
+		<Event source="BW.newImage"       destination="Window4.onNewImage3"/>
+		<Event source="MorphOpen.newImage"       destination="Window4.onNewImage4"/>
 		
 	
 		
@@ -141,13 +150,19 @@
 				<out_img type="out" group="Con5"/>
 		</BW> 
 				
-		<MorphClose1>
+		<MorphClose>
 				<in_img  type="in" group="Con5"/>
 				<out_img type="out" group="Con6"/>
-		</MorphClose1> 
+		</MorphClose> 
+		
+		<MorphOpen>
+				<in_img  type="in" group="Con6"/>
+				<out_img type="out" group="Con7"/>
+		</MorphOpen> 
+		
 
 		<Blob>
-				<in_img  type="in" group="Con6"/>
+				<in_img  type="in" group="Con7"/>
 				<out_blobs type="out" group="Con9"/>
 		</Blob> 
 		
@@ -159,12 +174,16 @@
 		
 		<Window4>
 			<in_img0 type="in" group="Con1"/>
-			<in_draw0 type="in" group="Con9"/>
-			
+			<in_draw0 type="in" group="Con9"/>	
 			
 			<in_img1 type="in" group="Con1"/>
 			<in_draw1 type="in" group="Con10"/>	
-
+			
+			<in_img2 type="in" group="Con2"/>
+			
+			<in_img3 type="in" group="Con4"/>
+			
+			<in_img4 type="in" group="Con6"/>
 		</Window4>
 		
 		
