@@ -207,7 +207,6 @@ bool KW_MAP2::onStep()
 			//	projectionObservation(z, 255, 255, 255);
 				observationToState();
 				projectionState(sTest, 0, 255, 255);
-				projectionState(s, 255, 255, 255);
 				stateToObservation();
 			//	projectionObservation(h_z, 255, 0, 255);
 				calculateDiff();
@@ -220,7 +219,6 @@ bool KW_MAP2::onStep()
 			//	projectionFingerObservation(z_MFinger, 200, 200, 200);
 				sTest2 = observationFingerToState(z_MFinger, 0.7, 0.6);
 				projectionFingerState(sTest2, 0, 255, 255);
-				projectionFingerState(s_MFinger, 255, 255, 255);
 				h_z_MFinger = stateFingerToObservation(s_MFinger, 7.0/6.0);
 			//	projectionFingerObservation(h_z_MFinger, 255, 255, 0);
 
@@ -236,7 +234,6 @@ bool KW_MAP2::onStep()
 			//	projectionFingerObservation(z_FFinger, 200, 200, 200);
 				sTest3 = observationFingerToState(z_FFinger, 0.72, 0.56);
 				projectionFingerState(sTest3, 0, 255, 255);
-				projectionFingerState(s_FFinger, 255, 255, 255);
 				h_z_FFinger = stateFingerToObservation(s_FFinger, 9.0/7.0);
 			//	projectionFingerObservation(h_z_FFinger, 255, 255, 0);
 
@@ -250,7 +247,6 @@ bool KW_MAP2::onStep()
 			//	projectionFingerObservation(z_TFinger, 200, 200, 200);
 				sTest4 = observationFingerToState(z_TFinger, 0.72, 0.56);
 				projectionFingerState(sTest4, 0, 255, 255);
-				projectionFingerState(s_TFinger, 255, 255, 255);
 				h_z_TFinger = stateFingerToObservation(s_TFinger, 9.0/7.0);
 			//	projectionFingerObservation(h_z_TFinger, 255, 255, 0);
 				calculateFingerH(s_TFinger, H_TFinger, 9.0/7.0);
@@ -262,7 +258,6 @@ bool KW_MAP2::onStep()
 			//	projectionFingerObservation(z_SFinger, 200, 200, 200);
 				sTest5 = observationFingerToState(z_SFinger, 0.82, 0.36);
 				projectionFingerState(sTest5, 0, 255, 255);
-				projectionFingerState(s_SFinger, 255, 255, 255);
 				h_z_SFinger = stateFingerToObservation(s_SFinger, 41.0/18.0);
 			//	projectionFingerObservation(h_z_SFinger, 255, 255, 0);
 				calculateFingerH(s_SFinger, H_SFinger, 41.0/18.0);
@@ -275,14 +270,34 @@ bool KW_MAP2::onStep()
 			//	projectionFingerObservation(z_RFinger, 200, 200, 200);
 				sTest6 = observationFingerToState(z_RFinger, 0.73, 0.54);
 				projectionFingerState(sTest6, 0, 255, 255);
-				projectionFingerState(s_RFinger, 255, 255, 255);
 				h_z_RFinger = stateFingerToObservation(s_RFinger,73.0/54.0);
 			//	projectionFingerObservation(h_z_RFinger, 255, 255, 0);
 				calculateFingerH(s_RFinger, H_RFinger, 73.0/54.0);
 				diff_RFinger = calculateFingerDiff(h_z_RFinger, z_RFinger, invR_RFinger, H_RFinger, P_RFinger, factor2);
 				s_RFinger = updateFingerState(diff_RFinger,s_RFinger, P_RFinger);
-
+				cout<<"1\n";
 				cout<<error<<"\n";
+				cout<<"1\n";
+				//Usrednianie
+				updateObservation();
+				cout<<"2\n";
+				s = F_observationToState(z0, z1, z4, s);
+				cout<<"3\n";
+				s_MFinger = F_observationFingerToState(z0, z1, z4, s_MFinger, 0.7, 0.6);
+				s_FFinger = F_observationFingerToState(z0, z1, z4, s_FFinger, 0.72, 0.56);
+				s_TFinger = F_observationFingerToState(z0, z1, z4, s_TFinger, 0.72, 0.56);
+				s_SFinger = F_observationFingerToState(z0, z1, z4, s_SFinger, 0.82, 0.36);
+				s_RFinger = F_observationFingerToState(z0, z1, z4, s_RFinger, 0.73, 0.54);
+
+				cout<<"ROZMIAR"<<s_RFinger.size()<<"\n";
+
+				projectionState(s, 255, 255, 255);
+				projectionFingerState(s_MFinger, 255, 255, 255);
+				projectionFingerState(s_FFinger, 255, 255, 255);
+				projectionFingerState(s_TFinger, 255, 255, 255);
+				projectionFingerState(s_SFinger, 255, 255, 255);
+				projectionFingerState(s_RFinger, 255, 255, 255);
+
 			}
 			else
 			{
@@ -952,6 +967,38 @@ void KW_MAP2::getMiddleFingerObservation()
 
 }
 */
+
+// Otrzymanie obserwacji środkowego palca
+vector <double> KW_MAP2::getFingerObservation(int i)
+{
+
+	double downX, downY, topX, topY, alfa, w;
+
+	downX = z[0] - 3.0/7.0 * (topPoint.x - z[0]);
+	downY = z[1] - 3.0/7.0 * (topPoint.y - z[1]);
+
+	topX = fingertips[i].x;
+	topY = fingertips[i].y;
+
+	double dx, dy;
+	dx = topX - downX;
+	dy = topY - downY;
+
+	double angle = abs(atan2(dy, dx));
+	alfa = angle;  //kat w radianach
+	w = z[4];
+
+	vector <double> z_Finger;
+
+	z_Finger.push_back(downX);
+	z_Finger.push_back(downY);
+	z_Finger.push_back(topX);
+	z_Finger.push_back(topY);
+	z_Finger.push_back(alfa);
+	z_Finger.push_back(w);
+
+	return z_Finger;
+}
 void KW_MAP2::projectionFingerObservation(vector<double> z, int R, int G, int B)
 {
 	cv::Point obsPointDown = cv::Point(z[0], z[1]);
@@ -1146,37 +1193,7 @@ vector <double>KW_MAP2::updateFingerState(vector <double> diff_Finger, vector <d
 	return s_NFinger;
 }
 
-// Otrzymanie obserwacji środkowego palca
-vector <double> KW_MAP2::getFingerObservation(int i)
-{
 
-	double downX, downY, topX, topY, alfa, w;
-
-	downX = z[0] - 3.0/7.0 * (topPoint.x - z[0]);
-	downY = z[1] - 3.0/7.0 * (topPoint.y - z[1]);
-
-	topX = fingertips[i].x;
-	topY = fingertips[i].y;
-
-	double dx, dy;
-	dx = topX - downX;
-	dy = topY - downY;
-
-	double angle = abs(atan2(dy, dx));
-	alfa = angle;  //kat w radianach
-	w = z[4];
-
-	vector <double> z_Finger;
-
-	z_Finger.push_back(downX);
-	z_Finger.push_back(downY);
-	z_Finger.push_back(topX);
-	z_Finger.push_back(topY);
-	z_Finger.push_back(alfa);
-	z_Finger.push_back(w);
-
-	return z_Finger;
-}
 
 
 // Funkcja wyliczajaca wartosci parametrów obserwacji na podstawie wartosci obserwacji
@@ -1246,6 +1263,117 @@ void KW_MAP2::calculateFingerH(vector<double> s_Finger, double H_Finger[5][6], f
 	plik.close();
 
 }
+
+/*****************************************************************************/
+void KW_MAP2::updateObservation()
+{
+
+	h_z.clear();
+	h_z_MFinger.clear();
+	h_z_FFinger.clear();
+	h_z_TFinger.clear();
+	h_z_SFinger.clear();
+	h_z_RFinger.clear();
+
+	h_z = stateFingerToObservation(s,73.0/54.0);
+	h_z_MFinger = stateFingerToObservation(s_MFinger,7.0/6.0);
+	h_z_FFinger = stateFingerToObservation(s_FFinger,9.0/7.0);
+	h_z_TFinger = stateFingerToObservation(s_TFinger,9.0/7.0);
+	h_z_SFinger = stateFingerToObservation(s_SFinger,41.0/18.0);
+	h_z_RFinger = stateFingerToObservation(s_RFinger,73.0/54.0);
+
+	z0 = 0;
+	z0 += h_z[0];
+	z0 += h_z_MFinger[0];
+	z0 += h_z_FFinger[0];
+	z0 += h_z_TFinger[0];
+	z0 += h_z_SFinger[0];
+	z0 += h_z_RFinger[0];
+	z0 /= 6;
+
+	z1 = 0;
+	z1 += h_z[1];
+	z1 += h_z_MFinger[1];
+	z1 += h_z_FFinger[1];
+	z1 += h_z_TFinger[1];
+	z1 += h_z_SFinger[1];
+	z1 += h_z_RFinger[1];
+	z1 /= 6;
+
+	z4 = 0;
+	z4 += h_z[4];
+	z4 += h_z_MFinger[5];
+	z4 += h_z_FFinger[5];
+	z4 += h_z_TFinger[5];
+	z4 += h_z_SFinger[5];
+	z4 += h_z_RFinger[5];
+	z4 /= 6;
+
+}
+
+// Funkcja wyliczajaca wartosci parametru stanu na podstawie wartosci obserwacji
+vector <double> KW_MAP2::F_observationToState(double z0, double z1, double z4, vector<double> s)
+{
+	float s_mx, s_my, s_angle, s_heigth, s_width;
+	vector <double> F_state;
+
+	s_mx = z0 - 0.05 * z4;
+	s_my = z1 + 1.0/7.0 * 5.0/2.0 * s[3]; // s_my = z1 + 1.0/7.0 * z[3];
+
+	Types::Ellipse * el;
+
+	el = new Types::Ellipse(cv::Point(s_mx, s_my), Size2f(10, 10));
+	el->setCol(CV_RGB(255,0,0));
+	drawcont.add(el);
+
+	s_angle = s[2];
+	s_heigth = s[3];
+	s_width = 0.5 * z4;
+
+	F_state.push_back(s_mx);
+	F_state.push_back(s_my);
+	F_state.push_back(s_angle);
+	F_state.push_back(s_heigth);
+	F_state.push_back(s_width);
+
+	return F_state;
+
+}
+
+vector <double> KW_MAP2:: F_observationFingerToState(double z0, double z1, double z5, vector <double> s_Finger, float a, float b)
+{
+
+	float s_mx, s_my, s_angle, s_heigth, s_width;
+	double downX, downY;
+	double z2, z3;
+
+	z2 = s_Finger[0] + 1.0/2.0 * s_Finger[3]*cos(s_Finger[2]);
+	z3 = s_Finger[1] - 1.0/2.0 * s_Finger[3]*sin(s_Finger[2]);
+
+	downX = z0 - 3.0/7.0 * (z2 - z0);
+	downY = z1 - 3.0/7.0 * (z3 - z1);
+
+	s_mx = downX + a * (z2 - downX);
+	s_my = downY + a * (z3 - downY);
+
+	s_angle = s_Finger[2];
+	s_heigth = b * (sqrt((downX -z2)*(downX -z2)+(downY-z3)*(downY-z3)));
+	s_width = 0.12 * z5;
+
+	vector <double> F_sFinger;
+	F_sFinger.push_back(s_mx);
+	F_sFinger.push_back(s_my);
+	F_sFinger.push_back(s_angle);
+	F_sFinger.push_back(s_heigth);
+	F_sFinger.push_back(s_width);
+
+
+
+	return F_sFinger;
+
+}
+
+
 
 
 /*************************************************************************/

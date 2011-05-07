@@ -198,6 +198,12 @@ protected:
 	// Funkcja sprawdzająca czy warunek końcowy jest sprawdzony
 	void stopCondition();
 
+	// obliczanie średnich wartosci obserwacji dłoni na podstawie parametrow stanow całej dloni(wew dlon i place)
+	void updateObservation();
+
+	vector <double> F_observationToState(double z0, double z1, double z4, vector<double> s);
+
+	vector <double> F_observationFingerToState(double z0, double z1, double z4, vector <double> s_Finger, float a, float b);
 
 	//*****************************************************************//
 	//*FUNKCJE wspolne dla PALCÓW****************************************//
@@ -501,6 +507,9 @@ private:
 	vector<double> diff_RFinger;
 
 	bool STOP_RFinger;
+
+	//***********
+	double z0, z1, z4;
 
 
 
