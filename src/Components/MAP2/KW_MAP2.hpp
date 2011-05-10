@@ -205,6 +205,8 @@ protected:
 
 	vector <double> F_observationFingerToState(double z0, double z1, double z4, vector <double> s_Finger, float a, float b);
 
+
+
 	//*****************************************************************//
 	//*FUNKCJE wspolne dla PALCÓW****************************************//
 	//*****************************************************************//
@@ -230,6 +232,16 @@ protected:
 
 	bool stopCondition(vector <double> s, vector <double> s0, double invP[5][5], vector <double> diff, float limit);
 
+
+	//*****************************************************************//
+	//*Funkcje uzależaniajace palce od wewetrznej czesci dłoni*********//
+	//*****************************************************************//
+
+	//Funkcja regulujaca wartosc kątów
+	void adjustableAngles();
+
+	//Funkcja regulujaca wartosc kątów
+	vector <double> adjustableFingerCenter(vector <double> s_Finger, double max, double min);
 
 
 private:
@@ -308,7 +320,9 @@ private:
 	double factor;
 
 	//wspołczynnik skalujacy wielkosc zmiany parametrów stanu
-	double factor2;
+	double factorFinger;
+
+	double factorPalm;
 
 	// funkcja warunek stopu, jesli STOP = true estymacja MAP jest zakończona
 	bool STOP;

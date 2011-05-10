@@ -193,7 +193,7 @@ bool KW_MAP2::onStep()
 			sTest6.clear();
 
 		//	cout<<"STOP "<<STOP<<"\n";
-			if(error2 > 20.0)
+			if(error2 > 2.0)
 			{
 				error = 0.0;
 				error2 = 0.0;
@@ -216,7 +216,7 @@ bool KW_MAP2::onStep()
 				//palec środkowy
 				sTest.clear();
 				z_MFinger = getFingerObservation(2);
-			//	projectionFingerObservation(z_MFinger, 200, 200, 200);
+				projectionFingerObservation(z_MFinger, 200, 200, 200);
 				sTest2 = observationFingerToState(z_MFinger, 0.7, 0.6);
 				projectionFingerState(sTest2, 0, 255, 255);
 				h_z_MFinger = stateFingerToObservation(s_MFinger, 7.0/6.0);
@@ -224,61 +224,71 @@ bool KW_MAP2::onStep()
 
 				calculateFingerH(s_MFinger, H_MFinger, 7.0/6.0);
 
-				diff_MFinger = calculateFingerDiff(h_z_MFinger, z_MFinger, invR_MFinger, H_MFinger, P_MFinger, factor2);
+				diff_MFinger = calculateFingerDiff(h_z_MFinger, z_MFinger, invR_MFinger, H_MFinger, P_MFinger, factorFinger);
 				s_MFinger = updateFingerState(diff_MFinger,s_MFinger, P_MFinger);
 
 
 
 				//palec wskazujacy
 				z_FFinger = getFingerObservation(3);
-			//	projectionFingerObservation(z_FFinger, 200, 200, 200);
+				projectionFingerObservation(z_FFinger, 200, 200, 200);
 				sTest3 = observationFingerToState(z_FFinger, 0.72, 0.56);
 				projectionFingerState(sTest3, 0, 255, 255);
 				h_z_FFinger = stateFingerToObservation(s_FFinger, 9.0/7.0);
 			//	projectionFingerObservation(h_z_FFinger, 255, 255, 0);
 
 				calculateFingerH(s_FFinger, H_FFinger, 9.0/7.0);
-				diff_FFinger = calculateFingerDiff(h_z_FFinger, z_FFinger, invR_FFinger, H_FFinger, P_FFinger, factor2);
+				diff_FFinger = calculateFingerDiff(h_z_FFinger, z_FFinger, invR_FFinger, H_FFinger, P_FFinger, factorFinger);
 				s_FFinger = updateFingerState(diff_FFinger,s_FFinger, P_FFinger);
 
 
 				//kciuk
 				z_TFinger = getFingerObservation(4);
-			//	projectionFingerObservation(z_TFinger, 200, 200, 200);
+				projectionFingerObservation(z_TFinger, 200, 200, 200);
 				sTest4 = observationFingerToState(z_TFinger, 0.72, 0.56);
 				projectionFingerState(sTest4, 0, 255, 255);
 				h_z_TFinger = stateFingerToObservation(s_TFinger, 9.0/7.0);
 			//	projectionFingerObservation(h_z_TFinger, 255, 255, 0);
 				calculateFingerH(s_TFinger, H_TFinger, 9.0/7.0);
-				diff_TFinger = calculateFingerDiff(h_z_TFinger, z_TFinger, invR_TFinger, H_TFinger, P_TFinger, 0.05);
+				diff_TFinger = calculateFingerDiff(h_z_TFinger, z_TFinger, invR_TFinger, H_TFinger, P_TFinger, factorFinger);
 				s_TFinger = updateFingerState(diff_TFinger,s_TFinger, P_TFinger);
 
 				//mały palec
 				z_SFinger = getFingerObservation(0);
-			//	projectionFingerObservation(z_SFinger, 200, 200, 200);
+				projectionFingerObservation(z_SFinger, 200, 200, 200);
 				sTest5 = observationFingerToState(z_SFinger, 0.82, 0.36);
 				projectionFingerState(sTest5, 0, 255, 255);
 				h_z_SFinger = stateFingerToObservation(s_SFinger, 41.0/18.0);
 			//	projectionFingerObservation(h_z_SFinger, 255, 255, 0);
 				calculateFingerH(s_SFinger, H_SFinger, 41.0/18.0);
-				diff_SFinger = calculateFingerDiff(h_z_SFinger, z_SFinger, invR_SFinger, H_SFinger, P_SFinger, factor2);
+				diff_SFinger = calculateFingerDiff(h_z_SFinger, z_SFinger, invR_SFinger, H_SFinger, P_SFinger, factorFinger);
 				s_SFinger = updateFingerState(diff_SFinger,s_SFinger, P_SFinger);
 
 				//palec serdeczny
 				//ring-finger
 				z_RFinger = getFingerObservation(1);
-			//	projectionFingerObservation(z_RFinger, 200, 200, 200);
+				projectionFingerObservation(z_RFinger, 200, 200, 200);
 				sTest6 = observationFingerToState(z_RFinger, 0.73, 0.54);
 				projectionFingerState(sTest6, 0, 255, 255);
+
 				h_z_RFinger = stateFingerToObservation(s_RFinger,73.0/54.0);
 			//	projectionFingerObservation(h_z_RFinger, 255, 255, 0);
 				calculateFingerH(s_RFinger, H_RFinger, 73.0/54.0);
-				diff_RFinger = calculateFingerDiff(h_z_RFinger, z_RFinger, invR_RFinger, H_RFinger, P_RFinger, factor2);
+				diff_RFinger = calculateFingerDiff(h_z_RFinger, z_RFinger, invR_RFinger, H_RFinger, P_RFinger, factorFinger);
 				s_RFinger = updateFingerState(diff_RFinger,s_RFinger, P_RFinger);
+
+
+///////				adjustableAngles();
+		//		s_MFinger = adjustableFingerCenter(s_MFinger, 1.3, 0.1);
+		//		s_FFinger = adjustableFingerCenter(s_FFinger, 1.3, 0.1);
+		//		s_TFinger = adjustableFingerCenter(s_TFinger, 1.3, 0.1);
+		//		s_SFinger = adjustableFingerCenter(s_SFinger, 1.3, 0.1);
+		//		s_RFinger = adjustableFingerCenter(s_RFinger, 1.3, 0.1);
+
 				cout<<"1\n";
 				cout<<error<<"\n";
 				cout<<"1\n";
-				//Usrednianie
+/*				//Usrednianie
 				updateObservation();
 				cout<<"2\n";
 				s = F_observationToState(z0, z1, z4, s);
@@ -291,22 +301,24 @@ bool KW_MAP2::onStep()
 
 				cout<<"ROZMIAR"<<s_RFinger.size()<<"\n";
 
-				projectionState(s, 255, 255, 255);
-				projectionFingerState(s_MFinger, 255, 255, 255);
-				projectionFingerState(s_FFinger, 255, 255, 255);
-				projectionFingerState(s_TFinger, 255, 255, 255);
-				projectionFingerState(s_SFinger, 255, 255, 255);
-				projectionFingerState(s_RFinger, 255, 255, 255);
+*/
+
+			projectionState(s, 255, 255, 255);
+			projectionFingerState(s_MFinger, 255, 255, 255);
+			projectionFingerState(s_FFinger, 255, 255, 255);
+			projectionFingerState(s_TFinger, 255, 255, 255);
+			projectionFingerState(s_SFinger, 255, 255, 255);
+			projectionFingerState(s_RFinger, 255, 255, 255);
 
 			}
 			else
 			{
 				projectionState(s, 255, 255, 255);
-				projectionFingerState(s_MFinger, 255, 255, 255);
+			//	projectionFingerState(s_MFinger, 255, 255, 255);
 				projectionFingerState(s_FFinger, 255, 255, 255);
-				projectionFingerState(s_TFinger, 255, 255, 255);
-				projectionFingerState(s_SFinger, 255, 255, 255);
-				projectionFingerState(s_RFinger, 255, 255, 255);
+			//	projectionFingerState(s_TFinger, 255, 255, 255);
+			//	projectionFingerState(s_SFinger, 255, 255, 255);
+			//	projectionFingerState(s_RFinger, 255, 255, 255);
 			}
 
 			cout<<"Error"<<error<<"\n";
@@ -903,7 +915,7 @@ void KW_MAP2::calculateDiff()
 			t3[i] +=   P[i][j] * t2[j];
 
 		}
-		t3[i] *= factor2;//*factor;
+		t3[i] *= factorPalm;//*factor;
 		diff.push_back(t3[i]);
 
 
@@ -1081,6 +1093,13 @@ void KW_MAP2::projectionFingerState(vector<double> s, int R, int G, int B)
 	}
 	*/
 
+	/*
+	Types::Ellipse * el;
+	el = new Types::Ellipse(cv::Point(s[0], s[1]), Size2f(10, 10));
+	el->setCol(CV_RGB(0,0,0));
+	drawcont.add(el);
+*/
+
 	obsPointA.x = s[0] - 0.5 * s[4];
 	obsPointA.y = s[1] - 0.5 * s[3];
 
@@ -1162,11 +1181,15 @@ vector <double> KW_MAP2::calculateFingerDiff(vector <double> h_z_Finger, vector 
 			t3[i] +=  P_Finger[i][j] * t2[j];
 
 		}
-		t3[i] *= factor2;//*factor;
+		t3[i] *= factorFinger;//*factor;
 		diff_Finger.push_back(t3[i]);
 
 
 	}
+
+	for (int i = 0; i < 5; ++i)
+		diff_Finger[i] = fabs(diff_Finger[i]) > 10 ? 10 * diff_Finger[i]/fabs(diff_Finger[i]) : diff_Finger[i];
+
 	return diff_Finger;
 }
 
@@ -1340,7 +1363,7 @@ vector <double> KW_MAP2::F_observationToState(double z0, double z1, double z4, v
 
 }
 
-vector <double> KW_MAP2:: F_observationFingerToState(double z0, double z1, double z5, vector <double> s_Finger, float a, float b)
+vector <double> KW_MAP2::F_observationFingerToState(double z0, double z1, double z5, vector <double> s_Finger, float a, float b)
 {
 
 	float s_mx, s_my, s_angle, s_heigth, s_width;
@@ -1371,6 +1394,99 @@ vector <double> KW_MAP2:: F_observationFingerToState(double z0, double z1, doubl
 
 	return F_sFinger;
 
+}
+
+
+
+//*****************************************************************//
+//*Funkcje uzależaniajace palce od wewetrznej czesci dłoni*********//
+//*****************************************************************//
+
+//Funkcja regulujaca wartosc kątów
+void KW_MAP2::adjustableAngles()
+{
+	//regulacja kąta nachylenia palca środkowego
+	if(s_MFinger[2] > (s[2] + 0.174))
+	{
+		s_MFinger[2] = (s[2] + 0.174);
+	}
+	else if(s_MFinger[2] < (s[2] - 0.174))
+	{
+		s_MFinger[2] = (s[2] - 0.174);
+	}
+
+	//regulacja kąta nachylenia palca wskazujacego
+	if(s_FFinger[2] > (s[2] - 0,1262)) //s[2] - 0.3002 + 0,174
+	{
+		s_FFinger[2] = (s[2] - 0,1262);
+	}
+	else if(s_FFinger[2] < (s[2] - 0,4742)) //s[2] - 0.3002 - 0,174
+	{
+		s_FFinger[2] = (s[2] - 0,4742);
+	}
+
+	//regulacja kąta nachylenia kciuka
+	if(s_TFinger[2] > (s[2] - 1,02724)) //s[2] - 1,20124 + 0,174
+	{
+		s_TFinger[2] = (s[2] - 1,02724);
+	}
+	else if(s_TFinger[2] < (s[2] - 1,37524)) //s[2] - 1,20124 - 0,174
+	{
+		s_TFinger[2] = (s[2] - 1,37524);
+	}
+
+	//regulacja kąta małego palca
+	if(s_SFinger[2] > (s[2] + 0,864)) //s[2] + 0,69 + 0,174
+	{
+		s_SFinger[2] = (s[2] + 0,864);
+	}
+	else if(s_SFinger[2] < (s[2] + 0,516)) //s[2]  + 0,69 - 0,174
+	{
+		s_SFinger[2] = (s[2] + 0,516);
+	}
+
+	//regulacja kąta palca serdecznego
+	if(s_FFinger[2] > (s[2] + 0,4182)) //s[2] + 0,2442 + 0,174
+	{
+		s_FFinger[2] = (s[2] + 0,4182);
+	}
+	else if(s_FFinger[2] < (s[2] + 0,0702)) //s[2]  + 0,2442 - 0,174
+	{
+		s_FFinger[2] = (s[2] + 0,0702);
+	}
+
+}
+
+//Funkcja regulujaca wartosc kątów
+vector <double> KW_MAP2::adjustableFingerCenter(vector <double> s_Finger, double max, double min)
+{
+	double dx, dy, distance;
+	vector <double> Finger;
+
+	//palcec środkowy
+	dx = s_Finger[0] - s[0];
+	dy = s_Finger[1] - s[1];
+	distance = sqrt(dx*dx + dy*dy);
+
+	if(distance > (max * s[3]))
+	{
+		std::cout << "Too far! " << distance << "\n";
+		dx = dx * max/distance;
+		dy = dy * max/distance;
+	}
+	else if (distance < (min *s[3]))
+	{
+		std::cout << "Too close! " << distance << "\n";
+		dx = dx * min/distance;
+		dy = dy * min/distance;
+	}
+	Finger.push_back(s[0] + dx);
+	Finger.push_back(s[1] + dy);
+	Finger.push_back(s_Finger[2]);
+	Finger.push_back(s_Finger[3]);
+	Finger.push_back(s_Finger[4]);
+
+	return Finger;
 }
 
 
@@ -1548,9 +1664,12 @@ KW_MAP2::KW_MAP2(const std::string & name) :
 */
 
 	//MAP3
+	//wspołczynnik zapominania
+	factor = 0.0001;
+	//współczynnik skalowania kroków
+	factorFinger = 0.03;
 
-	factor = 0.001;
-	factor2 = 0.1;
+	factorPalm = 0.1;
 
 	//dla MAP2_Sequence
 	//factor2 = 0.04;

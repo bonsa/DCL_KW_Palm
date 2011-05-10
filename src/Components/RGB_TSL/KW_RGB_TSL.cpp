@@ -11,6 +11,7 @@
 
 #include "KW_RGB_TSL.hpp"
 #include "Logger.hpp"
+#include "Common/Timer.hpp"
 
 namespace Processors {
 namespace KW_TSL {
@@ -22,6 +23,9 @@ KW_RGB_TSL::KW_RGB_TSL(const std::string & name) : Base::Component(name)
 {
 	LOG(LTRACE) << "Hello KW_RGB_TSL\n";
 	k = 0;
+
+	total = 0.0f;
+	loops = 0;
 }
 
 KW_RGB_TSL::~KW_RGB_TSL()
@@ -75,8 +79,11 @@ void KW_RGB_TSL::onNewImage()
 {
 	LOG(LTRACE) << "KW_RGB_TSL::onNewImage\n";
 	try {
+		Common::Timer timer;
+		timer.restart();
+
 		cv::Mat RGB_img = in_img.read();	//czytam obrazem w zejścia
-		std::ofstream plik("/home/kasia/Test.txt");
+		//std::ofstream plik("/home/kasia/Test.txt");
 		cv::Size size = RGB_img.size();		//rozmiar obrazka
 		
 		TSL_img.create(size, CV_8UC3);
@@ -161,7 +168,7 @@ void KW_RGB_TSL::onNewImage()
 					{
 						MinMax.maxS = S;
 					}
-					plik<<L;
+					//plik<<L;
 
 				}
 
@@ -172,7 +179,11 @@ void KW_RGB_TSL::onNewImage()
 
 		out_img.write(TSL_img);
 		out_img2.write(MinMax);
-		plik.close();
+		//plik.close();
+
+		total += timer.elapsed();
+		loops++;
+		LOG(LNOTICE) << "TSL: " << total / loops;
 
 		newImage->raise();
 		

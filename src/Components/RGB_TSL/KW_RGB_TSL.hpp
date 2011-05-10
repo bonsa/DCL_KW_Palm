@@ -135,6 +135,10 @@ private:
 
 	min_max MinMax;
 	int k;
+
+	float total;
+	int loops;
+
 };
 
 }//: namespace KW_TSL
