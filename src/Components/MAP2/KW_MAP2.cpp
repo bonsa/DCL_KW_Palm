@@ -288,20 +288,7 @@ bool KW_MAP2::onStep()
 				cout<<"1\n";
 				cout<<error<<"\n";
 				cout<<"1\n";
-/*				//Usrednianie
-				updateObservation();
-				cout<<"2\n";
-				s = F_observationToState(z0, z1, z4, s);
-				cout<<"3\n";
-				s_MFinger = F_observationFingerToState(z0, z1, z4, s_MFinger, 0.7, 0.6);
-				s_FFinger = F_observationFingerToState(z0, z1, z4, s_FFinger, 0.72, 0.56);
-				s_TFinger = F_observationFingerToState(z0, z1, z4, s_TFinger, 0.72, 0.56);
-				s_SFinger = F_observationFingerToState(z0, z1, z4, s_SFinger, 0.82, 0.36);
-				s_RFinger = F_observationFingerToState(z0, z1, z4, s_RFinger, 0.73, 0.54);
 
-				cout<<"ROZMIAR"<<s_RFinger.size()<<"\n";
-
-*/
 
 			projectionState(s, 255, 255, 255);
 			projectionFingerState(s_MFinger, 255, 255, 255);
@@ -678,69 +665,12 @@ void KW_MAP2::projectionObservation(vector<double> z, int R, int G, int B)
 
 	Types::Line * elL;
 
-	/*
-	 *
-	Types::Ellipse * el;
-	el = new Types::Ellipse(cv::Point(obsPointA.x, obsPointA.y), Size2f(10, 10));
-	el->setCol(CV_RGB(0,0,0));
-	drawcont.add(el);
 
-	el = new Types::Ellipse(cv::Point(obsPointB.x, obsPointB.y), Size2f(10, 10));
-	el->setCol(CV_RGB(0,0,0));
-	drawcont.add(el);
-
-	el = new Types::Ellipse(cv::Point(obsPointC.x, obsPointC.y), Size2f(10, 10));
-	el->setCol(CV_RGB(0,0,0));
-	drawcont.add(el);
-
-	el = new Types::Ellipse(cv::Point(obsPointD.x, obsPointD.y), Size2f(10, 10));
-	el->setCol(CV_RGB(0,0,0));
-	drawcont.add(el);
-
-	elL = new Types::Line(cv::Point(obsPointA.x, obsPointA.y), cv::Point(obsPointB.x, obsPointB.y));
-	elL->setCol(CV_RGB(0,0,0));
-	drawcont.add(elL);
-
-	elL = new Types::Line(cv::Point(obsPointB.x, obsPointB.y), cv::Point(obsPointC.x, obsPointC.y));
-	elL->setCol(CV_RGB(0,0,0));
-	drawcont.add(elL);
-
-	elL = new Types::Line(cv::Point(obsPointC.x, obsPointC.y), cv::Point(obsPointD.x, obsPointD.y));
-	elL->setCol(CV_RGB(0,0,0));
-
-	drawcont.add(elL);
-	elL = new Types::Line(cv::Point(obsPointD.x, obsPointD.y), cv::Point(obsPointA.x, obsPointA.y));
-	elL->setCol(CV_RGB(0,0,0));
-	drawcont.add(elL);
-
-	cv::Point pt1 = rot(topPoint, rotAngle, cv::Point(z[0], z[1]));
-
-	el = new Types::Ellipse(cv::Point(pt1.x, pt1.y), Size2f(10, 10));
-	el->setCol(CV_RGB(0,0,0));
-	drawcont.add(el);
-*/
 	obsPointA = rot(obsPointA, - rotAngle, cv::Point(z[0], z[1]));
 	obsPointB = rot(obsPointB, - rotAngle, cv::Point(z[0], z[1]));
 	obsPointC = rot(obsPointC, - rotAngle, cv::Point(z[0], z[1]));
 	obsPointD = rot(obsPointD, - rotAngle, cv::Point(z[0], z[1]));
 
-/*
-	el = new Types::Ellipse(cv::Point(obsPointA.x, obsPointA.y), Size2f(10, 10));
-	el->setCol(CV_RGB(R,G,B));
-	drawcont.add(el);
-
-	el = new Types::Ellipse(cv::Point(obsPointB.x, obsPointB.y), Size2f(10, 10));
-	el->setCol(CV_RGB(R,G,B));
-	drawcont.add(el);
-
-	el = new Types::Ellipse(cv::Point(obsPointC.x, obsPointC.y), Size2f(10, 10));
-	el->setCol(CV_RGB(R,G,B));
-	drawcont.add(el);
-
-	el = new Types::Ellipse(cv::Point(obsPointD.x, obsPointD.y), Size2f(10, 10));
-	el->setCol(CV_RGB(R,G,B));
-	drawcont.add(el);
-*/
 
 	elL = new Types::Line(cv::Point(obsPointA.x, obsPointA.y), cv::Point(obsPointB.x, obsPointB.y));
 	elL->setCol(CV_RGB(R,G,B));
@@ -885,7 +815,6 @@ void KW_MAP2::calculateDiff()
 		//różnica miedzy punktami charakterystycznymi aktualnego obraz
 		D[i] =  h_z[i] - z[i];
 		error2 += abs(D[i]);
-	//	cout<<"\nD"<<D[i];
 	}
 
 	double t1[5];
@@ -904,7 +833,6 @@ void KW_MAP2::calculateDiff()
 			//t1 = iloraz macierzy H * t1
 			t2[i] += H[i][j] * t1[j];
 		}
-	//	cout<<t1[i]<<"\n";
 	}
 
 	double t3[5];
@@ -920,19 +848,13 @@ void KW_MAP2::calculateDiff()
 
 
 	}
-	//cout <<"ERROR2"<<error2<<"\n";
 }
 
 void KW_MAP2::updateState()
 {
 	for (unsigned int i = 0; i < 5; i++) {
-	//	cout << i << " diff\t" << diff[i] << "\n";
-	}
-
-	for (unsigned int i = 0; i < 5; i++) {
 		s[i] = s[i] - diff[i];
 		error += abs(diff[i]);
-//		cout << i << " states\t" << s[i] << "\n";
 	}
 
 	for (unsigned int i = 0; i < 5; i++) {
@@ -942,43 +864,6 @@ void KW_MAP2::updateState()
 	}
 }
 
-
-//*****************************************************************//
-//*SRODKOWY PALEC**************************************************//
-//*****************************************************************//
-
-// Otrzymanie obserwacji środkowego palca
-/*
-void KW_MAP2::getMiddleFingerObservation()
-{
-
-	double downX, downY, topX, topY, alfa, w;
-
-	downX = z[0] - 3.0/7.0 * (topPoint.x - z[0]);
-	downY = z[1] - 3.0/7.0 * (topPoint.y - z[1]);
-
-	Types::Ellipse * el;
-
-	el = new Types::Ellipse(cv::Point(z[0], z[1]), Size2f(10, 10));
-	el->setCol(CV_RGB(255,255,255));
-	drawcont.add(el);
-
-	topX = topPoint.x;
-	topY = topPoint.y;
-
-	//z jest w stopniach, a alfa ma byc w radianach
-	alfa = z[2];  //kat w radianach
-	w = z[4];
-
-	z_MFinger.push_back(downX);
-	z_MFinger.push_back(downY);
-	z_MFinger.push_back(topX);
-	z_MFinger.push_back(topY);
-	z_MFinger.push_back(alfa);
-	z_MFinger.push_back(w);
-
-}
-*/
 
 // Otrzymanie obserwacji środkowego palca
 vector <double> KW_MAP2::getFingerObservation(int i)
@@ -1011,6 +896,7 @@ vector <double> KW_MAP2::getFingerObservation(int i)
 
 	return z_Finger;
 }
+
 void KW_MAP2::projectionFingerObservation(vector<double> z, int R, int G, int B)
 {
 	cv::Point obsPointDown = cv::Point(z[0], z[1]);
@@ -1167,10 +1053,8 @@ vector <double> KW_MAP2::calculateFingerDiff(vector <double> h_z_Finger, vector 
 	for (unsigned int i = 0; i < 5; i++) {
 		t2[i] = 0;
 		for (unsigned int j = 0; j < 6; j++) {
-			//t1 = iloraz macierzy H * t1
 			t2[i] += H_Finger[i][j] * t1[j];
 		}
-	//	cout<<t1[i]<<"\n";
 	}
 
 	double t3[5];
@@ -1179,12 +1063,9 @@ vector <double> KW_MAP2::calculateFingerDiff(vector <double> h_z_Finger, vector 
 		for (unsigned int j = 0; j < 5; j++) {
 			//mnożenie macierzy P * t2
 			t3[i] +=  P_Finger[i][j] * t2[j];
-
 		}
 		t3[i] *= factorFinger;//*factor;
 		diff_Finger.push_back(t3[i]);
-
-
 	}
 
 	for (int i = 0; i < 5; ++i)
@@ -1198,14 +1079,10 @@ vector <double> KW_MAP2::calculateFingerDiff(vector <double> h_z_Finger, vector 
 vector <double>KW_MAP2::updateFingerState(vector <double> diff_Finger, vector <double> s_Finger, double P_Finger[5][5])
 {
 	vector <double> s_NFinger;
-	for (unsigned int i = 0; i < 5; i++) {
-		//cout << i << " diff_Finger\t" << diff_Finger[i] << "\n";
-	}
 
 	for (unsigned int i = 0; i < 5; i++) {
 		s_NFinger.push_back(s_Finger[i] - diff_Finger[i]);
 		error += abs(diff_Finger[i]);
-		//cout << i << " states\t" << s_NFinger[i] << "\n";
 	}
 
 	for (unsigned int i = 0; i < 5; i++) {
@@ -1286,116 +1163,6 @@ void KW_MAP2::calculateFingerH(vector<double> s_Finger, double H_Finger[5][6], f
 	plik.close();
 
 }
-
-/*****************************************************************************/
-void KW_MAP2::updateObservation()
-{
-
-	h_z.clear();
-	h_z_MFinger.clear();
-	h_z_FFinger.clear();
-	h_z_TFinger.clear();
-	h_z_SFinger.clear();
-	h_z_RFinger.clear();
-
-	h_z = stateFingerToObservation(s,73.0/54.0);
-	h_z_MFinger = stateFingerToObservation(s_MFinger,7.0/6.0);
-	h_z_FFinger = stateFingerToObservation(s_FFinger,9.0/7.0);
-	h_z_TFinger = stateFingerToObservation(s_TFinger,9.0/7.0);
-	h_z_SFinger = stateFingerToObservation(s_SFinger,41.0/18.0);
-	h_z_RFinger = stateFingerToObservation(s_RFinger,73.0/54.0);
-
-	z0 = 0;
-	z0 += h_z[0];
-	z0 += h_z_MFinger[0];
-	z0 += h_z_FFinger[0];
-	z0 += h_z_TFinger[0];
-	z0 += h_z_SFinger[0];
-	z0 += h_z_RFinger[0];
-	z0 /= 6;
-
-	z1 = 0;
-	z1 += h_z[1];
-	z1 += h_z_MFinger[1];
-	z1 += h_z_FFinger[1];
-	z1 += h_z_TFinger[1];
-	z1 += h_z_SFinger[1];
-	z1 += h_z_RFinger[1];
-	z1 /= 6;
-
-	z4 = 0;
-	z4 += h_z[4];
-	z4 += h_z_MFinger[5];
-	z4 += h_z_FFinger[5];
-	z4 += h_z_TFinger[5];
-	z4 += h_z_SFinger[5];
-	z4 += h_z_RFinger[5];
-	z4 /= 6;
-
-}
-
-// Funkcja wyliczajaca wartosci parametru stanu na podstawie wartosci obserwacji
-vector <double> KW_MAP2::F_observationToState(double z0, double z1, double z4, vector<double> s)
-{
-	float s_mx, s_my, s_angle, s_heigth, s_width;
-	vector <double> F_state;
-
-	s_mx = z0 - 0.05 * z4;
-	s_my = z1 + 1.0/7.0 * 5.0/2.0 * s[3]; // s_my = z1 + 1.0/7.0 * z[3];
-
-	Types::Ellipse * el;
-
-	el = new Types::Ellipse(cv::Point(s_mx, s_my), Size2f(10, 10));
-	el->setCol(CV_RGB(255,0,0));
-	drawcont.add(el);
-
-	s_angle = s[2];
-	s_heigth = s[3];
-	s_width = 0.5 * z4;
-
-	F_state.push_back(s_mx);
-	F_state.push_back(s_my);
-	F_state.push_back(s_angle);
-	F_state.push_back(s_heigth);
-	F_state.push_back(s_width);
-
-	return F_state;
-
-}
-
-vector <double> KW_MAP2::F_observationFingerToState(double z0, double z1, double z5, vector <double> s_Finger, float a, float b)
-{
-
-	float s_mx, s_my, s_angle, s_heigth, s_width;
-	double downX, downY;
-	double z2, z3;
-
-	z2 = s_Finger[0] + 1.0/2.0 * s_Finger[3]*cos(s_Finger[2]);
-	z3 = s_Finger[1] - 1.0/2.0 * s_Finger[3]*sin(s_Finger[2]);
-
-	downX = z0 - 3.0/7.0 * (z2 - z0);
-	downY = z1 - 3.0/7.0 * (z3 - z1);
-
-	s_mx = downX + a * (z2 - downX);
-	s_my = downY + a * (z3 - downY);
-
-	s_angle = s_Finger[2];
-	s_heigth = b * (sqrt((downX -z2)*(downX -z2)+(downY-z3)*(downY-z3)));
-	s_width = 0.12 * z5;
-
-	vector <double> F_sFinger;
-	F_sFinger.push_back(s_mx);
-	F_sFinger.push_back(s_my);
-	F_sFinger.push_back(s_angle);
-	F_sFinger.push_back(s_heigth);
-	F_sFinger.push_back(s_width);
-
-
-
-	return F_sFinger;
-
-}
-
 
 
 //*****************************************************************//
