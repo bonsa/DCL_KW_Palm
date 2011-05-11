@@ -14,6 +14,7 @@
 #include "DataStream.hpp"
 #include "Props.hpp"
 #include "Property.hpp"
+#include "Common/Timer.hpp"
 
 
 #include <cv.h>
@@ -119,6 +120,12 @@ protected:
 	Props props;
 
 private:
+
+	Common::Timer timer;
+
+	float total;
+	int loops;
+
 	Base::Property<int> blue_R;
 	Base::Property<int> blue_G;
 	Base::Property<int> blue_B;

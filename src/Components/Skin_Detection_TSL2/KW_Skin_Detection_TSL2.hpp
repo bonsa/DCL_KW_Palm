@@ -14,6 +14,7 @@
 #include "DataStream.hpp"
 #include "Props.hpp"
 #include "Property.hpp"
+#include "Common/Timer.hpp"
 
 #include <Types/stream_OpenCV.hpp>
 
@@ -129,6 +130,12 @@ protected:
 
 private:
 	cv::Mat skin_img;
+
+	Common::Timer timer;
+
+	float total;
+	int loops;
+
 
 	Base::Property<int> MIN_T;
 	Base::Property<int> MAX_T;

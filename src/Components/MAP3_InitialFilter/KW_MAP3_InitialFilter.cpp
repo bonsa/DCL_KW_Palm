@@ -153,8 +153,6 @@ bool KW_MAP3_InitialFilter::onInit()
 
 	registerStream("out_img", &out_img);
 
-
-
 	return true;
 }
 
@@ -185,6 +183,7 @@ void KW_MAP3_InitialFilter::onNewImage()
 {
 	LOG(LTRACE) << "KW_MAP3_InitialFilter::onNewImage\n";
 	try {
+		timer.restart();
 		cv::Mat RGB_img = in_img.read();	//czytam obrazem w wejścia
 
 		cv::Size size = RGB_img.size();		//rozmiar obrazka
@@ -214,7 +213,7 @@ void KW_MAP3_InitialFilter::onNewImage()
 
 
 			int j;
-			for (j = 0; j < size.width; j += 3)
+			for (j = 0; j < size.width; j += 6)
 			{
 				B = RGB_p[j];
 				G = RGB_p[j + 1];
@@ -236,12 +235,18 @@ void KW_MAP3_InitialFilter::onNewImage()
 						Filtered_img_p[j] = 0;
 						Filtered_img_p[j + 1] = 0;
 						Filtered_img_p[j + 2] = 0;
+						Filtered_img_p[j + 3] = 0;
+						Filtered_img_p[j + 4] = 0;
+						Filtered_img_p[j + 5] = 0;
 					}
 				else
 				{
 					Filtered_img_p[j] = RGB_p[j];
 					Filtered_img_p[j + 1] = RGB_p[j + 1];
 					Filtered_img_p[j + 2] = RGB_p[j + 2] ;
+					Filtered_img_p[j + 3] = RGB_p[j ];
+					Filtered_img_p[j + 4] = RGB_p[j + 1];
+					Filtered_img_p[j + 5] = RGB_p[j + 2];
 				}
 				++k;
 			}
@@ -249,6 +254,13 @@ void KW_MAP3_InitialFilter::onNewImage()
 
 		out_img.write(Filtered_img);
 
+		total += timer.elapsed();
+		loops++;
+		if (loops > 100) {
+			LOG(LNOTICE) << "InitialFiltr: " << total / loops;
+			loops = 0;
+			total = 0;
+		}
 
 		newImage->raise();
 		

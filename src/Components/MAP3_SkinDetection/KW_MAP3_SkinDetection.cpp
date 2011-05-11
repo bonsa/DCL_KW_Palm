@@ -106,6 +106,9 @@ void KW_MAP3_SkinDetection::onNewImage()
 {
 	LOG(LTRACE) << "KW_MAP3_SkinDetection::onNewImage\n";
 	try {
+
+		timer.restart();
+
 		cv::Mat TSL_img = in_img.read();	//czytam obrazu w wejścia
 
 		cv::Size size = TSL_img.size();		//rozmiar obrazka
@@ -136,21 +139,27 @@ void KW_MAP3_SkinDetection::onNewImage()
 
 
 			int j,k = 0;
-			for (j = 0; j < size.width; j += 3) {
+			for (j = 0; j < size.width; j += 6) {
 
 				if ((c_p[j] >= MIN_T) && (c_p[j] <=MAX_T) &&
 					(c_p[j+1] >= MIN_S) && (c_p[j+1] <= MAX_S)&&
 					(c_p[j+2] >= MIN_L) && (c_p[j+2] <= MAX_L))
 				{
 							skin_p[j] = 255;
-							skin_p[j+1] = 255;
-							skin_p[j+2] = 255;
+							skin_p[j + 1] = 255;
+							skin_p[j + 2] = 255;
+							skin_p[j + 3] = 255;
+							skin_p[j + 4] = 255;
+							skin_p[j + 5] = 255;
 				}
 				else
 				{
 					skin_p[j] = 0;//c_p[j];
 					skin_p[j+1] = 0;//c_p[j+1];
 					skin_p[j+2] = 0;//c_p[j+2];
+					skin_p[j+3] = 0;//c_p[j];
+					skin_p[j+4] = 0;//c_p[j+1];
+					skin_p[j+5] = 0;//c_p[j+2];
 				}
 
 				++k;
@@ -158,6 +167,14 @@ void KW_MAP3_SkinDetection::onNewImage()
 		}
 
 		out_img.write(skin_img);
+
+		total += timer.elapsed();
+		loops++;
+		if (loops > 100) {
+			LOG(LNOTICE) << "Dec: " << total / loops;
+			loops = 0;
+			total = 0;
+		}
 
 
 		newImage->raise();

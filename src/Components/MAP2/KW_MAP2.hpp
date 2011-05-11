@@ -248,6 +248,8 @@ private:
 
 	bool MAP;
 
+	double MaxArea;
+
 	/// MAP properties
 	Props props;
 

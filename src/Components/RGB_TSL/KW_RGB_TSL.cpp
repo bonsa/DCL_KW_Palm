@@ -31,17 +31,6 @@ KW_RGB_TSL::KW_RGB_TSL(const std::string & name) :
 
 	int ss = 128;
 
-	for (r = 0; r < ss; ++r) {
-		r_ = 1.0 * r / ss - 1.0 / 3;
-		for (g = 0; g < ss; ++g) {
-			g_ = 1.0 * g / ss - 1.0 / 3;
-			atan_arr[ss * r + g] = atan(r_ / g_) / 3.141592 + 0.5;
-		}
-	}
-
-	for (int i = 0; i < 4000; ++i) {
-		sqrt_arr[i] = sqrt(1.0 * i / 2000);
-	}
 }
 
 KW_RGB_TSL::~KW_RGB_TSL() {
@@ -143,9 +132,9 @@ void KW_RGB_TSL::onNewImage() {
 					TSL_img_p[j] = 0;
 					TSL_img_p[j + 1] = 0;
 					TSL_img_p[j + 2] = 0;
-					TSL_img_p[j+3] = 0;
-					TSL_img_p[j+4] = 0;
-					TSL_img_p[j+5] = 0;
+					TSL_img_p[j + 3] = 0;
+					TSL_img_p[j + 4] = 0;
+					TSL_img_p[j + 5] = 0;
 
 				} else {
 					r_ = R / (R + G + B + 1) - 0.333333333f;

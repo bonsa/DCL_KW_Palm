@@ -106,6 +106,9 @@ void KW_Skin_Detection_TSL2::onNewImage()
 {
 	LOG(LTRACE) << "KW_Skin_Detection_TSL2::onNewImage\n";
 	try {
+
+		timer.restart();
+
 		cv::Mat TSL_img = in_img.read();	//czytam obrazu w wejścia
 
 		cv::Size size = TSL_img.size();		//rozmiar obrazka
@@ -158,6 +161,14 @@ void KW_Skin_Detection_TSL2::onNewImage()
 		}
 
 		out_img.write(skin_img);
+
+		total += timer.elapsed();
+		loops++;
+		if (loops > 100) {
+			LOG(LNOTICE) << "Dec: " << total / loops;
+			loops = 0;
+			total = 0;
+		}
 
 
 		newImage->raise();

@@ -161,7 +161,7 @@ bool KW_MAP2::onStep()
 		getObservation();
 		projectionFingertips();
 
-		if((MAP == true) && (idFingertips.size()) == 5)
+		if((MAP == true) && (idFingertips.size() == 5) && (MaxArea > 35000))
 		{
 
 			//palec wskazujacy
@@ -193,7 +193,7 @@ bool KW_MAP2::onStep()
 			sTest6.clear();
 
 		//	cout<<"STOP "<<STOP<<"\n";
-			if(error > 1.0)
+			if(error > 0.1)
 			{
 				error = 0.0;
 				error2 = 0.0;
@@ -398,7 +398,7 @@ void KW_MAP2::getObservation(){
 		//momenty goemetryczne potrzebne do obliczenia środka ciężkości
 		double m00, m10, m01;
 		//powierzchnia bloba, powiedzchnia największego bloba, współrzędne środka ciężkości, maksymalna wartośc współrzędnej Y
-		double Area, MaxArea, CenterOfGravity_x, CenterOfGravity_y;
+		double Area, CenterOfGravity_x, CenterOfGravity_y;
 
 		double height, width;
 		MaxArea = 0;
@@ -429,6 +429,7 @@ void KW_MAP2::getObservation(){
 		}
 		//current Blob przychowuje największego bloba, czyli dłoni
 		currentBlob = blobs.GetBlob(id);
+		cout<<"MaxArea"<<MaxArea<<"\n";
 
 
 		// calculate moments
