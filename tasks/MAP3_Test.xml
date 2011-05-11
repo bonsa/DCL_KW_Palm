@@ -91,9 +91,10 @@
 		</Exec2>
 		
 		
-		<Exec3 type="continuous">
+		<Exec3 type="periodic">
 			<main_component>Kbd1</main_component>
 			<keys>t</keys> 
+			<period>1.0</period>
 		</Exec3>
 	
 

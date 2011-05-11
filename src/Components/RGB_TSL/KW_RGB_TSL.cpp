@@ -131,7 +131,7 @@ void KW_RGB_TSL::onNewImage() {
 			MinMax.maxS = 0;
 
 			int j;
-#pragma omp parallel for
+//#pragma omp parallel for
 			for (j = 0; j < size.width; j += 6) {
 				float R, G, B, r_, g_, T, S, L;
 
@@ -143,6 +143,9 @@ void KW_RGB_TSL::onNewImage() {
 					TSL_img_p[j] = 0;
 					TSL_img_p[j + 1] = 0;
 					TSL_img_p[j + 2] = 0;
+					TSL_img_p[j+3] = 0;
+					TSL_img_p[j+4] = 0;
+					TSL_img_p[j+5] = 0;
 
 				} else {
 					r_ = R / (R + G + B + 1) - 0.333333333f;
@@ -201,8 +204,6 @@ void KW_RGB_TSL::onNewImage() {
 		out_img.write(TSL_img);
 		out_img2.write(MinMax);
 
-		newImage->raise();
-
 		total += timer.elapsed();
 		loops++;
 		if (loops > 100) {
@@ -210,6 +211,8 @@ void KW_RGB_TSL::onNewImage() {
 			loops = 0;
 			total = 0;
 		}
+
+		newImage->raise();
 
 	} catch (Common::DisCODeException& ex) {
 		LOG(LERROR) << ex.what() << "\n";

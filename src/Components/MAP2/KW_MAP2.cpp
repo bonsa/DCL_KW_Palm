@@ -348,7 +348,7 @@ void KW_MAP2::onNewBlobs() {
 
 	blobs_ready = true;
 	blobs = in_blobs.read();
-	LOG(LNOTICE) << "Got blobs: " << blobs.GetNumBlobs();
+	//LOG(LNOTICE) << "Got blobs: " << blobs.GetNumBlobs();
 	if (blobs_ready && img_ready)
 		onStep();
 }
@@ -361,7 +361,7 @@ void KW_MAP2::getMaxBlob()
 
 void KW_MAP2::getObservation(){
 
-	LOG(LNOTICE) << "KW_MAP::getObservation\n";
+	//LOG(LNOTICE) << "KW_MAP::getObservation\n";
 
 	try {
 
@@ -410,7 +410,7 @@ void KW_MAP2::getObservation(){
 		id = -1;
 
 		if (blobs.GetNumBlobs() < 1) {
-			LOG(LNOTICE) << "Blobs: " << blobs.GetNumBlobs();
+		//	LOG(LNOTICE) << "Blobs: " << blobs.GetNumBlobs();
 			return;
 		}
 
@@ -596,7 +596,7 @@ void KW_MAP2::getObservation(){
 		out_signs.write(result);
 
 
-		LOG(LNOTICE) << "Fingertips: " << idFingertips.size();
+	//	LOG(LNOTICE) << "Fingertips: " << idFingertips.size();
 
 	} catch (...) {
 		LOG(LERROR) << "KW_MAP::getCharPoints failed\n";
