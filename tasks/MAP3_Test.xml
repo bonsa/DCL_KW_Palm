@@ -3,13 +3,14 @@
 	<!-- List of components, data: 30.04.11 -->
 	<Components>
 
-		<Movie type="CameraOpenCV" thread="Exec1" group="s1">
-	<!--	<filename>/home/kasia/Filmy/29.04/30.04_3.avi</filename>
+		<Movie type="Movie" thread="Exec1" group="s1">
+
 	
-		<filename>/home/kasia/Filmy/4.05/4.05.avi</filename>
+		<filename>/home/kasia/Filmy/6.05/6.05_2.avi</filename>
 		<loop>true</loop>
-	-->
+<!--
 		<device>1</device>
+	-->
 		</Movie>
 
 		
@@ -84,8 +85,9 @@
 		</Exec1>
 
 		
-		<Exec2 type="continuous">
+		<Exec2 type="periodic">
 			<main_component>Window4</main_component>
+			<period>0.2</period>
 		</Exec2>
 		
 		

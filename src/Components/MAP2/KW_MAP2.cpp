@@ -193,7 +193,7 @@ bool KW_MAP2::onStep()
 			sTest6.clear();
 
 		//	cout<<"STOP "<<STOP<<"\n";
-			if(error2 > 2.0)
+			if(error > 1.0)
 			{
 				error = 0.0;
 				error2 = 0.0;
@@ -238,7 +238,7 @@ bool KW_MAP2::onStep()
 			//	projectionFingerObservation(h_z_FFinger, 255, 255, 0);
 
 				calculateFingerH(s_FFinger, H_FFinger, 9.0/7.0);
-				diff_FFinger = calculateFingerDiff(h_z_FFinger, z_FFinger, invR_FFinger, H_FFinger, P_FFinger, factorFinger);
+				diff_FFinger = calculateFingerDiff(h_z_FFinger, z_FFinger, invR_FFinger, H_FFinger, P_FFinger, 0.03);//factorFinger);
 				s_FFinger = updateFingerState(diff_FFinger,s_FFinger, P_FFinger);
 
 
@@ -301,11 +301,11 @@ bool KW_MAP2::onStep()
 			else
 			{
 				projectionState(s, 255, 255, 255);
-			//	projectionFingerState(s_MFinger, 255, 255, 255);
+				projectionFingerState(s_MFinger, 255, 255, 255);
 				projectionFingerState(s_FFinger, 255, 255, 255);
-			//	projectionFingerState(s_TFinger, 255, 255, 255);
-			//	projectionFingerState(s_SFinger, 255, 255, 255);
-			//	projectionFingerState(s_RFinger, 255, 255, 255);
+				projectionFingerState(s_TFinger, 255, 255, 255);
+				projectionFingerState(s_SFinger, 255, 255, 255);
+				projectionFingerState(s_RFinger, 255, 255, 255);
 			}
 
 			cout<<"Error"<<error<<"\n";
@@ -1026,7 +1026,7 @@ void KW_MAP2::projectionFingerState(vector<double> s, int R, int G, int B)
 }
 
 
-vector <double> KW_MAP2::calculateFingerDiff(vector <double> h_z_Finger, vector <double> z_Finger, double invR_Finger[6][6], double  H_Finger[5][6], double P_Finger[5][5], double factor2)
+vector <double> KW_MAP2::calculateFingerDiff(vector <double> h_z_Finger, vector <double> z_Finger, double invR_Finger[6][6], double  H_Finger[5][6], double P_Finger[5][5], double factorFinger)
 {
 	//różnicaiedzy wektorami h(s) i z
 	double D[6];
@@ -1069,7 +1069,7 @@ vector <double> KW_MAP2::calculateFingerDiff(vector <double> h_z_Finger, vector 
 	}
 
 	for (int i = 0; i < 5; ++i)
-		diff_Finger[i] = fabs(diff_Finger[i]) > 10 ? 10 * diff_Finger[i]/fabs(diff_Finger[i]) : diff_Finger[i];
+		diff_Finger[i] = fabs(diff_Finger[i]) > 8 ? 8 * diff_Finger[i]/fabs(diff_Finger[i]) : diff_Finger[i];
 
 	return diff_Finger;
 }
@@ -1432,11 +1432,11 @@ KW_MAP2::KW_MAP2(const std::string & name) :
 
 	//MAP3
 	//wspołczynnik zapominania
-	factor = 0.0001;
+	factor = 0.01;
 	//współczynnik skalowania kroków
-	factorFinger = 0.03;
+	factorFinger = 0.05;//0.03;
 
-	factorPalm = 0.1;
+	factorPalm = 0.05;
 
 	//dla MAP2_Sequence
 	//factor2 = 0.04;
