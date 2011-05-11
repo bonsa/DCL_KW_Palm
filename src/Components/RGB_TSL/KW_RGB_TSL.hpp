@@ -13,6 +13,7 @@
 #include "Panel_Empty.hpp"
 #include "DataStream.hpp"
 #include "Props.hpp"
+#include "Common/Timer.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -27,20 +28,17 @@ using namespace cv;
 /*!
  * \brief KW_mean_skin properties
  */
-struct Props: public Base::Props
-{
+struct Props: public Base::Props {
 	/*!
 	 * \copydoc Base::Props::load
 	 */
-	void load(const ptree & pt)
-	{
+	void load(const ptree & pt) {
 	}
 
 	/*!
 	 * \copydoc Base::Props::save
 	 */
-	void save(ptree & pt)
-	{
+	void save(ptree & pt) {
 	}
 };
 
@@ -49,15 +47,13 @@ struct Props: public Base::Props
  * \brief Example processor class.
  */
 
-
 struct min_max {
-        float maxT;
-        float minS;
-        float maxS;
+	float maxT;
+	float minS;
+	float maxS;
 };
 
-class KW_RGB_TSL: public Base::Component
-{
+class KW_RGB_TSL: public Base::Component {
 public:
 	/*!
 	 * Constructor.
@@ -72,8 +68,7 @@ public:
 	/*!
 	 * Return window properties
 	 */
-	Base::Props * getProperties()
-	{
+	Base::Props * getProperties() {
 		return &props;
 	}
 
@@ -104,26 +99,24 @@ protected:
 	 */
 	bool onStop();
 
-
 	/*!
 	 * Event handler function.
 	 */
 	void onNewImage();
 
 	/// Event handler.
-	Base::EventHandler <KW_RGB_TSL> h_onNewImage;
+	Base::EventHandler<KW_RGB_TSL> h_onNewImage;
 
 	/// Input image
-	Base::DataStreamIn <Mat> in_img;
+	Base::DataStreamIn<Mat> in_img;
 
 	/// Event raised, when image is processed
 	Base::Event * newImage;
 
 	/// Output data stream - hue part with continous red
-	Base::DataStreamOut <Mat> out_img;
-	
-	Base::DataStreamOut <min_max> out_img2;
+	Base::DataStreamOut<Mat> out_img;
 
+	Base::DataStreamOut<min_max> out_img2;
 
 	/// Properties
 	Props props;
@@ -132,12 +125,16 @@ private:
 	cv::Mat RGB_img;
 	cv::Mat TSL_img;
 
-
 	min_max MinMax;
 	int k;
 
 	float total;
 	int loops;
+
+	float atan_arr[16384];
+	float sqrt_arr[4000];
+
+	Common::Timer timer;
 
 };
 
