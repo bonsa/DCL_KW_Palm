@@ -1,8 +1,8 @@
 /*!
- * \file KW_MAP.cpp
- * \brief Estymacja MAP dla uproszczonej dłoni 
+ * \file MAP_Estimation.cpp
+ * \brief Estymacja MAP 
  * \author kwasak
- * \date 2011-04-27
+ * \date 2011-05-12
  */
 
 #include <memory>
@@ -18,7 +18,7 @@
 #include <iomanip>
 
 namespace Processors {
-namespace KW_MAP2 {
+namespace MAP_Estimation {
 
 using namespace cv;
 

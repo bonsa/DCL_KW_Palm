@@ -5,6 +5,8 @@ ADD_COMPONENT(MAP3_InitialFilter)
 
 ADD_COMPONENT(MAP3_SkinDetection)
 
+ADD_COMPONENT(MAP_PalmDetection)
+
 ADD_COMPONENT(InitialFilterAkademik)
 
 ADD_COMPONENT(KW_InitialFilter_Movie)
@@ -14,5 +16,7 @@ ADD_COMPONENT(MAP2_Samples)
 ADD_COMPONENT(RGB_TSL)
 
 ADD_COMPONENT(MAP2)
+
+ADD_COMPONENT(MAP_Estimation)
 
 ADD_COMPONENT(KW_Skin_Detection_TSL_Movie)
