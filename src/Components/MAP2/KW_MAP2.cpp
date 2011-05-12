@@ -87,6 +87,36 @@ void KW_MAP2::onTrigger() {
 			s.push_back(152.78);
 			s.push_back(178.57);
 
+			P[0][0] = 7898.123517;
+			P[0][1] = 37.669557;
+			P[0][2] = 0.290219;
+			P[0][3] = -354.473747;
+			P[0][4] = -470.330553;
+
+			P[1][0] = 37.669557;
+			P[1][1] = 262.201038;
+			P[1][2] = 0.471210;
+			P[1][3] = 3.523747;
+			P[1][4] = 71.038316;
+
+			P[2][0] = 0.290219;
+			P[2][1] = 0.471210;
+			P[2][2] = 0.003764;
+			P[2][3] = 0.014130;
+			P[2][4] = 0.290246;
+
+			P[3][0] = -354.473747;
+			P[3][1] = 3.523747;
+			P[3][2] = 0.014130;
+			P[3][3] = 176.328000;
+			P[3][4] = 274.791053;
+
+			P[4][0] = -470.330553;
+			P[4][1] = 71.038316;
+			P[4][2] = 0.290246;
+			P[4][3] = 274.791053;
+			P[4][4] = 508.217763;
+
 
 			//palec serdeczny
 			s_RFinger.push_back(299.59);
@@ -95,12 +125,67 @@ void KW_MAP2::onTrigger() {
 			s_RFinger.push_back(151.26);
 			s_RFinger.push_back(42.858);
 
+			P_RFinger[1][0] = 345.004152;
+			P_RFinger[1][1] = 548.874626;
+			P_RFinger[1][2] = 0.788965;
+			P_RFinger[1][3] = -210.942662;
+			P_RFinger[1][4] = -54.042831;
+
+			P_RFinger[2][0] = -1.033221;
+			P_RFinger[2][1] = 0.788965;
+			P_RFinger[2][2] = 0.004481;
+			P_RFinger[2][3] = 0.065347;
+			P_RFinger[2][4] = 0.101536;
+
+			P_RFinger[3][0] = -431.608269;
+			P_RFinger[3][1] = -210.942662;
+			P_RFinger[3][2] = 0.065347;
+			P_RFinger[3][3] = 243.952191;
+			P_RFinger[3][4] = 80.730688;
+
+			P_RFinger[4][0] = -153.121165;
+			P_RFinger[4][1] = -54.042831;
+			P_RFinger[4][2] = 0.101536;
+			P_RFinger[4][3] = 80.730688;
+			P_RFinger[4][4] = 29.273343;
+
+
 			//srodkowy palec
 			s_MFinger.push_back(347.62);
 			s_MFinger.push_back(159.3);
 			s_MFinger.push_back(1.6848);
 			s_MFinger.push_back(177.87);
 			s_MFinger.push_back(42.858);
+
+			 P_MFinger[0][0] = 7888.528068;
+			 P_MFinger[0][1] = 406.435705;
+			 P_MFinger[0][2] = -0.135018;
+			 P_MFinger[0][3] = -435.621592;
+			 P_MFinger[0][4] = -122.957084;
+
+			 P_MFinger[1][0] = 406.435705;
+			 P_MFinger[1][1] = 521.170785;
+			 P_MFinger[1][2] = 0.491322;
+			 P_MFinger[1][3] = -285.146180;
+			 P_MFinger[1][4] = -70.328615;
+
+			 P_MFinger[2][0] = -0.135018;
+			 P_MFinger[2][1] = 0.491322;
+			 P_MFinger[2][2] = 0.003764;
+			 P_MFinger[2][3] = 0.034951;
+			 P_MFinger[2][4] = 0.069659;
+
+			 P_MFinger[3][0] = -435.621592;
+			 P_MFinger[3][1] = -285.146180;
+			 P_MFinger[3][2] = 0.034951;
+			 P_MFinger[3][3] = 348.553026;
+			 P_MFinger[3][4] = 97.536609;
+
+			 P_MFinger[4][0] = -122.957084;
+			 P_MFinger[4][1] = -70.328615;
+			 P_MFinger[4][2] = 0.069659;
+			 P_MFinger[4][3] = 97.536609;
+			 P_MFinger[4][4] = 29.273343;
 
 			//palec wskazujacy
 			s_FFinger.push_back(409.44);
@@ -109,6 +194,36 @@ void KW_MAP2::onTrigger() {
 			s_FFinger.push_back(160.73);
 			s_FFinger.push_back(42.858);
 
+			 P_FFinger[0][0] = 7740.031841;
+			 P_FFinger[0][1] = 414.422322;
+			 P_FFinger[0][2] = -0.362811;
+			 P_FFinger[0][3] = -339.554147;
+			 P_FFinger[0][4] = -80.359658;
+
+			 P_FFinger[1][0] = 414.422322;
+			 P_FFinger[1][1] = 504.539142;
+			 P_FFinger[1][2] = 0.232257;
+			 P_FFinger[1][3] = -271.977598;
+			 P_FFinger[1][4] = -72.707694;
+
+			 P_FFinger[2][0] = -0.362811;
+			 P_FFinger[2][1] = 0.232257;
+			 P_FFinger[2][2] = 0.003018;
+			 P_FFinger[2][3] = -0.023281;
+			 P_FFinger[2][4] = 0.032337;
+
+			 P_FFinger[3][0] = -339.554147;
+			 P_FFinger[3][1] = -271.977598;
+			 P_FFinger[3][2] = -0.023281;
+			 P_FFinger[3][3] = 293.086467;
+			 P_FFinger[3][4] = 89.050813;
+
+			 P_FFinger[4][0] = -80.359658;
+			 P_FFinger[4][1] = -72.707694;
+			 P_FFinger[4][2] = 0.032337;
+			 P_FFinger[4][3] = 89.050813;
+			 P_FFinger[4][4] = 29.273343;
+
 			//kciuk
 			s_TFinger.push_back(497.46);
 			s_TFinger.push_back(299.07);
@@ -116,12 +231,74 @@ void KW_MAP2::onTrigger() {
 			s_TFinger.push_back(111.02);
 			s_TFinger.push_back(42.858);
 
+
+			 P_TFinger[0][0] = 7740.031841;
+			 P_TFinger[0][1] = 414.422322;
+			 P_TFinger[0][2] = -0.362811;
+			 P_TFinger[0][3] = -339.554147;
+			 P_TFinger[0][4] = -80.359658;
+
+			 P_TFinger[1][0] = 414.422322;
+			 P_TFinger[1][1] = 504.539142;
+			 P_TFinger[1][2] = 0.232257;
+			 P_TFinger[1][3] = -271.977598;
+			 P_TFinger[1][4] = -72.707694;
+
+			 P_TFinger[2][0] = -0.362811;
+			 P_TFinger[2][1] = 0.232257;
+			 P_TFinger[2][2] = 0.003018;
+			 P_TFinger[2][3] = -0.023281;
+			 P_TFinger[2][4] = 0.032337;
+
+			 P_TFinger[3][0] = -339.554147;
+			 P_TFinger[3][1] = -271.977598;
+			 P_TFinger[3][2] = -0.023281;
+			 P_TFinger[3][3] = 293.086467;
+			 P_TFinger[3][4] = 89.050813;
+
+			 P_TFinger[4][0] = -80.359658;
+			 P_TFinger[4][1] = -72.707694;
+			 P_TFinger[4][2] = 0.032337;
+			 P_TFinger[4][3] = 89.050813;
+			 P_TFinger[4][4] = 29.273343;
+
 			//mały palec
 			s_SFinger.push_back(230.25);
 			s_SFinger.push_back(229.59);
 			s_SFinger.push_back(2.3748);
 			s_SFinger.push_back(86.064);
 			s_SFinger.push_back(42.858);
+
+
+			 P_SFinger[0][0] = 8930.221039;
+			 P_SFinger[0][1] = 104.922314;
+			 P_SFinger[0][2] = -1.480602;
+			 P_SFinger[0][3] = -300.765973;
+			 P_SFinger[0][4] = -194.988840;
+
+			 P_SFinger[1][0] = 104.922314;
+			 P_SFinger[1][1] = 573.612657;
+			 P_SFinger[1][2] = 1.191833;
+			 P_SFinger[1][3] = -58.597483;
+			 P_SFinger[1][4] = -8.765255;
+
+			 P_SFinger[2][0] = -1.480602;
+			 P_SFinger[2][1] = 1.191833;
+			 P_SFinger[2][2] = 0.005316;
+			 P_SFinger[2][3] = 0.106997;
+			 P_SFinger[2][4] = 0.157024;
+
+			 P_SFinger[3][0] = -300.765973;
+			 P_SFinger[3][1] = -58.597483;
+			 P_SFinger[3][2] = 0.106997;
+			 P_SFinger[3][3] = 81.452438;
+			 P_SFinger[3][4] = 47.097304;
+
+			 P_SFinger[4][0] = -194.988840;
+			 P_SFinger[4][1] = -8.765255;
+			 P_SFinger[4][2] = 0.157024;
+			 P_SFinger[4][3] = 47.097304;
+			 P_SFinger[4][4] = 29.273343;
 
 
 		}
@@ -161,7 +338,9 @@ bool KW_MAP2::onStep()
 		getObservation();
 		projectionFingertips();
 
-		if((MAP == true) && (idFingertips.size() == 5) && (MaxArea > 35000))
+		cout<<"ERROR"<<error<<"\n";
+
+		if((MAP == true) && (idFingertips.size() == 5) && (MaxArea > 40000))
 		{
 
 			//palec wskazujacy
@@ -193,7 +372,7 @@ bool KW_MAP2::onStep()
 			sTest6.clear();
 
 		//	cout<<"STOP "<<STOP<<"\n";
-			if(error > 0.1)
+			if(error > 1.0)
 			{
 				error = 0.0;
 				error2 = 0.0;
@@ -274,7 +453,7 @@ bool KW_MAP2::onStep()
 				h_z_RFinger = stateFingerToObservation(s_RFinger,73.0/54.0);
 			//	projectionFingerObservation(h_z_RFinger, 255, 255, 0);
 				calculateFingerH(s_RFinger, H_RFinger, 73.0/54.0);
-				diff_RFinger = calculateFingerDiff(h_z_RFinger, z_RFinger, invR_RFinger, H_RFinger, P_RFinger, factorFinger);
+				diff_RFinger = calculateFingerDiff(h_z_RFinger, z_RFinger, invR_RFinger, H_RFinger, P_RFinger, 0.07);
 				s_RFinger = updateFingerState(diff_RFinger,s_RFinger, P_RFinger);
 
 
@@ -429,7 +608,7 @@ void KW_MAP2::getObservation(){
 		}
 		//current Blob przychowuje największego bloba, czyli dłoni
 		currentBlob = blobs.GetBlob(id);
-		cout<<"MaxArea"<<MaxArea<<"\n";
+		//cout<<"MaxArea"<<MaxArea<<"\n";
 
 
 		// calculate moments
@@ -1276,6 +1455,17 @@ KW_MAP2::KW_MAP2(const std::string & name) :
 	STOP_TFinger = false;
 	STOP_SFinger = false;
 	STOP_RFinger = false;
+
+	//MAP3
+	//wspołczynnik zapominania
+	factor = 0.005;
+	//współczynnik skalowania kroków
+	factorFinger = 0.05;//0.03;
+
+	factorPalm = 0.05;
+
+	//dla MAP2_Sequence
+	//factor2 = 0.04;
 	/*
 	 * dane do MAP2
 	
@@ -1431,16 +1621,7 @@ KW_MAP2::KW_MAP2(const std::string & name) :
 
 */
 
-	//MAP3
-	//wspołczynnik zapominania
-	factor = 0.007;
-	//współczynnik skalowania kroków
-	factorFinger = 0.05;//0.03;
-
-	factorPalm = 0.05;
-
-	//dla MAP2_Sequence
-	//factor2 = 0.04;
+//MAP3
 
 	s.push_back(352.18);
 	s.push_back(331.46);

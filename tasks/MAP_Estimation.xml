@@ -2,19 +2,17 @@
 <Task>
 	<!-- List of components, data: 30.04.11 -->
 	<Components>
-
-	<!--		
-	
+			
 		<Movie type="Movie" thread="Exec1" group="s1">
 		<filename>/home/kasia/Filmy/12.05/12.05_3.avi</filename>
 		<loop>true</loop>
 		</Movie>
+	<!--
 
--->
 		<Movie type="CameraOpenCV" thread="Exec1" group="s1">
 			<device>1</device>
 		</Movie>
-
+-->
 
 		<Window4 type="CvWindow" thread="Exec2" group="s1">
 			<count>5</count>
@@ -49,9 +47,11 @@
 		<Blob type="BlobExtractor" thread="Exec1" group="s1">
 			<min_size>7000</min_size>
 		</Blob>
+		
+		<DetectionPalm type="MAP_PalmDetection" thread="Exec1" group="s1"> 
+		</DetectionPalm>
 
-		<DecPalm type="KW_MAP2" thread="Exec1" group="s1"> 
-			<triggered>true</triggered>	
+		<DecPalm type="MAP_Estimation" thread="Exec1" group="s1"> 
 		</DecPalm>
 		
 		<Kbd1 type="Keyboard" thread="Exec3" group="s1">
@@ -114,16 +114,19 @@
 		<Event source="MorphOpen.newImage" destination="Blob.onNewImage"/>
 
 		<Event source="MorphClose.newImage" destination="DecPalm.onNewImage"/>
-		<Event source="Blob.newBlobs"        destination="DecPalm.onNewBlobs"/>
+		<Event source="Blob.newBlobs"        destination="DetectionPalm.onNewBlobs"/>
+		<Event source="DetectionPalm.newImage"   destination="DecPalm.onNewBlobs"/>
 		
 		<Event source="Kbd1.t_Pressed"       destination="DecPalm.onTrigger"/>
+	
 		<Event source="DecPalm.newImage"     destination="Window4.onNewImage0"/>
 		<Event source="DecPalm.newImage"     destination="Window4.onNewImage1"/>
+		<Event source="DetectionPalm.newImage"        destination="Window4.onNewImage1"/>
 		<Event source="Filtr.newImage"     destination="Window4.onNewImage2"/>
 		<Event source="BW.newImage"       destination="Window4.onNewImage3"/>
 		<Event source="MorphOpen.newImage"       destination="Window4.onNewImage4"/>
 		
-	
+
 		
 	
 	</Events>
@@ -168,18 +171,25 @@
 
 		<Blob>
 				<in_img  type="in" group="Con7"/>
-				<out_blobs type="out" group="Con9"/>
+				<out_blobs type="out" group="Con8"/>
 		</Blob> 
+		
+		<DetectionPalm>
+			<in_img type="in" group="Con6"/>
+			<in_blobs type="in" group="Con8"/>
+			<out_blobs1 type="out" group="Con9a"/>
+			<out_blobs2 type="out" group="Con9b"/>
+		</DetectionPalm>
 		
 		<DecPalm>
 			<in_img type="in" group="Con6"/>
-			<in_blobs type="in" group="Con9"/>
+			<in_blobs type="in" group="Con9a"/>
 			<out_draw type="out" group="Con10"/>
 		</DecPalm>
 		
 		<Window4>
 			<in_img0 type="in" group="Con1"/>
-			<in_draw0 type="in" group="Con9"/>	
+			<in_draw0 type="in" group="Con9"/>			
 			
 			<in_img1 type="in" group="Con1"/>
 			<in_draw1 type="in" group="Con10"/>	

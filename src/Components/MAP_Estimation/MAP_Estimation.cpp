@@ -9,7 +9,7 @@
 #include <string>
 #include <math.h> 
 
-#include "KW_MAP2.hpp"
+#include "MAP_Estimation.hpp"
 #include "Logger.hpp"
 #include "Types/Ellipse.hpp"
 #include "Types/Line.hpp"
@@ -22,23 +22,23 @@ namespace MAP_Estimation {
 
 using namespace cv;
 
-KW_MAP2::~KW_MAP2() {
+MAP_Estimation::~MAP_Estimation() {
 	LOG(LTRACE) << "Good bye KW_MAP2\n";
 }
 
-bool KW_MAP2::onInit() {
-	LOG(LTRACE) << "KW_MAP2::initialize\n";
+bool MAP_Estimation::onInit() {
+	LOG(LTRACE) << "MAP_Estimation::initialize\n";
 
-	h_onNewImage.setup(this, &KW_MAP2::onNewImage);
+	h_onNewImage.setup(this, &MAP_Estimation::onNewImage);
 	registerHandler("onNewImage", &h_onNewImage);
 
-	h_onNewBlobs.setup(this, &KW_MAP2::onNewBlobs);
+	h_onNewBlobs.setup(this, &MAP_Estimation::onNewBlobs);
 	registerHandler("onNewBlobs", &h_onNewBlobs);
 
-	h_map.setup(this, &KW_MAP2::map);
+	h_map.setup(this, &MAP_Estimation::map);
 	registerHandler("map", &h_map);
 
-	h_onTrigger.setup(this, &KW_MAP2::onTrigger);
+	h_onTrigger.setup(this, &MAP_Estimation::onTrigger);
 	registerHandler("onTrigger", &h_onTrigger);
 
 	registerStream("in_blobs", &in_blobs);
@@ -46,9 +46,7 @@ bool KW_MAP2::onInit() {
 
 	newImage = registerEvent("newImage");
 
-	registerStream("out_signs", &out_signs);
 	registerStream("out_draw", &out_draw);
-
 
 	//pierwsze uruchomienie komponentu
 	first = true;
@@ -56,13 +54,13 @@ bool KW_MAP2::onInit() {
 	return true;
 }
 
-bool KW_MAP2::onFinish() {
-	LOG(LTRACE) << "KW_MAP2::finish\n";
+bool MAP_Estimation::onFinish() {
+	LOG(LTRACE) << "MAP_Estimation::finish\n";
 
 	return true;
 }
 
-void KW_MAP2::onTrigger() {
+void MAP_Estimation::onTrigger() {
 
 		if(MAP == true)
 			MAP = false;
@@ -87,6 +85,36 @@ void KW_MAP2::onTrigger() {
 			s.push_back(152.78);
 			s.push_back(178.57);
 
+			P[0][0] = 7898.123517;
+			P[0][1] = 37.669557;
+			P[0][2] = 0.290219;
+			P[0][3] = -354.473747;
+			P[0][4] = -470.330553;
+
+			P[1][0] = 37.669557;
+			P[1][1] = 262.201038;
+			P[1][2] = 0.471210;
+			P[1][3] = 3.523747;
+			P[1][4] = 71.038316;
+
+			P[2][0] = 0.290219;
+			P[2][1] = 0.471210;
+			P[2][2] = 0.003764;
+			P[2][3] = 0.014130;
+			P[2][4] = 0.290246;
+
+			P[3][0] = -354.473747;
+			P[3][1] = 3.523747;
+			P[3][2] = 0.014130;
+			P[3][3] = 176.328000;
+			P[3][4] = 274.791053;
+
+			P[4][0] = -470.330553;
+			P[4][1] = 71.038316;
+			P[4][2] = 0.290246;
+			P[4][3] = 274.791053;
+			P[4][4] = 508.217763;
+
 
 			//palec serdeczny
 			s_RFinger.push_back(299.59);
@@ -95,12 +123,66 @@ void KW_MAP2::onTrigger() {
 			s_RFinger.push_back(151.26);
 			s_RFinger.push_back(42.858);
 
+			P_RFinger[1][0] = 345.004152;
+			P_RFinger[1][1] = 548.874626;
+			P_RFinger[1][2] = 0.788965;
+			P_RFinger[1][3] = -210.942662;
+			P_RFinger[1][4] = -54.042831;
+
+			P_RFinger[2][0] = -1.033221;
+			P_RFinger[2][1] = 0.788965;
+			P_RFinger[2][2] = 0.004481;
+			P_RFinger[2][3] = 0.065347;
+			P_RFinger[2][4] = 0.101536;
+
+			P_RFinger[3][0] = -431.608269;
+			P_RFinger[3][1] = -210.942662;
+			P_RFinger[3][2] = 0.065347;
+			P_RFinger[3][3] = 243.952191;
+			P_RFinger[3][4] = 80.730688;
+
+			P_RFinger[4][0] = -153.121165;
+			P_RFinger[4][1] = -54.042831;
+			P_RFinger[4][2] = 0.101536;
+			P_RFinger[4][3] = 80.730688;
+			P_RFinger[4][4] = 29.273343;
+
 			//srodkowy palec
 			s_MFinger.push_back(347.62);
 			s_MFinger.push_back(159.3);
 			s_MFinger.push_back(1.6848);
 			s_MFinger.push_back(177.87);
 			s_MFinger.push_back(42.858);
+
+			 P_MFinger[0][0] = 7888.528068;
+			 P_MFinger[0][1] = 406.435705;
+			 P_MFinger[0][2] = -0.135018;
+			 P_MFinger[0][3] = -435.621592;
+			 P_MFinger[0][4] = -122.957084;
+
+			 P_MFinger[1][0] = 406.435705;
+			 P_MFinger[1][1] = 521.170785;
+			 P_MFinger[1][2] = 0.491322;
+			 P_MFinger[1][3] = -285.146180;
+			 P_MFinger[1][4] = -70.328615;
+
+			 P_MFinger[2][0] = -0.135018;
+			 P_MFinger[2][1] = 0.491322;
+			 P_MFinger[2][2] = 0.003764;
+			 P_MFinger[2][3] = 0.034951;
+			 P_MFinger[2][4] = 0.069659;
+
+			 P_MFinger[3][0] = -435.621592;
+			 P_MFinger[3][1] = -285.146180;
+			 P_MFinger[3][2] = 0.034951;
+			 P_MFinger[3][3] = 348.553026;
+			 P_MFinger[3][4] = 97.536609;
+
+			 P_MFinger[4][0] = -122.957084;
+			 P_MFinger[4][1] = -70.328615;
+			 P_MFinger[4][2] = 0.069659;
+			 P_MFinger[4][3] = 97.536609;
+			 P_MFinger[4][4] = 29.273343;
 
 			//palec wskazujacy
 			s_FFinger.push_back(409.44);
@@ -109,12 +191,72 @@ void KW_MAP2::onTrigger() {
 			s_FFinger.push_back(160.73);
 			s_FFinger.push_back(42.858);
 
+			 P_FFinger[0][0] = 7740.031841;
+			 P_FFinger[0][1] = 414.422322;
+			 P_FFinger[0][2] = -0.362811;
+			 P_FFinger[0][3] = -339.554147;
+			 P_FFinger[0][4] = -80.359658;
+
+			 P_FFinger[1][0] = 414.422322;
+			 P_FFinger[1][1] = 504.539142;
+			 P_FFinger[1][2] = 0.232257;
+			 P_FFinger[1][3] = -271.977598;
+			 P_FFinger[1][4] = -72.707694;
+
+			 P_FFinger[2][0] = -0.362811;
+			 P_FFinger[2][1] = 0.232257;
+			 P_FFinger[2][2] = 0.003018;
+			 P_FFinger[2][3] = -0.023281;
+			 P_FFinger[2][4] = 0.032337;
+
+			 P_FFinger[3][0] = -339.554147;
+			 P_FFinger[3][1] = -271.977598;
+			 P_FFinger[3][2] = -0.023281;
+			 P_FFinger[3][3] = 293.086467;
+			 P_FFinger[3][4] = 89.050813;
+
+			 P_FFinger[4][0] = -80.359658;
+			 P_FFinger[4][1] = -72.707694;
+			 P_FFinger[4][2] = 0.032337;
+			 P_FFinger[4][3] = 89.050813;
+			 P_FFinger[4][4] = 29.273343;
+
 			//kciuk
 			s_TFinger.push_back(497.46);
 			s_TFinger.push_back(299.07);
 			s_TFinger.push_back(0.48356);
 			s_TFinger.push_back(111.02);
 			s_TFinger.push_back(42.858);
+
+			 P_TFinger[0][0] = 7740.031841;
+			 P_TFinger[0][1] = 414.422322;
+			 P_TFinger[0][2] = -0.362811;
+			 P_TFinger[0][3] = -339.554147;
+			 P_TFinger[0][4] = -80.359658;
+
+			 P_TFinger[1][0] = 414.422322;
+			 P_TFinger[1][1] = 504.539142;
+			 P_TFinger[1][2] = 0.232257;
+			 P_TFinger[1][3] = -271.977598;
+			 P_TFinger[1][4] = -72.707694;
+
+			 P_TFinger[2][0] = -0.362811;
+			 P_TFinger[2][1] = 0.232257;
+			 P_TFinger[2][2] = 0.003018;
+			 P_TFinger[2][3] = -0.023281;
+			 P_TFinger[2][4] = 0.032337;
+
+			 P_TFinger[3][0] = -339.554147;
+			 P_TFinger[3][1] = -271.977598;
+			 P_TFinger[3][2] = -0.023281;
+			 P_TFinger[3][3] = 293.086467;
+			 P_TFinger[3][4] = 89.050813;
+
+			 P_TFinger[4][0] = -80.359658;
+			 P_TFinger[4][1] = -72.707694;
+			 P_TFinger[4][2] = 0.032337;
+			 P_TFinger[4][3] = 89.050813;
+			 P_TFinger[4][4] = 29.273343;
 
 			//mały palec
 			s_SFinger.push_back(230.25);
@@ -123,11 +265,40 @@ void KW_MAP2::onTrigger() {
 			s_SFinger.push_back(86.064);
 			s_SFinger.push_back(42.858);
 
+			 P_SFinger[0][0] = 8930.221039;
+			 P_SFinger[0][1] = 104.922314;
+			 P_SFinger[0][2] = -1.480602;
+			 P_SFinger[0][3] = -300.765973;
+			 P_SFinger[0][4] = -194.988840;
+
+			 P_SFinger[1][0] = 104.922314;
+			 P_SFinger[1][1] = 573.612657;
+			 P_SFinger[1][2] = 1.191833;
+			 P_SFinger[1][3] = -58.597483;
+			 P_SFinger[1][4] = -8.765255;
+
+			 P_SFinger[2][0] = -1.480602;
+			 P_SFinger[2][1] = 1.191833;
+			 P_SFinger[2][2] = 0.005316;
+			 P_SFinger[2][3] = 0.106997;
+			 P_SFinger[2][4] = 0.157024;
+
+			 P_SFinger[3][0] = -300.765973;
+			 P_SFinger[3][1] = -58.597483;
+			 P_SFinger[3][2] = 0.106997;
+			 P_SFinger[3][3] = 81.452438;
+			 P_SFinger[3][4] = 47.097304;
+
+			 P_SFinger[4][0] = -194.988840;
+			 P_SFinger[4][1] = -8.765255;
+			 P_SFinger[4][2] = 0.157024;
+			 P_SFinger[4][3] = 47.097304;
+			 P_SFinger[4][4] = 29.273343;
 
 		}
 }
 
-void KW_MAP2::map()
+void MAP_Estimation::map()
 {
 //	if(MAP == true)
 	//	MAP = false;
@@ -135,7 +306,7 @@ void KW_MAP2::map()
 //	//	MAP = true;
 }
 
-bool KW_MAP2::onStep()
+bool MAP_Estimation::onStep()
 {
 	LOG(LTRACE) << "KW_MAP2::step\n";
 
@@ -161,7 +332,7 @@ bool KW_MAP2::onStep()
 		getObservation();
 		projectionFingertips();
 
-		if((MAP == true) && (idFingertips.size() == 5) && (MaxArea > 35000))
+		if((MAP == true) && (idFingertips.size() == 5))
 		{
 
 			//palec wskazujacy
@@ -285,17 +456,12 @@ bool KW_MAP2::onStep()
 		//		s_SFinger = adjustableFingerCenter(s_SFinger, 1.3, 0.1);
 		//		s_RFinger = adjustableFingerCenter(s_RFinger, 1.3, 0.1);
 
-				cout<<"1\n";
-				cout<<error<<"\n";
-				cout<<"1\n";
-
-
-			projectionState(s, 255, 255, 255);
-			projectionFingerState(s_MFinger, 255, 255, 255);
-			projectionFingerState(s_FFinger, 255, 255, 255);
-			projectionFingerState(s_TFinger, 255, 255, 255);
-			projectionFingerState(s_SFinger, 255, 255, 255);
-			projectionFingerState(s_RFinger, 255, 255, 255);
+				projectionState(s, 255, 255, 255);
+				projectionFingerState(s_MFinger, 255, 255, 255);
+				projectionFingerState(s_FFinger, 255, 255, 255);
+				projectionFingerState(s_TFinger, 255, 255, 255);
+				projectionFingerState(s_SFinger, 255, 255, 255);
+				projectionFingerState(s_RFinger, 255, 255, 255);
 
 			}
 			else
@@ -308,15 +474,15 @@ bool KW_MAP2::onStep()
 				projectionFingerState(s_RFinger, 255, 255, 255);
 			}
 
-			cout<<"Error"<<error<<"\n";
-			cout<<"Error2"<<error2<<"\n";
+			cout<<"Error "<<error<<"\n";
+			cout<<"Error2 "<<error2<<"\n";
 		}
 
 		out_draw.write(drawcont);
 		newImage->raise();
 		return true;
 	} catch (...) {
-		LOG(LERROR) << "KW_MAP::getCharPoints failed\n";
+		LOG(LERROR) << "KW_MAP::MAP_Estimation failed\n";
 		return false;
 	}
 
@@ -324,16 +490,16 @@ bool KW_MAP2::onStep()
 }
 
 
-bool KW_MAP2::onStop() {
+bool MAP_Estimation::onStop() {
 	return true;
 }
 
-bool KW_MAP2::onStart() {
+bool MAP_Estimation::onStart() {
 	return true;
 }
 
-void KW_MAP2::onNewImage() {
-	LOG(LTRACE) << "KW_MAP::onNewImage\n";
+void MAP_Estimation::onNewImage() {
+	LOG(LTRACE) << "MAP_Estimation::onNewImage\n";
 
 	img_ready = true;
 	tsl_img = in_img.read();
@@ -343,7 +509,7 @@ void KW_MAP2::onNewImage() {
 		onStep();
 }
 
-void KW_MAP2::onNewBlobs() {
+void MAP_Estimation::onNewBlobs() {
 	LOG(LTRACE) << "KW_MAP::onNewBlobs\n";
 
 	blobs_ready = true;
@@ -353,13 +519,9 @@ void KW_MAP2::onNewBlobs() {
 		onStep();
 }
 
-void KW_MAP2::getMaxBlob()
-{
-
-}
 
 
-void KW_MAP2::getObservation(){
+void MAP_Estimation::getObservation(){
 
 	//LOG(LNOTICE) << "KW_MAP::getObservation\n";
 
@@ -398,39 +560,11 @@ void KW_MAP2::getObservation(){
 		//momenty goemetryczne potrzebne do obliczenia środka ciężkości
 		double m00, m10, m01;
 		//powierzchnia bloba, powiedzchnia największego bloba, współrzędne środka ciężkości, maksymalna wartośc współrzędnej Y
-		double Area, CenterOfGravity_x, CenterOfGravity_y;
+		double CenterOfGravity_x, CenterOfGravity_y;
 
 		double height, width;
-		MaxArea = 0;
-//		MaxY = 0;
-//		MaxX = 0;
-//		MinY = 1000000000.0;
-//		MinX = 1000000000.0;
 
-		id = -1;
-
-		if (blobs.GetNumBlobs() < 1) {
-		//	LOG(LNOTICE) << "Blobs: " << blobs.GetNumBlobs();
-			return;
-		}
-
-		//największy blob to dłoń
-		for (int i = 0; i < blobs.GetNumBlobs(); i++) {
-			currentBlob = blobs.GetBlob(i);
-
-			Area = currentBlob->Area();
-			//szukanie bloba o największej powierzchni
-			if (Area > MaxArea)
-			{
-				MaxArea = Area;
-				// id największego bloba, czyli dłoni
-				id = i;
-			}
-		}
-		//current Blob przychowuje największego bloba, czyli dłoni
-		currentBlob = blobs.GetBlob(id);
-		cout<<"MaxArea"<<MaxArea<<"\n";
-
+		currentBlob = blobs.GetBlob(0);
 
 		// calculate moments
 		m00 = currentBlob->Moment(0, 0);
@@ -593,22 +727,16 @@ void KW_MAP2::getObservation(){
 		z.push_back(height);
 		z.push_back(width);
 
-		result.AddBlob(blobs.GetBlob(id));
-		out_signs.write(result);
-
-
 	//	LOG(LNOTICE) << "Fingertips: " << idFingertips.size();
 
 	} catch (...) {
-		LOG(LERROR) << "KW_MAP::getCharPoints failed\n";
+		LOG(LERROR) << "MAP_Estimation::getObservation failed\n";
 
 	}
 }
 
 //projekcja na obraz punktów charakterystycznych z aktualnego obrazka
-void KW_MAP2::projectionFingertips() {
-//	LOG(LTRACE) << "KW_MAP::projectionMeasurePoints\n";
-
+void MAP_Estimation::projectionFingertips() {
 	Types::Ellipse * el;
 	for (unsigned int i = 0; i < fingertips.size(); i++) {
 		el = new Types::Ellipse(cv::Point(fingertips[i].x, fingertips[i].y),Size2f(10, 10));
@@ -618,14 +746,14 @@ void KW_MAP2::projectionFingertips() {
 
 }
 //punkcja obracająca punkt p o kąt angle według układu współrzędnych znajdującym się w punkcie p0
-cv::Point KW_MAP2::rot(cv::Point p, double angle, cv::Point p0) {
+cv::Point MAP_Estimation::rot(cv::Point p, double angle, cv::Point p0) {
 	cv::Point t;
 	t.x = p0.x + (int) ((double) (p.x - p0.x) * cos(angle) - (double) (p.y - p0.y) * sin(angle));
 	t.y = p0.y + (int) ((double) (p.x - p0.x) * sin(angle) + (double) (p.y - p0.y) * cos(angle));
 	return t;
 }
 
-void KW_MAP2::projectionObservation(vector<double> z, int R, int G, int B)
+void MAP_Estimation::projectionObservation(vector<double> z, int R, int G, int B)
 {
 	cv::Point obsPointA;
 	cv::Point obsPointB;
@@ -633,15 +761,6 @@ void KW_MAP2::projectionObservation(vector<double> z, int R, int G, int B)
 	cv::Point obsPointD;
 
 	double rotAngle = 0;
-/*	if((z[2] * M_PI/180 )> M_PI_2)
-	{
-		rotAngle = ((z[2] * M_PI/180) - M_PI_2);
-	}
-	else if ((z[2] * M_PI / 180)< M_PI_2)
-	{
-		rotAngle = - (M_PI_2 - (z[2] * M_PI / 180));
-	}
-	*/
 
 	if(z[2]> M_PI_2)
 	{
@@ -694,7 +813,7 @@ void KW_MAP2::projectionObservation(vector<double> z, int R, int G, int B)
 
 
 // Funkcja wyliczajaca wartosci parametru stanu na podstawie wartosci obserwacji
-void KW_MAP2::observationToState()
+void MAP_Estimation::observationToState()
 {
 	float s_mx, s_my, s_angle, s_heigth, s_width;
 
@@ -719,7 +838,7 @@ void KW_MAP2::observationToState()
 
 }
 
-void KW_MAP2::projectionState(vector<double> s, int R, int G, int B)
+void MAP_Estimation::projectionState(vector<double> s, int R, int G, int B)
 {
 	cv::Point obsPointA;
 	cv::Point obsPointB;
@@ -736,16 +855,6 @@ void KW_MAP2::projectionState(vector<double> s, int R, int G, int B)
 		rotAngle = - (M_PI_2 - s[2]);
 	}
 
-
-/*	if((s[2] * M_PI / 180)> M_PI_2)
-	{
-		rotAngle = ((s[2] * M_PI / 180) - M_PI_2);
-	}
-	else if ((s[2] * M_PI / 180)< M_PI_2)
-	{
-		rotAngle = - (M_PI_2 - (s[2] * M_PI / 180));
-	}
-*/
 	obsPointA.x = s[0] - 0.5 * s[4];
 	obsPointA.y = s[1] - 0.5 * s[3];
 
@@ -784,7 +893,7 @@ void KW_MAP2::projectionState(vector<double> s, int R, int G, int B)
 
 }
 
-void KW_MAP2:: stateToObservation()
+void MAP_Estimation:: stateToObservation()
 {
 	float hz_mx, hz_my, hz_angle, hz_heigth, hz_width;
 
@@ -805,7 +914,7 @@ void KW_MAP2:: stateToObservation()
 
 
 // Funkcja obliczająca o jaki wektor nalezy zaktualizowac wektor stan
-void KW_MAP2::calculateDiff()
+void MAP_Estimation::calculateDiff()
 {
 	//różnicaiedzy wektorami h(s) i z
 	double D[5];
@@ -851,7 +960,7 @@ void KW_MAP2::calculateDiff()
 	}
 }
 
-void KW_MAP2::updateState()
+void MAP_Estimation::updateState()
 {
 	for (unsigned int i = 0; i < 5; i++) {
 		s[i] = s[i] - diff[i];
@@ -867,7 +976,7 @@ void KW_MAP2::updateState()
 
 
 // Otrzymanie obserwacji środkowego palca
-vector <double> KW_MAP2::getFingerObservation(int i)
+vector <double> MAP_Estimation::getFingerObservation(int i)
 {
 
 	double downX, downY, topX, topY, alfa, w;
@@ -898,7 +1007,7 @@ vector <double> KW_MAP2::getFingerObservation(int i)
 	return z_Finger;
 }
 
-void KW_MAP2::projectionFingerObservation(vector<double> z, int R, int G, int B)
+void MAP_Estimation::projectionFingerObservation(vector<double> z, int R, int G, int B)
 {
 	cv::Point obsPointDown = cv::Point(z[0], z[1]);
 	cv::Point obsPointTop  = cv::Point(z[2], z[3]);
@@ -923,7 +1032,7 @@ void KW_MAP2::projectionFingerObservation(vector<double> z, int R, int G, int B)
 
 
 
-vector <double> KW_MAP2:: observationFingerToState(vector <double> z_Finger, float a, float b)
+vector <double> MAP_Estimation:: observationFingerToState(vector <double> z_Finger, float a, float b)
 {
 
 	float s_mx, s_my, s_angle, s_heigth, s_width;
@@ -948,7 +1057,7 @@ vector <double> KW_MAP2:: observationFingerToState(vector <double> z_Finger, flo
 
 
 
-void KW_MAP2::projectionFingerState(vector<double> s, int R, int G, int B)
+void MAP_Estimation::projectionFingerState(vector<double> s, int R, int G, int B)
 {
 	cv::Point obsPointA;
 	cv::Point obsPointB;
@@ -968,24 +1077,6 @@ void KW_MAP2::projectionFingerState(vector<double> s, int R, int G, int B)
 		rotAngle = - (M_PI_2 - (s[2]));
 	}
 
-
-	/*
-	if((s[2] * M_PI / 180)> M_PI_2)
-	{
-		rotAngle = ((s[2] * M_PI / 180) - M_PI_2);
-	}
-	else if ((s[2] * M_PI / 180)< M_PI_2)
-	{
-		rotAngle = - (M_PI_2 - (s[2] * M_PI / 180));
-	}
-	*/
-
-	/*
-	Types::Ellipse * el;
-	el = new Types::Ellipse(cv::Point(s[0], s[1]), Size2f(10, 10));
-	el->setCol(CV_RGB(0,0,0));
-	drawcont.add(el);
-*/
 
 	obsPointA.x = s[0] - 0.5 * s[4];
 	obsPointA.y = s[1] - 0.5 * s[3];
@@ -1027,7 +1118,7 @@ void KW_MAP2::projectionFingerState(vector<double> s, int R, int G, int B)
 }
 
 
-vector <double> KW_MAP2::calculateFingerDiff(vector <double> h_z_Finger, vector <double> z_Finger, double invR_Finger[6][6], double  H_Finger[5][6], double P_Finger[5][5], double factorFinger)
+vector <double> MAP_Estimation::calculateFingerDiff(vector <double> h_z_Finger, vector <double> z_Finger, double invR_Finger[6][6], double  H_Finger[5][6], double P_Finger[5][5], double factorFinger)
 {
 	//różnicaiedzy wektorami h(s) i z
 	double D[6];
@@ -1077,7 +1168,7 @@ vector <double> KW_MAP2::calculateFingerDiff(vector <double> h_z_Finger, vector 
 
 
 // Funckja aktualizująca wektor stanu i macierz kowariancji P
-vector <double>KW_MAP2::updateFingerState(vector <double> diff_Finger, vector <double> s_Finger, double P_Finger[5][5])
+vector <double>MAP_Estimation::updateFingerState(vector <double> diff_Finger, vector <double> s_Finger, double P_Finger[5][5])
 {
 	vector <double> s_NFinger;
 
@@ -1098,7 +1189,7 @@ vector <double>KW_MAP2::updateFingerState(vector <double> diff_Finger, vector <d
 
 
 // Funkcja wyliczajaca wartosci parametrów obserwacji na podstawie wartosci obserwacji
-vector <double> KW_MAP2::stateFingerToObservation(vector <double> s_Finger, float a)
+vector <double> MAP_Estimation::stateFingerToObservation(vector <double> s_Finger, float a)
 {
 	float hz_downX, hz_downY, hz_topX, hz_topY, hz_angle, hz_width;
 
@@ -1124,7 +1215,7 @@ vector <double> KW_MAP2::stateFingerToObservation(vector <double> s_Finger, floa
 }
 
 
-void KW_MAP2::calculateFingerH(vector<double> s_Finger, double H_Finger[5][6], float a)
+void MAP_Estimation::calculateFingerH(vector<double> s_Finger, double H_Finger[5][6], float a)
 {
 
 	for (int i = 0; i < 5; i++) {
@@ -1152,16 +1243,6 @@ void KW_MAP2::calculateFingerH(vector<double> s_Finger, double H_Finger[5][6], f
 	H_Finger[2][4] = 1.0;
 	H_Finger[4][5] = 25/3.0;
 
-	std::ofstream plik("/home/kasia/Test.txt");
-
-	for (int i = 0; i < 5; i++) {
-		for (int j = 0; j < 6; j++) {
-			plik<<setprecision(4)<<H_Finger[i][j]<<"\t";
-		}
-		plik <<"\n";
-	}
-
-	plik.close();
 
 }
 
@@ -1171,7 +1252,7 @@ void KW_MAP2::calculateFingerH(vector<double> s_Finger, double H_Finger[5][6], f
 //*****************************************************************//
 
 //Funkcja regulujaca wartosc kątów
-void KW_MAP2::adjustableAngles()
+void MAP_Estimation::adjustableAngles()
 {
 	//regulacja kąta nachylenia palca środkowego
 	if(s_MFinger[2] > (s[2] + 0.174))
@@ -1226,7 +1307,7 @@ void KW_MAP2::adjustableAngles()
 }
 
 //Funkcja regulujaca wartosc kątów
-vector <double> KW_MAP2::adjustableFingerCenter(vector <double> s_Finger, double max, double min)
+vector <double> MAP_Estimation::adjustableFingerCenter(vector <double> s_Finger, double max, double min)
 {
 	double dx, dy, distance;
 	vector <double> Finger;
@@ -1263,7 +1344,7 @@ vector <double> KW_MAP2::adjustableFingerCenter(vector <double> s_Finger, double
 /*************************************************************************/
 
 //konstruktor
-KW_MAP2::KW_MAP2(const std::string & name) :
+MAP_Estimation::MAP_Estimation(const std::string & name) :
 	Base::Component(name)
 	{
 	LOG(LTRACE) << "Hello KW_MAP\n";
@@ -1276,161 +1357,7 @@ KW_MAP2::KW_MAP2(const std::string & name) :
 	STOP_TFinger = false;
 	STOP_SFinger = false;
 	STOP_RFinger = false;
-	/*
-	 * dane do MAP2
 	
-	factor = 0.001;
-
-	s.push_back(197.68);
-	s.push_back(398.36);
-	s.push_back(96.86);
-	s.push_back(136.24);
-	s.push_back(176.81);
-
-	for(unsigned int i = 0; i<5; i++)
-	{
-		cout << i << " states\t" << s[i] << "\n";
-
-	}
-
-	for (int i = 0; i < 5; i++) {
-		for (int j = 0; j < 5; j++) {
-			H[i][j] = 0;
-		}
-	}
-
-	H[0][0] = 1;
-	H[4][0] = 0.05;
-	H[1][1] = 1;
-	H[3][1] = -5.0/14.0;
-	H[2][2] = 1;
-	H[3][3] = 5.0/3.0;
-	H[4][4] = 2;
-
-	P[0][0] = 46.990883;
-	P[0][1] = 1.528119;
-	P[0][2] = -5.323601;
-	P[0][3] = 3.192531;
-	P[0][4] = -3.358225;
-
-	P[1][0] = 1.528119;
-	P[1][1] = 0.514513;
-	P[1][2] = -0.282289;
-	P[1][3] = 0.419617;
-	P[1][4] = 0.028410;
-
-	P[2][0] = -5.323601;
-	P[2][1] = -0.282289;
-	P[2][2] = 0.662295;
-	P[2][3] = -0.413586;
-	P[2][4] = 0.308156;
-
-	P[3][0] = 3.192531;
-	P[3][1] = 0.419617;
-	P[3][2] = -0.413586;
-	P[3][3] = 0.482469;
-	P[3][4] = -0.141358;
-
-	P[4][0] = -3.358225;
-	P[4][1] = 0.028410;
-	P[4][2] = 0.308156;
-	P[4][3] = -0.141358;
-	P[4][4] = 0.976080;
-
-
-	invP[0][0] = 0.842304;
-	invP[0][1] = 3.529979;
-	invP[0][2] = 5.934017;
-	invP[0][3] = -3.432465;
-	invP[0][4] = 0.424710;
-
-	invP[1][0] = 3.529979;
-	invP[1][1] = 23.353079;
-	invP[1][2] = 23.376121;
-	invP[1][3] = -23.427403;
-	invP[1][4] = 0.692416;
-
-	invP[2][0] = 5.934017;
-	invP[2][1] = 23.376121;
-	invP[2][2] = 45.764166;
-	invP[2][3] = -19.650916;
-	invP[2][4] = 2.441733;
-
-	invP[3][0] = -3.432465;
-	invP[3][1] = -23.427403;
-	invP[3][2] = -19.650916;
-	invP[3][3] = 28.063895;
-	invP[3][4] = -0.859359;
-
-	invP[4][0] = 0.424710;
-	invP[4][1] = 0.692416;
-	invP[4][2] = 2.441733;
-	invP[4][3] = -0.859359;
-	invP[4][4] = 1.570248;
-
-
-	R[0][0] = 49.392222;
-	R[0][1] = 0.405527;
-	R[0][2] = -5.620102;
-	R[0][3] = 8.432222;
-	R[0][4] = -7.008954;
-
-	R[1][0] = 0.405527;
-	R[1][1] = 0.293047;
-	R[1][2] = -0.141200;
-	R[1][3] = 0.655098;
-	R[1][4] = 0.166275;
-
-	R[2][0] = -5.620102;
-	R[2][1] = -0.141200;
-	R[2][2] = 0.701253;
-	R[2][3] = -1.094788;
-	R[2][4] = 0.652565;
-
-	R[3][0] = 8.432222;
-	R[3][1] = 0.655098;
-	R[3][2] = -1.094788;
-	R[3][3] = 3.192810;
-	R[3][4] = -0.748366;
-
-	R[4][0] = -7.008954;
-	R[4][1] = 0.166275;
-	R[4][2] = 0.652565;
-	R[4][3] = -0.748366;
-	R[4][4] = 4.133987;
-
-
-	invR[0][0] = 0.798964;
-	invR[0][1] = 3.350462;
-	invR[0][2] = 5.609231;
-	invR[0][3] = -0.831034;
-	invR[0][4] = 0.183962;
-
-	invR[1][0] = 3.350462;
-	invR[1][1] = 22.143922;
-	invR[1][2] = 22.068010;
-	invR[1][3] = -5.763473;
-	invR[1][4] = 0.263006;
-
-	invR[2][0] = 5.609231;
-	invR[2][1] = 22.068010;
-	invR[2][2] = 43.135090;
-	invR[2][3] = -4.309000;
-	invR[2][4] = 1.033462;
-
-	invR[3][0] = -0.831034;
-	invR[3][1] = -5.763473;
-	invR[3][2] = -4.309000;
-	invR[3][3] = 2.189405;
-	invR[3][4] = -0.100624;
-
-	invR[4][0] = 0.183962;
-	invR[4][1] = 0.263006;
-	invR[4][2] = 1.033462;
-	invR[4][3] = -0.100624;
-
-*/
-
 	//MAP3
 	//wspołczynnik zapominania
 	factor = 0.007;
@@ -2423,5 +2350,5 @@ KW_MAP2::KW_MAP2(const std::string & name) :
 }
 
 
-}//: namespace KW_MAP2
+}//: namespace MAP_Estimation
 }//: namespace Processors

@@ -22,6 +22,12 @@ namespace MAP_PalmDetection {
 
 using namespace cv;
 
+
+MAP_PalmDetection::MAP_PalmDetection(const std::string & name) :
+	Base::Component(name) {
+	LOG(LTRACE) << "Hello MAP_PalmDetectionL\n";
+}
+
 MAP_PalmDetection::~MAP_PalmDetection() {
 	LOG(LTRACE) << "Good bye MAP_PalmDetection\n";
 }
@@ -39,11 +45,10 @@ bool MAP_PalmDetection::onInit() {
 	registerStream("in_img", &in_img);
 
 	//!!!!!!!!!!!!!!!!!
-	newImage = registerEvent("newBlobs1");
-	newImage = registerEvent("newBlobs2");
+	newImage = registerEvent("newImage");
 
-	registerStream("newBlobs1", &out_blobs1);
-	registerStream("newBlobs2", &out_blobs2);
+	registerStream("out_blobs1", &out_blobs1);
+	registerStream("out_blobs2", &out_blobs2);
 
 	return true;
 }
@@ -67,7 +72,6 @@ bool MAP_PalmDetection::onStep()
 
 		getObservation();
 
-		//newBlobs->raise();
 		return true;
 	} catch (...) {
 		LOG(LERROR) << "MAP_PalmDetection failed\n";
@@ -110,7 +114,7 @@ void MAP_PalmDetection::onNewBlobs() {
 
 void MAP_PalmDetection::getObservation(){
 
-	//LOG(LNOTICE) << "KW_MAP::getObservation\n";
+	LOG(LNOTICE) << "MAP_PalmDetection::getObservationn\n";
 
 	try {
 
@@ -172,7 +176,7 @@ void MAP_PalmDetection::getObservation(){
 				id = i;
 			}
 
-			if(MaxArea > 3500)
+			if(MaxArea > 4100)
 			{
 				PALM = true;
 			}
@@ -194,10 +198,10 @@ void MAP_PalmDetection::getObservation(){
 		else
 		{
 			out_blobs2.write(result);
+
 		}
 
-
-
+		newImage->raise();
 	} catch (...) {
 		LOG(LERROR) << "KW_MAP::getObservation failed\n";
 

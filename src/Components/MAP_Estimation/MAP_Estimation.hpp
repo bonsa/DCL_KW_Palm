@@ -1,12 +1,12 @@
 /*!
- * \file KW_MAP2.hpp
+ * \file MAP_Estimation.hpp
  * \brief Estymacja MAP, uproszczona dłoń
  * \author kwasak
- * \date 2011-04-27
+ * \date 2011-05-12
  */
 
-#ifndef KW_MAP2_HPP_
-#define KW_MAP2_HPP_
+#ifndef KW_MAP_ESTIMATION_HPP_
+#define KW_MAP_ESTIMATION_HPP_
 
 #include "Component_Aux.hpp"
 #include "Component.hpp"
@@ -25,13 +25,13 @@
 #include "Types/DrawableContainer.hpp"
 
 namespace Processors {
-namespace KW_MAP2 {
+namespace MAP_Estimation {
 
 using namespace cv;
 using namespace std;
 
 /*!
- * \brief KW_PalmDetection properties
+ * \brief MAP_Estimation properties
  */
 struct Props: public Base::Props
 {
@@ -54,24 +54,24 @@ struct Props: public Base::Props
 };
 
 /*!
- * \class KW_MAP2
+ * \class MAP_Estimation
  * \brief Example processor class.
  */
 
 
 
-class KW_MAP2: public Base::Component
+class MAP_Estimation: public Base::Component
 {
 public:
 	/*!
 	 * Constructor.
 	 */
-	KW_MAP2(const std::string & name = "");
+	MAP_Estimation(const std::string & name = "");
 
 	/*!
 	 * Destructor
 	 */
-	virtual ~KW_MAP2();
+	virtual ~MAP_Estimation();
 
 	/*!
 	 * Return window properties
@@ -116,7 +116,7 @@ protected:
 	void onNewImage();
 
 	/// New image is waiting
-	Base::EventHandler <KW_MAP2> h_onNewImage;
+	Base::EventHandler <MAP_Estimation> h_onNewImage;
 
 
 	/*!
@@ -125,7 +125,7 @@ protected:
 	void onNewBlobs();
 
 	/// New set of blobs is waiting
-	Base::EventHandler <KW_MAP2> h_onNewBlobs;
+	Base::EventHandler <MAP_Estimation> h_onNewBlobs;
 
 	/*!
 	 * Event handler function.
@@ -134,7 +134,7 @@ protected:
 
 	/// Event handler.
 	/// New image is waiting
-	Base::EventHandler <KW_MAP2> h_map;
+	Base::EventHandler <MAP_Estimation> h_map;
 
 	/*!
 	 * Event handler function.
@@ -142,7 +142,7 @@ protected:
 	void onTrigger();
 
 	/// Event handler.
-	Base::EventHandler<KW_MAP2> h_onTrigger;
+	Base::EventHandler<MAP_Estimation> h_onTrigger;
 
 
 	/// Input blobs
@@ -154,16 +154,7 @@ protected:
 	/// Event raised, when data is processed
 	Base::Event * newImage;
 
-	/// Output data stream - list of ellipses around found signs
-	Base::DataStreamOut < Types::Blobs::BlobResult > out_signs;
-
 	Base::DataStreamOut < Types::DrawableContainer > out_draw;
-
-
-	/*!
-	 * Szukanie max Bloba
-	 */
-	void getMaxBlob();
 
 	/*!
 	 * Otrzymanie obserwacji dłoni
@@ -200,11 +191,6 @@ protected:
 
 	// obliczanie średnich wartosci obserwacji dłoni na podstawie parametrow stanow całej dloni(wew dlon i place)
 	void updateObservation();
-
-	vector <double> F_observationToState(double z0, double z1, double z4, vector<double> s);
-
-	vector <double> F_observationFingerToState(double z0, double z1, double z4, vector <double> s_Finger, float a, float b);
-
 
 
 	//*****************************************************************//
@@ -256,7 +242,6 @@ private:
 	double error;
 
 	double error2;
-
 
 	cv::Mat tsl_img;
 	cv::Mat segments;
@@ -531,14 +516,14 @@ private:
 
 };
 
-}//: namespace KW_MAP2
+}//: namespace MAP_Estimation
 }//: namespace Processors
 
 
 /*
  * Register processor component.
  */
-REGISTER_PROCESSOR_COMPONENT("KW_MAP2", Processors::KW_MAP2::KW_MAP2, Common::Panel_Empty)
+REGISTER_PROCESSOR_COMPONENT("MAP_Estimation", Processors::MAP_Estimation::MAP_Estimation, Common::Panel_Empty)
 
-#endif /* KW_MAP2_HPP_ */
+#endif /* KW_MAP_ESTIMATION_HPP_ */
 
