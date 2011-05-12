@@ -65,6 +65,7 @@ bool MAP_PalmDetection::onStep()
 {
 	LOG(LTRACE) << "MAP_PalmDetection::step\n";
 
+	cout<<"PALM!!!!!!!!!!!!!!!!\n";
 	blobs_ready = img_ready = false;
 
 
@@ -159,7 +160,7 @@ void MAP_PalmDetection::getObservation(){
 		id = -1;
 
 		if (blobs.GetNumBlobs() < 1) {
-		//	LOG(LNOTICE) << "Blobs: " << blobs.GetNumBlobs();
+			LOG(LNOTICE) << "Blobs: " << blobs.GetNumBlobs();
 			return;
 		}
 
@@ -179,10 +180,12 @@ void MAP_PalmDetection::getObservation(){
 			if(MaxArea > 4100)
 			{
 				PALM = true;
+				cout<<"PALM\n";
 			}
 			else
 			{
 				PALM = false;
+				cout<<"NIE PALM\n";
 			}
 		}
 		//current Blob przychowuje największego bloba, czyli dłoni
@@ -194,6 +197,7 @@ void MAP_PalmDetection::getObservation(){
 		if(PALM == true)
 		{
 			out_blobs1.write(result);
+			cout<<"Leci PALM\n";
 		}
 		else
 		{

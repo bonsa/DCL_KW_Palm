@@ -114,14 +114,13 @@
 		<Event source="MorphOpen.newImage" destination="Blob.onNewImage"/>
 
 		<Event source="MorphClose.newImage" destination="DecPalm.onNewImage"/>
+		<Event source="Movie.newImage"        destination="DetectionPalm.onNewImage"/>
 		<Event source="Blob.newBlobs"        destination="DetectionPalm.onNewBlobs"/>
-		<Event source="DetectionPalm.newImage"   destination="DecPalm.onNewBlobs"/>
-		
-		<Event source="Kbd1.t_Pressed"       destination="DecPalm.onTrigger"/>
-	
-		<Event source="DecPalm.newImage"     destination="Window4.onNewImage0"/>
-		<Event source="DecPalm.newImage"     destination="Window4.onNewImage1"/>
-		<Event source="DetectionPalm.newImage"        destination="Window4.onNewImage1"/>
+		<Event source="MorphClose.newImage"   destination="DecPalm.onNewBlobs"/>
+		<Event source="MorphClose.newImage"   destination="DecPalm.onNewImage"/>
+			
+		<Event source="DetectionPalm.newImage"     destination="Window4.onNewImage0"/>
+		<Event source="DecPalm.newImage"        destination="Window4.onNewImage1"/>
 		<Event source="Filtr.newImage"     destination="Window4.onNewImage2"/>
 		<Event source="BW.newImage"       destination="Window4.onNewImage3"/>
 		<Event source="MorphOpen.newImage"       destination="Window4.onNewImage4"/>
@@ -189,10 +188,10 @@
 		
 		<Window4>
 			<in_img0 type="in" group="Con1"/>
-			<in_draw0 type="in" group="Con9"/>			
+			<in_draw0 type="in" group="Con10"/>			
 			
 			<in_img1 type="in" group="Con1"/>
-			<in_draw1 type="in" group="Con10"/>	
+			<in_draw1 type="in" group="Con9a"/>	
 			
 			<in_img2 type="in" group="Con2"/>
 			
