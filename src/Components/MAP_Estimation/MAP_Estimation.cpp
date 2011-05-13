@@ -48,9 +48,6 @@ bool MAP_Estimation::onInit() {
 
 	registerStream("out_draw", &out_draw);
 
-	//pierwsze uruchomienie komponentu
-	first = true;
-
 	return true;
 }
 
@@ -72,15 +69,14 @@ void MAP_Estimation::onTrigger() {
 			error2 = 100;
 
 			s.clear();
-			s_RFinger.clear();
-			s_MFinger.clear();
-			s_FFinger.clear();
-			s_TFinger.clear();
-			s_SFinger.clear();
+			RFinger.s.clear();
+			MFinger.s.clear();
+			FFinger.s.clear();
+			TFinger.s.clear();
+			SFinger.s.clear();
 
 			statesInit();
 			matrixInit();
-
 
 		}
 }
@@ -109,12 +105,11 @@ bool MAP_Estimation::onStep()
 		idFingertips.clear();
 
 		//srodkowy palec
-		z_MFinger.clear();
-		h_z_MFinger.clear();
-		diff_MFinger.clear();
-		sTest2.clear();
+		MFinger.z.clear();
+		MFinger.h_z.clear();
+		MFinger.diff.clear();
+		MFinger.sTest.clear();
 	//	s_MFinger.clear();
-
 
 		getObservation();
 		projectionFingertips();
@@ -123,32 +118,32 @@ bool MAP_Estimation::onStep()
 		{
 
 			//palec wskazujacy
-			z_FFinger.clear();
+			FFinger.z.clear();
 		//	s_FFinger.clear();
-			h_z_FFinger.clear();
-			diff_FFinger.clear();
-			sTest3.clear();
+			FFinger.h_z.clear();
+			FFinger.diff.clear();
+			FFinger.sTest.clear();
 
 			//kciuk
-			z_TFinger.clear();
+			TFinger.z.clear();
 		//	s_FFinger.clear();
-			h_z_TFinger.clear();
-			diff_TFinger.clear();
-			sTest4.clear();
+			TFinger.h_z.clear();
+			TFinger.diff.clear();
+			TFinger.sTest.clear();
 
 			//mały palec
-			z_SFinger.clear();
+			SFinger.z.clear();
 		//	s_SFinger.clear();
-			h_z_SFinger.clear();
-			diff_SFinger.clear();
-			sTest5.clear();
+			SFinger.h_z.clear();
+			SFinger.diff.clear();
+			SFinger.sTest.clear();
 
 			//mały palec
-			z_RFinger.clear();
+			RFinger.z.clear();
 		//	s_RFinger.clear();
-			h_z_RFinger.clear();
-			diff_RFinger.clear();
-			sTest6.clear();
+			RFinger.h_z.clear();
+			RFinger.diff.clear();
+			RFinger.sTest.clear();
 
 		//	cout<<"STOP "<<STOP<<"\n";
 			if(error > 0.1)
@@ -173,92 +168,99 @@ bool MAP_Estimation::onStep()
 
 				//palec środkowy
 				sTest.clear();
-				z_MFinger = getFingerObservation(2);
-				projectionFingerObservation(z_MFinger, 200, 200, 200);
-				sTest2 = observationFingerToState(z_MFinger, 0.7, 0.6);
-				projectionFingerState(sTest2, 0, 255, 255);
-				h_z_MFinger = stateFingerToObservation(s_MFinger, 7.0/6.0);
+				MFinger.z = getFingerObservation(2);
+				projectionFingerObservation(MFinger.z, 200, 200, 200);
+				MFinger.sTest = observationFingerToState(MFinger.z, 0.7, 0.6);
+				projectionFingerState(MFinger.sTest, 0, 255, 255);
+				MFinger.h_z = stateFingerToObservation(MFinger.s, 7.0/6.0);
 			//	projectionFingerObservation(h_z_MFinger, 255, 255, 0);
 
-				calculateFingerH(s_MFinger, H_MFinger, 7.0/6.0);
+				calculateFingerH(MFinger.s, MFinger.H, 7.0/6.0);
 
-				diff_MFinger = calculateFingerDiff(h_z_MFinger, z_MFinger, invR_MFinger, H_MFinger, P_MFinger, factorFinger);
-				s_MFinger = updateFingerState(diff_MFinger,s_MFinger, P_MFinger);
+				MFinger.diff = calculateFingerDiff(MFinger.h_z, MFinger.z, MFinger.invR, MFinger.H, MFinger.P, factorFinger);
+				MFinger.s = updateFingerState(MFinger.diff,MFinger.s, MFinger.P);
 
 
 
 				//palec wskazujacy
-				z_FFinger = getFingerObservation(3);
-				projectionFingerObservation(z_FFinger, 200, 200, 200);
-				sTest3 = observationFingerToState(z_FFinger, 0.72, 0.56);
-				projectionFingerState(sTest3, 0, 255, 255);
-				h_z_FFinger = stateFingerToObservation(s_FFinger, 9.0/7.0);
+				FFinger.z = getFingerObservation(3);
+				projectionFingerObservation(FFinger.z, 200, 200, 200);
+				FFinger.sTest = observationFingerToState(FFinger.z, 0.72, 0.56);
+				projectionFingerState(FFinger.sTest, 0, 255, 255);
+				FFinger.h_z = stateFingerToObservation(FFinger.s, 9.0/7.0);
 			//	projectionFingerObservation(h_z_FFinger, 255, 255, 0);
 
-				calculateFingerH(s_FFinger, H_FFinger, 9.0/7.0);
-				diff_FFinger = calculateFingerDiff(h_z_FFinger, z_FFinger, invR_FFinger, H_FFinger, P_FFinger, 0.03);//factorFinger);
-				s_FFinger = updateFingerState(diff_FFinger,s_FFinger, P_FFinger);
+				calculateFingerH(FFinger.s, FFinger.H, 9.0/7.0);
+				FFinger.diff = calculateFingerDiff(FFinger.h_z, FFinger.z, FFinger.invR, FFinger.H, FFinger.P, 0.03);//factorFinger);
+				FFinger.s = updateFingerState(FFinger.diff, FFinger.s, FFinger.P);
 
 
 				//kciuk
-				z_TFinger = getFingerObservation(4);
-				projectionFingerObservation(z_TFinger, 200, 200, 200);
-				sTest4 = observationFingerToState(z_TFinger, 0.72, 0.56);
-				projectionFingerState(sTest4, 0, 255, 255);
-				h_z_TFinger = stateFingerToObservation(s_TFinger, 9.0/7.0);
+				TFinger.z = getFingerObservation(4);
+				projectionFingerObservation(TFinger.z, 200, 200, 200);
+				TFinger.sTest = observationFingerToState(TFinger.z, 0.72, 0.56);
+				projectionFingerState(TFinger.sTest, 0, 255, 255);
+				TFinger.h_z = stateFingerToObservation(TFinger.s, 9.0/7.0);
 			//	projectionFingerObservation(h_z_TFinger, 255, 255, 0);
-				calculateFingerH(s_TFinger, H_TFinger, 9.0/7.0);
-				diff_TFinger = calculateFingerDiff(h_z_TFinger, z_TFinger, invR_TFinger, H_TFinger, P_TFinger, factorFinger);
-				s_TFinger = updateFingerState(diff_TFinger,s_TFinger, P_TFinger);
+				calculateFingerH(TFinger.s, TFinger.H, 9.0/7.0);
+				TFinger.diff = calculateFingerDiff(TFinger.h_z, TFinger.z, TFinger.invR, TFinger.H, TFinger.P, factorFinger);
+				TFinger.s = updateFingerState(TFinger.diff ,TFinger.s, TFinger.P);
 
 				//mały palec
-				z_SFinger = getFingerObservation(0);
-				projectionFingerObservation(z_SFinger, 200, 200, 200);
-				sTest5 = observationFingerToState(z_SFinger, 0.82, 0.36);
-				projectionFingerState(sTest5, 0, 255, 255);
-				h_z_SFinger = stateFingerToObservation(s_SFinger, 41.0/18.0);
+				SFinger.z = getFingerObservation(0);
+				projectionFingerObservation(SFinger.z, 200, 200, 200);
+				SFinger.sTest = observationFingerToState(SFinger.z, 0.82, 0.36);
+				projectionFingerState(SFinger.sTest, 0, 255, 255);
+				SFinger.h_z = stateFingerToObservation(SFinger.s, 41.0/18.0);
 			//	projectionFingerObservation(h_z_SFinger, 255, 255, 0);
-				calculateFingerH(s_SFinger, H_SFinger, 41.0/18.0);
-				diff_SFinger = calculateFingerDiff(h_z_SFinger, z_SFinger, invR_SFinger, H_SFinger, P_SFinger, factorFinger);
-				s_SFinger = updateFingerState(diff_SFinger,s_SFinger, P_SFinger);
+				calculateFingerH(SFinger.s, SFinger.H, 41.0/18.0);
+				SFinger.diff = calculateFingerDiff(SFinger.h_z, SFinger.z, SFinger.invR, SFinger.H, SFinger.P, factorFinger);
+				SFinger.s = updateFingerState(SFinger.diff,SFinger.s, SFinger.P);
 
 				//palec serdeczny
 				//ring-finger
-				z_RFinger = getFingerObservation(1);
-				projectionFingerObservation(z_RFinger, 200, 200, 200);
-				sTest6 = observationFingerToState(z_RFinger, 0.73, 0.54);
-				projectionFingerState(sTest6, 0, 255, 255);
-
-				h_z_RFinger = stateFingerToObservation(s_RFinger,73.0/54.0);
+				RFinger.z = getFingerObservation(1);
+				projectionFingerObservation(RFinger.z, 200, 200, 200);
+				RFinger.sTest = observationFingerToState(RFinger.z, 0.73, 0.54);
+				projectionFingerState(RFinger.sTest, 0, 255, 255);
+				RFinger.h_z = stateFingerToObservation(RFinger.s,73.0/54.0);
 			//	projectionFingerObservation(h_z_RFinger, 255, 255, 0);
-				calculateFingerH(s_RFinger, H_RFinger, 73.0/54.0);
-				diff_RFinger = calculateFingerDiff(h_z_RFinger, z_RFinger, invR_RFinger, H_RFinger, P_RFinger, factorFinger);
-				s_RFinger = updateFingerState(diff_RFinger,s_RFinger, P_RFinger);
+				calculateFingerH(RFinger.s, RFinger.H, 73.0/54.0);
+				RFinger.diff = calculateFingerDiff(RFinger.h_z, RFinger.z, RFinger.invR, RFinger.H, RFinger.P, 0.05);
 
+				cout<<"DIFF "<<RFinger.diff[0]<<"\n";
+				cout<<"DIFF "<<RFinger.diff[1]<<"\n";
+				cout<<"DIFF "<<RFinger.diff[2]<<"\n";
+				cout<<"DIFF "<<RFinger.diff[3]<<"\n";
+				cout<<"DIFF "<<RFinger.diff[4]<<"\n";
 
-///////				adjustableAngles();
-		//		s_MFinger = adjustableFingerCenter(s_MFinger, 1.3, 0.1);
-		//		s_FFinger = adjustableFingerCenter(s_FFinger, 1.3, 0.1);
-		//		s_TFinger = adjustableFingerCenter(s_TFinger, 1.3, 0.1);
-		//		s_SFinger = adjustableFingerCenter(s_SFinger, 1.3, 0.1);
-		//		s_RFinger = adjustableFingerCenter(s_RFinger, 1.3, 0.1);
+				for(unsigned int i = 0; i<5; i++)
+				{
+					for(unsigned int j=0; j<5; j++)
+					{
+						cout<<RFinger.P[i][j]<<"\t";
+					}
+					cout<<"\n";
+				}
+
+				RFinger.s = updateFingerState(RFinger.diff, RFinger.s, RFinger.P);
 
 				projectionState(s, 255, 255, 255);
-				projectionFingerState(s_MFinger, 255, 255, 255);
-				projectionFingerState(s_FFinger, 255, 255, 255);
-				projectionFingerState(s_TFinger, 255, 255, 255);
-				projectionFingerState(s_SFinger, 255, 255, 255);
-				projectionFingerState(s_RFinger, 255, 255, 255);
+				projectionFingerState(MFinger.s, 255, 255, 255);
+				projectionFingerState(FFinger.s, 255, 255, 255);
+				projectionFingerState(TFinger.s, 255, 255, 255);
+				projectionFingerState(SFinger.s, 255, 255, 255);
+				projectionFingerState(RFinger.s, 255, 255, 255);
 
 			}
 			else
 			{
 				projectionState(s, 255, 255, 255);
-				projectionFingerState(s_MFinger, 255, 255, 255);
-				projectionFingerState(s_FFinger, 255, 255, 255);
-				projectionFingerState(s_TFinger, 255, 255, 255);
-				projectionFingerState(s_SFinger, 255, 255, 255);
-				projectionFingerState(s_RFinger, 255, 255, 255);
+				projectionFingerState(MFinger.s, 255, 255, 255);
+				projectionFingerState(FFinger.s, 255, 255, 255);
+				projectionFingerState(TFinger.s, 255, 255, 255);
+				projectionFingerState(SFinger.s, 255, 255, 255);
+				projectionFingerState(RFinger.s, 255, 255, 255);
 			}
 
 		}
@@ -812,7 +814,6 @@ void MAP_Estimation::projectionFingerObservation(vector<double> z, int R, int G,
 		elL->setCol(CV_RGB(R,G,B));
 		drawcont.add(elL);
 
-		drawcont.add(elL);
 }
 
 
@@ -862,7 +863,6 @@ void MAP_Estimation::projectionFingerState(vector<double> s, int R, int G, int B
 		rotAngle = - (M_PI_2 - (s[2]));
 	}
 
-
 	obsPointA.x = s[0] - 0.5 * s[4];
 	obsPointA.y = s[1] - 0.5 * s[3];
 
@@ -903,19 +903,19 @@ void MAP_Estimation::projectionFingerState(vector<double> s, int R, int G, int B
 }
 
 
-vector <double> MAP_Estimation::calculateFingerDiff(vector <double> h_z_Finger, vector <double> z_Finger, double invR_Finger[6][6], double  H_Finger[5][6], double P_Finger[5][5], double factorFinger)
+vector <double> MAP_Estimation::calculateFingerDiff(vector <double> h_z, vector <double> z, double invR[6][6], double  H[5][6], double P[5][5], double factorFinger)
 {
 	//różnicaiedzy wektorami h(s) i z
 	double D[6];
 
-	vector <double> diff_Finger;
+	vector <double> diff;
 
 	for (unsigned int i = 0; i < 6; i ++)
 	{
 		//różnica miedzy punktami charakterystycznymi aktualnego obraz
-		D[i] =  h_z_Finger[i] - z_Finger[i];
+		D[i] =  h_z[i] - z[i];
 		error2 += abs(D[i]);
-		cout<<"DIFF     "<<D[i]<<"\n";
+		//cout<<"DIFF     "<<D[i]<<"\n";
 	}
 	cout<<"\n";
 
@@ -924,7 +924,7 @@ vector <double> MAP_Estimation::calculateFingerDiff(vector <double> h_z_Finger, 
 		t1[i] = 0;
 		for (unsigned int j = 0; j < 6; j++) {
 			//t = iloraz odwrotnej macierzy R * roznica D
-			t1[i] += invR_Finger[i][j] * D[j];
+			t1[i] += invR[i][j] * D[j];
 		}
 	}
 
@@ -932,7 +932,7 @@ vector <double> MAP_Estimation::calculateFingerDiff(vector <double> h_z_Finger, 
 	for (unsigned int i = 0; i < 5; i++) {
 		t2[i] = 0;
 		for (unsigned int j = 0; j < 6; j++) {
-			t2[i] += H_Finger[i][j] * t1[j];
+			t2[i] += H[i][j] * t1[j];
 		}
 	}
 
@@ -941,18 +941,18 @@ vector <double> MAP_Estimation::calculateFingerDiff(vector <double> h_z_Finger, 
 		t3[i] = 0;
 		for (unsigned int j = 0; j < 5; j++) {
 			//mnożenie macierzy P * t2
-			t3[i] +=  P_Finger[i][j] * t2[j];
-			cout<<P_Finger[i][j]<<"\t";
+			t3[i] +=  P[i][j] * t2[j];
+			//cout<<P_Finger[i][j]<<"\t";
 		}
-		cout<<"\n";
+		//cout<<"\n";
 		t3[i] *= factorFinger;//*factor;
-		diff_Finger.push_back(t3[i]);
+		diff.push_back(t3[i]);
 	}
 
-	for (int i = 0; i < 5; ++i)
-		diff_Finger[i] = fabs(diff_Finger[i]) > 8 ? 8 * diff_Finger[i]/fabs(diff_Finger[i]) : diff_Finger[i];
+	//for (int i = 0; i < 5; ++i)
+	//	diff_Finger[i] = fabs(diff_Finger[i]) > 8 ? 8 * diff_Finger[i]/fabs(diff_Finger[i]) : diff_Finger[i];
 
-	return diff_Finger;
+	return diff;
 }
 
 
@@ -1036,99 +1036,6 @@ void MAP_Estimation::calculateFingerH(vector<double> s_Finger, double H_Finger[5
 }
 
 
-//*****************************************************************//
-//*Funkcje uzależaniajace palce od wewetrznej czesci dłoni*********//
-//*****************************************************************//
-
-//Funkcja regulujaca wartosc kątów
-void MAP_Estimation::adjustableAngles()
-{
-	//regulacja kąta nachylenia palca środkowego
-	if(s_MFinger[2] > (s[2] + 0.174))
-	{
-		s_MFinger[2] = (s[2] + 0.174);
-	}
-	else if(s_MFinger[2] < (s[2] - 0.174))
-	{
-		s_MFinger[2] = (s[2] - 0.174);
-	}
-
-	//regulacja kąta nachylenia palca wskazujacego
-	if(s_FFinger[2] > (s[2] - 0,1262)) //s[2] - 0.3002 + 0,174
-	{
-		s_FFinger[2] = (s[2] - 0,1262);
-	}
-	else if(s_FFinger[2] < (s[2] - 0,4742)) //s[2] - 0.3002 - 0,174
-	{
-		s_FFinger[2] = (s[2] - 0,4742);
-	}
-
-	//regulacja kąta nachylenia kciuka
-	if(s_TFinger[2] > (s[2] - 1,02724)) //s[2] - 1,20124 + 0,174
-	{
-		s_TFinger[2] = (s[2] - 1,02724);
-	}
-	else if(s_TFinger[2] < (s[2] - 1,37524)) //s[2] - 1,20124 - 0,174
-	{
-		s_TFinger[2] = (s[2] - 1,37524);
-	}
-
-	//regulacja kąta małego palca
-	if(s_SFinger[2] > (s[2] + 0,864)) //s[2] + 0,69 + 0,174
-	{
-		s_SFinger[2] = (s[2] + 0,864);
-	}
-	else if(s_SFinger[2] < (s[2] + 0,516)) //s[2]  + 0,69 - 0,174
-	{
-		s_SFinger[2] = (s[2] + 0,516);
-	}
-
-	//regulacja kąta palca serdecznego
-	if(s_FFinger[2] > (s[2] + 0,4182)) //s[2] + 0,2442 + 0,174
-	{
-		s_FFinger[2] = (s[2] + 0,4182);
-	}
-	else if(s_FFinger[2] < (s[2] + 0,0702)) //s[2]  + 0,2442 - 0,174
-	{
-		s_FFinger[2] = (s[2] + 0,0702);
-	}
-
-}
-
-//Funkcja regulujaca wartosc kątów
-vector <double> MAP_Estimation::adjustableFingerCenter(vector <double> s_Finger, double max, double min)
-{
-	double dx, dy, distance;
-	vector <double> Finger;
-
-	//palcec środkowy
-	dx = s_Finger[0] - s[0];
-	dy = s_Finger[1] - s[1];
-	distance = sqrt(dx*dx + dy*dy);
-
-	if(distance > (max * s[3]))
-	{
-		std::cout << "Too far! " << distance << "\n";
-		dx = dx * max/distance;
-		dy = dy * max/distance;
-	}
-	else if (distance < (min *s[3]))
-	{
-		std::cout << "Too close! " << distance << "\n";
-		dx = dx * min/distance;
-		dy = dy * min/distance;
-	}
-	Finger.push_back(s[0] + dx);
-	Finger.push_back(s[1] + dy);
-	Finger.push_back(s_Finger[2]);
-	Finger.push_back(s_Finger[3]);
-	Finger.push_back(s_Finger[4]);
-
-	return Finger;
-}
-
-
-
 
 /*************************************************************************/
 
@@ -1170,8 +1077,6 @@ MAP_Estimation::MAP_Estimation(const std::string & name) :
 	H[4][4] = 2;
 
 
-
-
 	statesInit();
 	matrixInit();
 
@@ -1198,85 +1103,84 @@ void MAP_Estimation:: statesInit()
 	//srodkowy palec
 
 
-	s_MFinger.push_back(347.62);
-	s_MFinger.push_back(159.3);
-	s_MFinger.push_back(1.6848);
-	s_MFinger.push_back(177.87);
-	s_MFinger.push_back(42.858);
+	MFinger.s.push_back(347.62);
+	MFinger.s.push_back(159.3);
+	MFinger.s.push_back(1.6848);
+	MFinger.s.push_back(177.87);
+	MFinger.s.push_back(42.858);
 
-	s0_MFinger.push_back(347.62);
-	s0_MFinger.push_back(159.3);
-	s0_MFinger.push_back(1.6848);
-	s0_MFinger.push_back(177.87);
-	s0_MFinger.push_back(42.858);
+	MFinger.s0.push_back(347.62);
+	MFinger.s0.push_back(159.3);
+	MFinger.s0.push_back(1.6848);
+	MFinger.s0.push_back(177.87);
+	MFinger.s0.push_back(42.858);
 
 
 
 	//*******************************************************************************************//
 	//palec wskazujacy
 
-	s_FFinger.push_back(409.44);
-	s_FFinger.push_back(162.31);
-	s_FFinger.push_back(1.3846);
-	s_FFinger.push_back(160.73);
-	s_FFinger.push_back(42.858);
+	FFinger.s.push_back(409.44);
+	FFinger.s.push_back(162.31);
+	FFinger.s.push_back(1.3846);
+	FFinger.s.push_back(160.73);
+	FFinger.s.push_back(42.858);
 
-	s0_FFinger.push_back(409.44);
-	s0_FFinger.push_back(162.31);
-	s0_FFinger.push_back(1.3846);
-	s0_FFinger.push_back(160.73);
-	s0_FFinger.push_back(42.858);
-
+	FFinger.s0.push_back(409.44);
+	FFinger.s0.push_back(162.31);
+	FFinger.s0.push_back(1.3846);
+	FFinger.s0.push_back(160.73);
+	FFinger.s0.push_back(42.858);
 
 
 	//***************************************************************************************//
 	//kciuk
 
-	s_TFinger.push_back(497.46);
-	s_TFinger.push_back(299.07);
-	s_TFinger.push_back(0.48356);
-	s_TFinger.push_back(111.02);
-	s_TFinger.push_back(42.858);
+	TFinger.s.push_back(497.46);
+	TFinger.s.push_back(299.07);
+	TFinger.s.push_back(0.48356);
+	TFinger.s.push_back(111.02);
+	TFinger.s.push_back(42.858);
 
-	s0_TFinger.push_back(497.46);
-	s0_TFinger.push_back(299.07);
-	s0_TFinger.push_back(0.48356);
-	s0_TFinger.push_back(111.02);
-	s0_TFinger.push_back(42.858);
+	TFinger.s0.push_back(497.46);
+	TFinger.s0.push_back(299.07);
+	TFinger.s0.push_back(0.48356);
+	TFinger.s0.push_back(111.02);
+	TFinger.s0.push_back(42.858);
 
 
 
 	//***************************************************************************************//
 	//mały palec
 
-	s_SFinger.push_back(230.25);
-	s_SFinger.push_back(229.59);
-	s_SFinger.push_back(2.3748);
-	s_SFinger.push_back(86.064);
-	s_SFinger.push_back(42.858);
+	SFinger.s.push_back(230.25);
+	SFinger.s.push_back(229.59);
+	SFinger.s.push_back(2.3748);
+	SFinger.s.push_back(86.064);
+	SFinger.s.push_back(42.858);
 
-	s0_SFinger.push_back(230.25);
-	s0_SFinger.push_back(229.59);
-	s0_SFinger.push_back(2.3748);
-	s0_SFinger.push_back(86.064);
-	s0_SFinger.push_back(42.858);
+	SFinger.s0.push_back(230.25);
+	SFinger.s0.push_back(229.59);
+	SFinger.s0.push_back(2.3748);
+	SFinger.s0.push_back(86.064);
+	SFinger.s0.push_back(42.858);
 
 
 
 	//*******************************************************************************//
 	//palec serdeczny
 
-	s_RFinger.push_back(299.59);
-	s_RFinger.push_back(174.02);
-	s_RFinger.push_back(1.929);
-	s_RFinger.push_back(151.26);
-	s_RFinger.push_back(42.858);
+	RFinger.s.push_back(299.59);
+	RFinger.s.push_back(174.02);
+	RFinger.s.push_back(1.929);
+	RFinger.s.push_back(151.26);
+	RFinger.s.push_back(42.858);
 
-	s0_RFinger.push_back(299.59);
-	s0_RFinger.push_back(174.02);
-	s0_RFinger.push_back(1.929);
-	s0_RFinger.push_back(151.26);
-	s0_RFinger.push_back(42.858);
+	RFinger.s0.push_back(299.59);
+	RFinger.s0.push_back(174.02);
+	RFinger.s0.push_back(1.929);
+	RFinger.s0.push_back(151.26);
+	RFinger.s0.push_back(42.858);
 }
 
 void MAP_Estimation:: matrixInit()
@@ -1408,754 +1312,829 @@ void MAP_Estimation:: matrixInit()
 
 	//palec srodkowu
 
-	 P_MFinger[0][0] = 7888.528068;
-	 P_MFinger[0][1] = 406.435705;
-	 P_MFinger[0][2] = -0.135018;
-	 P_MFinger[0][3] = -435.621592;
-	 P_MFinger[0][4] = -122.957084;
+	 MFinger.P[0][0] = 7888.528068;
+	 MFinger.P[0][1] = 406.435705;
+	 MFinger.P[0][2] = -0.135018;
+	 MFinger.P[0][3] = -435.621592;
+	 MFinger.P[0][4] = -122.957084;
 
-	 P_MFinger[1][0] = 406.435705;
-	 P_MFinger[1][1] = 521.170785;
-	 P_MFinger[1][2] = 0.491322;
-	 P_MFinger[1][3] = -285.146180;
-	 P_MFinger[1][4] = -70.328615;
+	 MFinger.P[1][0] = 406.435705;
+	 MFinger.P[1][1] = 521.170785;
+	 MFinger.P[1][2] = 0.491322;
+	 MFinger.P[1][3] = -285.146180;
+	 MFinger.P[1][4] = -70.328615;
 
-	 P_MFinger[2][0] = -0.135018;
-	 P_MFinger[2][1] = 0.491322;
-	 P_MFinger[2][2] = 0.003764;
-	 P_MFinger[2][3] = 0.034951;
-	 P_MFinger[2][4] = 0.069659;
+	 MFinger.P[2][0] = -0.135018;
+	 MFinger.P[2][1] = 0.491322;
+	 MFinger.P[2][2] = 0.003764;
+	 MFinger.P[2][3] = 0.034951;
+	 MFinger.P[2][4] = 0.069659;
 
-	 P_MFinger[3][0] = -435.621592;
-	 P_MFinger[3][1] = -285.146180;
-	 P_MFinger[3][2] = 0.034951;
-	 P_MFinger[3][3] = 348.553026;
-	 P_MFinger[3][4] = 97.536609;
+	 MFinger.P[3][0] = -435.621592;
+	 MFinger.P[3][1] = -285.146180;
+	 MFinger.P[3][2] = 0.034951;
+	 MFinger.P[3][3] = 348.553026;
+	 MFinger.P[3][4] = 97.536609;
 
-	 P_MFinger[4][0] = -122.957084;
-	 P_MFinger[4][1] = -70.328615;
-	 P_MFinger[4][2] = 0.069659;
-	 P_MFinger[4][3] = 97.536609;
-	 P_MFinger[4][4] = 29.273343;
-
-
-	invP_MFinger[0][0] = 0.000137;
-	invP_MFinger[0][1] = -0.000040;
-	invP_MFinger[0][2] = 0.008904;
-	invP_MFinger[0][3] = 0.000139;
-	invP_MFinger[0][4] = -0.000007;
-
-	invP_MFinger[1][0] = -0.000040;
-	invP_MFinger[1][1] = 0.004670;
-	invP_MFinger[1][2] = -0.560854;
-	invP_MFinger[1][3] = 0.005335;
-	invP_MFinger[1][4] = -0.005386;
-
-	invP_MFinger[2][0] = 0.008904;
-	invP_MFinger[2][1] = -0.560854;
-	invP_MFinger[2][2] = 580.463754;
-	invP_MFinger[2][3] = 3.656078;
-	invP_MFinger[2][4] = -14.873096;
-
-	invP_MFinger[3][0] = 0.000139;
-	invP_MFinger[3][1] = 0.005335;
-	invP_MFinger[3][2] = 3.656078;
-	invP_MFinger[3][3] = 0.084669;
-	invP_MFinger[3][4] = -0.277407;
-
-	invP_MFinger[4][0] = -0.000007;
-	invP_MFinger[4][1] = -0.005386;
-	invP_MFinger[4][2] = -14.873096;
-	invP_MFinger[4][3] = -0.277407;
-	invP_MFinger[4][4] = 0.980883;
+	 MFinger.P[4][0] = -122.957084;
+	 MFinger.P[4][1] = -70.328615;
+	 MFinger.P[4][2] = 0.069659;
+	 MFinger.P[4][3] = 97.536609;
+	 MFinger.P[4][4] = 29.273343;
 
 
-	R_MFinger[0][0] = 7895.858947;
-	R_MFinger[0][1] = 0.497900;
-	R_MFinger[0][2] = 7772.402632;
-	R_MFinger[0][3] = 668.163684;
-	R_MFinger[0][4] = 0.634515;
-	R_MFinger[0][5] = -788.814211;
+	MFinger.invP[0][0] = 0.000137;
+	MFinger.invP[0][1] = -0.000040;
+	MFinger.invP[0][2] = 0.008904;
+	MFinger.invP[0][3] = 0.000139;
+	MFinger.invP[0][4] = -0.000007;
 
-	R_MFinger[1][0] = 0.497900;
-	R_MFinger[1][1] = 303.854636;
-	R_MFinger[1][2] = -154.575263;
-	R_MFinger[1][3] = 124.265368;
-	R_MFinger[1][4] = 0.447130;
-	R_MFinger[1][5] = 344.682000;
+	MFinger.invP[1][0] = -0.000040;
+	MFinger.invP[1][1] = 0.004670;
+	MFinger.invP[1][2] = -0.560854;
+	MFinger.invP[1][3] = 0.005335;
+	MFinger.invP[1][4] = -0.005386;
 
-	R_MFinger[2][0] = 7772.402632;
-	R_MFinger[2][1] = -154.575263;
-	R_MFinger[2][2] = 7986.368421;
-	R_MFinger[2][3] = 609.263158;
-	R_MFinger[2][4] = -0.464874;
-	R_MFinger[2][5] = -1125.710526;
+	MFinger.invP[2][0] = 0.008904;
+	MFinger.invP[2][1] = -0.560854;
+	MFinger.invP[2][2] = 580.463754;
+	MFinger.invP[2][3] = 3.656078;
+	MFinger.invP[2][4] = -14.873096;
 
-	R_MFinger[3][0] = 668.163684;
-	R_MFinger[3][1] = 124.265368;
-	R_MFinger[3][2] = 609.263158;
-	R_MFinger[3][3] = 901.252632;
-	R_MFinger[3][4] = 0.510406;
-	R_MFinger[3][5] = -984.963158;
+	MFinger.invP[3][0] = 0.000139;
+	MFinger.invP[3][1] = 0.005335;
+	MFinger.invP[3][2] = 3.656078;
+	MFinger.invP[3][3] = 0.084669;
+	MFinger.invP[3][4] = -0.277407;
 
-	R_MFinger[4][0] = 0.634515;
-	R_MFinger[4][1] = 0.447130;
-	R_MFinger[4][2] = -0.464874;
-	R_MFinger[4][3] = 0.510406;
-	R_MFinger[4][4] = 0.003764;
-	R_MFinger[4][5] = 0.580491;
-
-	R_MFinger[5][0] = -788.814211;
-	R_MFinger[5][1] = 344.682000;
-	R_MFinger[5][2] = -1125.710526;
-	R_MFinger[5][3] = -984.963158;
-	R_MFinger[5][4] = 0.580491;
-	R_MFinger[5][5] = 2032.871053;
+	MFinger.invP[4][0] = -0.000007;
+	MFinger.invP[4][1] = -0.005386;
+	MFinger.invP[4][2] = -14.873096;
+	MFinger.invP[4][3] = -0.277407;
+	MFinger.invP[4][4] = 0.980883;
 
 
-	invR_MFinger[0][0] = 0.529629;
-	invR_MFinger[0][1] = 0.008552;
-	invR_MFinger[0][2] = -0.530462;
-	invR_MFinger[0][3] = -0.010065;
-	invR_MFinger[0][4] = -146.296595;
-	invR_MFinger[0][5] = -0.052785;
+	MFinger.R[0][0] = 7895.858947;
+	MFinger.R[0][1] = 0.497900;
+	MFinger.R[0][2] = 7772.402632;
+	MFinger.R[0][3] = 668.163684;
+	MFinger.R[0][4] = 0.634515;
+	MFinger.R[0][5] = -788.814211;
 
-	invR_MFinger[1][0] = 0.008552;
-	invR_MFinger[1][1] = 0.036847;
-	invR_MFinger[1][2] = -0.008406;
-	invR_MFinger[1][3] = -0.031746;
-	invR_MFinger[1][4] = 1.035149;
-	invR_MFinger[1][5] = -0.023261;
+	MFinger.R[1][0] = 0.497900;
+	MFinger.R[1][1] = 303.854636;
+	MFinger.R[1][2] = -154.575263;
+	MFinger.R[1][3] = 124.265368;
+	MFinger.R[1][4] = 0.447130;
+	MFinger.R[1][5] = 344.682000;
 
-	invR_MFinger[2][0] = -0.530462;
-	invR_MFinger[2][1] = -0.008406;
-	invR_MFinger[2][2] = 0.531433;
-	invR_MFinger[2][3] = 0.009892;
-	invR_MFinger[2][4] = 146.558360;
-	invR_MFinger[2][5] = 0.052817;
+	MFinger.R[2][0] = 7772.402632;
+	MFinger.R[2][1] = -154.575263;
+	MFinger.R[2][2] = 7986.368421;
+	MFinger.R[2][3] = 609.263158;
+	MFinger.R[2][4] = -0.464874;
+	MFinger.R[2][5] = -1125.710526;
 
-	invR_MFinger[3][0] = -0.010065;
-	invR_MFinger[3][1] = -0.031746;
-	invR_MFinger[3][2] = 0.009892;
-	invR_MFinger[3][3] = 0.031387;
-	invR_MFinger[3][4] = -1.029756;
-	invR_MFinger[3][5] = 0.022456;
+	MFinger.R[3][0] = 668.163684;
+	MFinger.R[3][1] = 124.265368;
+	MFinger.R[3][2] = 609.263158;
+	MFinger.R[3][3] = 901.252632;
+	MFinger.R[3][4] = 0.510406;
+	MFinger.R[3][5] = -984.963158;
 
-	invR_MFinger[4][0] = -146.296595;
-	invR_MFinger[4][1] = 1.035149;
-	invR_MFinger[4][2] = 146.558360;
-	invR_MFinger[4][3] = -1.029756;
-	invR_MFinger[4][4] = 41198.890066;
-	invR_MFinger[4][5] = 11.950979;
+	MFinger.R[4][0] = 0.634515;
+	MFinger.R[4][1] = 0.447130;
+	MFinger.R[4][2] = -0.464874;
+	MFinger.R[4][3] = 0.510406;
+	MFinger.R[4][4] = 0.003764;
+	MFinger.R[4][5] = 0.580491;
 
-	invR_MFinger[5][0] = -0.052785;
-	invR_MFinger[5][1] = -0.023261;
-	invR_MFinger[5][2] = 0.052817;
-	invR_MFinger[5][3] = 0.022456;
-	invR_MFinger[5][4] = 11.950979;
-	invR_MFinger[5][5] = 0.020669;
+	MFinger.R[5][0] = -788.814211;
+	MFinger.R[5][1] = 344.682000;
+	MFinger.R[5][2] = -1125.710526;
+	MFinger.R[5][3] = -984.963158;
+	MFinger.R[5][4] = 0.580491;
+	MFinger.R[5][5] = 2032.871053;
+
+
+	MFinger.invR[0][0] = 0.529629;
+	MFinger.invR[0][1] = 0.008552;
+	MFinger.invR[0][2] = -0.530462;
+	MFinger.invR[0][3] = -0.010065;
+	MFinger.invR[0][4] = -146.296595;
+	MFinger.invR[0][5] = -0.052785;
+
+	MFinger.invR[1][0] = 0.008552;
+	MFinger.invR[1][1] = 0.036847;
+	MFinger.invR[1][2] = -0.008406;
+	MFinger.invR[1][3] = -0.031746;
+	MFinger.invR[1][4] = 1.035149;
+	MFinger.invR[1][5] = -0.023261;
+
+	MFinger.invR[2][0] = -0.530462;
+	MFinger.invR[2][1] = -0.008406;
+	MFinger.invR[2][2] = 0.531433;
+	MFinger.invR[2][3] = 0.009892;
+	MFinger.invR[2][4] = 146.558360;
+	MFinger.invR[2][5] = 0.052817;
+
+	MFinger.invR[3][0] = -0.010065;
+	MFinger.invR[3][1] = -0.031746;
+	MFinger.invR[3][2] = 0.009892;
+	MFinger.invR[3][3] = 0.031387;
+	MFinger.invR[3][4] = -1.029756;
+	MFinger.invR[3][5] = 0.022456;
+
+	MFinger.invR[4][0] = -146.296595;
+	MFinger.invR[4][1] = 1.035149;
+	MFinger.invR[4][2] = 146.558360;
+	MFinger.invR[4][3] = -1.029756;
+	MFinger.invR[4][4] = 41198.890066;
+	MFinger.invR[4][5] = 11.950979;
+
+	MFinger.invR[5][0] = -0.052785;
+	MFinger.invR[5][1] = -0.023261;
+	MFinger.invR[5][2] = 0.052817;
+	MFinger.invR[5][3] = 0.022456;
+	MFinger.invR[5][4] = 11.950979;
+	MFinger.invR[5][5] = 0.020669;
 	//palec wskazujacy
 
 
-	 P_FFinger[0][0] = 7740.031841;
-	 P_FFinger[0][1] = 414.422322;
-	 P_FFinger[0][2] = -0.362811;
-	 P_FFinger[0][3] = -339.554147;
-	 P_FFinger[0][4] = -80.359658;
+	 FFinger.P[0][0] = 7740.031841;
+	 FFinger.P[0][1] = 414.422322;
+	 FFinger.P[0][2] = -0.362811;
+	 FFinger.P[0][3] = -339.554147;
+	 FFinger.P[0][4] = -80.359658;
 
-	 P_FFinger[1][0] = 414.422322;
-	 P_FFinger[1][1] = 504.539142;
-	 P_FFinger[1][2] = 0.232257;
-	 P_FFinger[1][3] = -271.977598;
-	 P_FFinger[1][4] = -72.707694;
+	 FFinger.P[1][0] = 414.422322;
+	 FFinger.P[1][1] = 504.539142;
+	 FFinger.P[1][2] = 0.232257;
+	 FFinger.P[1][3] = -271.977598;
+	 FFinger.P[1][4] = -72.707694;
 
-	 P_FFinger[2][0] = -0.362811;
-	 P_FFinger[2][1] = 0.232257;
-	 P_FFinger[2][2] = 0.003018;
-	 P_FFinger[2][3] = -0.023281;
-	 P_FFinger[2][4] = 0.032337;
+	 FFinger.P[2][0] = -0.362811;
+	 FFinger.P[2][1] = 0.232257;
+	 FFinger.P[2][2] = 0.003018;
+	 FFinger.P[2][3] = -0.023281;
+	 FFinger.P[2][4] = 0.032337;
 
-	 P_FFinger[3][0] = -339.554147;
-	 P_FFinger[3][1] = -271.977598;
-	 P_FFinger[3][2] = -0.023281;
-	 P_FFinger[3][3] = 293.086467;
-	 P_FFinger[3][4] = 89.050813;
+	 FFinger.P[3][0] = -339.554147;
+	 FFinger.P[3][1] = -271.977598;
+	 FFinger.P[3][2] = -0.023281;
+	 FFinger.P[3][3] = 293.086467;
+	 FFinger.P[3][4] = 89.050813;
 
-	 P_FFinger[4][0] = -80.359658;
-	 P_FFinger[4][1] = -72.707694;
-	 P_FFinger[4][2] = 0.032337;
-	 P_FFinger[4][3] = 89.050813;
-	 P_FFinger[4][4] = 29.273343;
-
-
-	invP_FFinger[0][0] = 0.000146;
-	invP_FFinger[0][1] = -0.000006;
-	invP_FFinger[0][2] = 0.050324;
-	invP_FFinger[0][3] = 0.000888;
-	invP_FFinger[0][4] = -0.002372;
-
-	invP_FFinger[1][0] = -0.000006;
-	invP_FFinger[1][1] = 0.004827;
-	invP_FFinger[1][2] = -0.073208;
-	invP_FFinger[1][3] = 0.010623;
-	invP_FFinger[1][4] = -0.020261;
-
-	invP_FFinger[2][0] = 0.050324;
-	invP_FFinger[2][1] = -0.073208;
-	invP_FFinger[2][2] = 450.229005;
-	invP_FFinger[2][3] = 2.516361;
-	invP_FFinger[2][4] = -8.195915;
-
-	invP_FFinger[3][0] = 0.000888;
-	invP_FFinger[3][1] = 0.010623;
-	invP_FFinger[3][2] = 2.516361;
-	invP_FFinger[3][3] = 0.086986;
-	invP_FFinger[3][4] = -0.238571;
-
-	invP_FFinger[4][0] = -0.002372;
-	invP_FFinger[4][1] = -0.020261;
-	invP_FFinger[4][2] = -8.195915;
-	invP_FFinger[4][3] = -0.238571;
-	invP_FFinger[4][4] = 0.712123;
+	 FFinger.P[4][0] = -80.359658;
+	 FFinger.P[4][1] = -72.707694;
+	 FFinger.P[4][2] = 0.032337;
+	 FFinger.P[4][3] = 89.050813;
+	 FFinger.P[4][4] = 29.273343;
 
 
+	FFinger.invP[0][0] = 0.000146;
+	FFinger.invP[0][1] = -0.000006;
+	FFinger.invP[0][2] = 0.050324;
+	FFinger.invP[0][3] = 0.000888;
+	FFinger.invP[0][4] = -0.002372;
 
-	R_FFinger[0][0] = 7895.858947;
-	R_FFinger[0][1] = 0.497900;
-	R_FFinger[0][2] = 7689.533684;
-	R_FFinger[0][3] = 728.568947;
-	R_FFinger[0][4] = 0.248942;
-	R_FFinger[0][5] = -788.814211;
+	FFinger.invP[1][0] = -0.000006;
+	FFinger.invP[1][1] = 0.004827;
+	FFinger.invP[1][2] = -0.073208;
+	FFinger.invP[1][3] = 0.010623;
+	FFinger.invP[1][4] = -0.020261;
 
-	R_FFinger[1][0] = 0.497900;
-	R_FFinger[1][1] = 303.854636;
-	R_FFinger[1][2] = -55.510737;
-	R_FFinger[1][3] = 116.235474;
-	R_FFinger[1][4] = 0.319868;
-	R_FFinger[1][5] = 344.682000;
+	FFinger.invP[2][0] = 0.050324;
+	FFinger.invP[2][1] = -0.073208;
+	FFinger.invP[2][2] = 450.229005;
+	FFinger.invP[2][3] = 2.516361;
+	FFinger.invP[2][4] = -8.195915;
 
-	R_FFinger[2][0] = 7689.533684;
-	R_FFinger[2][1] = -55.510737;
-	R_FFinger[2][2] = 7755.694737;
-	R_FFinger[2][3] = 537.700000;
-	R_FFinger[2][4] = -0.600775;
-	R_FFinger[2][5] = -623.257895;
+	FFinger.invP[3][0] = 0.000888;
+	FFinger.invP[3][1] = 0.010623;
+	FFinger.invP[3][2] = 2.516361;
+	FFinger.invP[3][3] = 0.086986;
+	FFinger.invP[3][4] = -0.238571;
 
-	R_FFinger[3][0] = 728.568947;
-	R_FFinger[3][1] = 116.235474;
-	R_FFinger[3][2] = 537.700000;
-	R_FFinger[3][3] = 836.892105;
-	R_FFinger[3][4] = 0.198258;
-	R_FFinger[3][5] = -975.544737;
-
-	R_FFinger[4][0] = 0.248942;
-	R_FFinger[4][1] = 0.319868;
-	R_FFinger[4][2] = -0.600775;
-	R_FFinger[4][3] = 0.198258;
-	R_FFinger[4][4] = 0.003018;
-	R_FFinger[4][5] = 0.269476;
-
-	R_FFinger[5][0] = -788.814211;
-	R_FFinger[5][1] = 344.682000;
-	R_FFinger[5][2] = -623.257895;
-	R_FFinger[5][3] = -975.544737;
-	R_FFinger[5][4] = 0.269476;
-	R_FFinger[5][5] = 2032.871053;
+	FFinger.invP[4][0] = -0.002372;
+	FFinger.invP[4][1] = -0.020261;
+	FFinger.invP[4][2] = -8.195915;
+	FFinger.invP[4][3] = -0.238571;
+	FFinger.invP[4][4] = 0.712123;
 
 
-	invR_FFinger[0][0] = 0.709918;
-	invR_FFinger[0][1] = 0.192100;
-	invR_FFinger[0][2] = -0.708600;
-	invR_FFinger[0][3] = -0.179833;
-	invR_FFinger[0][4] = -205.161305;
-	invR_FFinger[0][5] = -0.033455;
 
-	invR_FFinger[1][0] = 0.192100;
-	invR_FFinger[1][1] = 0.087830;
-	invR_FFinger[1][2] = -0.191119;
-	invR_FFinger[1][3] = -0.076314;
-	invR_FFinger[1][4] = -55.665616;
-	invR_FFinger[1][5] = -0.028189;
+	FFinger.R[0][0] = 7895.858947;
+	FFinger.R[0][1] = 0.497900;
+	FFinger.R[0][2] = 7689.533684;
+	FFinger.R[0][3] = 728.568947;
+	FFinger.R[0][4] = 0.248942;
+	FFinger.R[0][5] = -788.814211;
 
-	invR_FFinger[2][0] = -0.708600;
-	invR_FFinger[2][1] = -0.191119;
-	invR_FFinger[2][2] = 0.707434;
-	invR_FFinger[2][3] = 0.178894;
-	invR_FFinger[2][4] = 204.815426;
-	invR_FFinger[2][5] = 0.033038;
+	FFinger.R[1][0] = 0.497900;
+	FFinger.R[1][1] = 303.854636;
+	FFinger.R[1][2] = -55.510737;
+	FFinger.R[1][3] = 116.235474;
+	FFinger.R[1][4] = 0.319868;
+	FFinger.R[1][5] = 344.682000;
 
-	invR_FFinger[3][0] = -0.179833;
-	invR_FFinger[3][1] = -0.076314;
-	invR_FFinger[3][2] = 0.178894;
-	invR_FFinger[3][3] = 0.069998;
-	invR_FFinger[3][4] = 51.722692;
-	invR_FFinger[3][5] = 0.024741;
+	FFinger.R[2][0] = 7689.533684;
+	FFinger.R[2][1] = -55.510737;
+	FFinger.R[2][2] = 7755.694737;
+	FFinger.R[2][3] = 537.700000;
+	FFinger.R[2][4] = -0.600775;
+	FFinger.R[2][5] = -623.257895;
 
-	invR_FFinger[4][0] = -205.161305;
-	invR_FFinger[4][1] = -55.665616;
-	invR_FFinger[4][2] = 204.815426;
-	invR_FFinger[4][3] = 51.722692;
-	invR_FFinger[4][4] = 59672.586988;
-	invR_FFinger[4][5] = 9.534846;
+	FFinger.R[3][0] = 728.568947;
+	FFinger.R[3][1] = 116.235474;
+	FFinger.R[3][2] = 537.700000;
+	FFinger.R[3][3] = 836.892105;
+	FFinger.R[3][4] = 0.198258;
+	FFinger.R[3][5] = -975.544737;
 
-	invR_FFinger[5][0] = -0.033455;
-	invR_FFinger[5][1] = -0.028189;
-	invR_FFinger[5][2] = 0.033038;
-	invR_FFinger[5][3] = 0.024741;
-	invR_FFinger[5][4] = 9.534846;
-	invR_FFinger[5][5] = 0.013028;
+	FFinger.R[4][0] = 0.248942;
+	FFinger.R[4][1] = 0.319868;
+	FFinger.R[4][2] = -0.600775;
+	FFinger.R[4][3] = 0.198258;
+	FFinger.R[4][4] = 0.003018;
+	FFinger.R[4][5] = 0.269476;
+
+	FFinger.R[5][0] = -788.814211;
+	FFinger.R[5][1] = 344.682000;
+	FFinger.R[5][2] = -623.257895;
+	FFinger.R[5][3] = -975.544737;
+	FFinger.R[5][4] = 0.269476;
+	FFinger.R[5][5] = 2032.871053;
+
+
+	FFinger.invR[0][0] = 0.709918;
+	FFinger.invR[0][1] = 0.192100;
+	FFinger.invR[0][2] = -0.708600;
+	FFinger.invR[0][3] = -0.179833;
+	FFinger.invR[0][4] = -205.161305;
+	FFinger.invR[0][5] = -0.033455;
+
+	FFinger.invR[1][0] = 0.192100;
+	FFinger.invR[1][1] = 0.087830;
+	FFinger.invR[1][2] = -0.191119;
+	FFinger.invR[1][3] = -0.076314;
+	FFinger.invR[1][4] = -55.665616;
+	FFinger.invR[1][5] = -0.028189;
+
+	FFinger.invR[2][0] = -0.708600;
+	FFinger.invR[2][1] = -0.191119;
+	FFinger.invR[2][2] = 0.707434;
+	FFinger.invR[2][3] = 0.178894;
+	FFinger.invR[2][4] = 204.815426;
+	FFinger.invR[2][5] = 0.033038;
+
+	FFinger.invR[3][0] = -0.179833;
+	FFinger.invR[3][1] = -0.076314;
+	FFinger.invR[3][2] = 0.178894;
+	FFinger.invR[3][3] = 0.069998;
+	FFinger.invR[3][4] = 51.722692;
+	FFinger.invR[3][5] = 0.024741;
+
+	FFinger.invR[4][0] = -205.161305;
+	FFinger.invR[4][1] = -55.665616;
+	FFinger.invR[4][2] = 204.815426;
+	FFinger.invR[4][3] = 51.722692;
+	FFinger.invR[4][4] = 59672.586988;
+	FFinger.invR[4][5] = 9.534846;
+
+	FFinger.invR[5][0] = -0.033455;
+	FFinger.invR[5][1] = -0.028189;
+	FFinger.invR[5][2] = 0.033038;
+	FFinger.invR[5][3] = 0.024741;
+	FFinger.invR[5][4] = 9.534846;
+	FFinger.invR[5][5] = 0.013028;
 
 	//kciuk
 
-	 P_TFinger[0][0] = 7740.031841;
-	 P_TFinger[0][1] = 414.422322;
-	 P_TFinger[0][2] = -0.362811;
-	 P_TFinger[0][3] = -339.554147;
-	 P_TFinger[0][4] = -80.359658;
+	 TFinger.P[0][0] = 7740.031841;
+	 TFinger.P[0][1] = 414.422322;
+	 TFinger.P[0][2] = -0.362811;
+	 TFinger.P[0][3] = -339.554147;
+	 TFinger.P[0][4] = -80.359658;
 
-	 P_TFinger[1][0] = 414.422322;
-	 P_TFinger[1][1] = 504.539142;
-	 P_TFinger[1][2] = 0.232257;
-	 P_TFinger[1][3] = -271.977598;
-	 P_TFinger[1][4] = -72.707694;
+	 TFinger.P[1][0] = 414.422322;
+	 TFinger.P[1][1] = 504.539142;
+	 TFinger.P[1][2] = 0.232257;
+	 TFinger.P[1][3] = -271.977598;
+	 TFinger.P[1][4] = -72.707694;
 
-	 P_TFinger[2][0] = -0.362811;
-	 P_TFinger[2][1] = 0.232257;
-	 P_TFinger[2][2] = 0.003018;
-	 P_TFinger[2][3] = -0.023281;
-	 P_TFinger[2][4] = 0.032337;
+	 TFinger.P[2][0] = -0.362811;
+	 TFinger.P[2][1] = 0.232257;
+	 TFinger.P[2][2] = 0.003018;
+	 TFinger.P[2][3] = -0.023281;
+	 TFinger.P[2][4] = 0.032337;
 
-	 P_TFinger[3][0] = -339.554147;
-	 P_TFinger[3][1] = -271.977598;
-	 P_TFinger[3][2] = -0.023281;
-	 P_TFinger[3][3] = 293.086467;
-	 P_TFinger[3][4] = 89.050813;
+	 TFinger.P[3][0] = -339.554147;
+	 TFinger.P[3][1] = -271.977598;
+	 TFinger.P[3][2] = -0.023281;
+	 TFinger.P[3][3] = 293.086467;
+	 TFinger.P[3][4] = 89.050813;
 
-	 P_TFinger[4][0] = -80.359658;
-	 P_TFinger[4][1] = -72.707694;
-	 P_TFinger[4][2] = 0.032337;
-	 P_TFinger[4][3] = 89.050813;
-	 P_TFinger[4][4] = 29.273343;
-
-
-	invP_TFinger[0][0] = 0.000146;
-	invP_TFinger[0][1] = -0.000006;
-	invP_TFinger[0][2] = 0.050324;
-	invP_TFinger[0][3] = 0.000888;
-	invP_TFinger[0][4] = -0.002372;
-
-	invP_TFinger[1][0] = -0.000006;
-	invP_TFinger[1][1] = 0.004827;
-	invP_TFinger[1][2] = -0.073208;
-	invP_TFinger[1][3] = 0.010623;
-	invP_TFinger[1][4] = -0.020261;
-
-	invP_TFinger[2][0] = 0.050324;
-	invP_TFinger[2][1] = -0.073208;
-	invP_TFinger[2][2] = 450.229005;
-	invP_TFinger[2][3] = 2.516361;
-	invP_TFinger[2][4] = -8.195915;
-
-	invP_TFinger[3][0] = 0.000888;
-	invP_TFinger[3][1] = 0.010623;
-	invP_TFinger[3][2] = 2.516361;
-	invP_TFinger[3][3] = 0.086986;
-	invP_TFinger[3][4] = -0.238571;
-
-	invP_TFinger[4][0] = -0.002372;
-	invP_TFinger[4][1] = -0.020261;
-	invP_TFinger[4][2] = -8.195915;
-	invP_TFinger[4][3] = -0.238571;
-	invP_TFinger[4][4] = 0.712123;
+	 TFinger.P[4][0] = -80.359658;
+	 TFinger.P[4][1] = -72.707694;
+	 TFinger.P[4][2] = 0.032337;
+	 TFinger.P[4][3] = 89.050813;
+	 TFinger.P[4][4] = 29.273343;
 
 
-	R_TFinger[0][0] = 7895.858947;
-	R_TFinger[0][1] = 0.497900;
-	R_TFinger[0][2] = 7543.161053;
-	R_TFinger[0][3] = 201.359474;
-	R_TFinger[0][4] = -0.069461;
-	R_TFinger[0][5] = -788.814211;
+	TFinger.invP[0][0] = 0.000146;
+	TFinger.invP[0][1] = -0.000006;
+	TFinger.invP[0][2] = 0.050324;
+	TFinger.invP[0][3] = 0.000888;
+	TFinger.invP[0][4] = -0.002372;
 
-	R_TFinger[1][0] = 0.497900;
-	R_TFinger[1][1] = 303.854636;
-	R_TFinger[1][2] = 121.068737;
-	R_TFinger[1][3] = 247.388316;
-	R_TFinger[1][4] = 0.011717;
-	R_TFinger[1][5] = 344.682000;
+	TFinger.invP[1][0] = -0.000006;
+	TFinger.invP[1][1] = 0.004827;
+	TFinger.invP[1][2] = -0.073208;
+	TFinger.invP[1][3] = 0.010623;
+	TFinger.invP[1][4] = -0.020261;
 
-	R_TFinger[2][0] = 7543.161053;
-	R_TFinger[2][1] = 121.068737;
-	R_TFinger[2][2] = 7655.418421;
-	R_TFinger[2][3] = 232.400000;
-	R_TFinger[2][4] = -0.762968;
-	R_TFinger[2][5] = 116.334211;
+	TFinger.invP[2][0] = 0.050324;
+	TFinger.invP[2][1] = -0.073208;
+	TFinger.invP[2][2] = 450.229005;
+	TFinger.invP[2][3] = 2.516361;
+	TFinger.invP[2][4] = -8.195915;
 
-	R_TFinger[3][0] = 201.359474;
-	R_TFinger[3][1] = 247.388316;
-	R_TFinger[3][2] = 232.400000;
-	R_TFinger[3][3] = 356.568421;
-	R_TFinger[3][4] = -0.547753;
-	R_TFinger[3][5] = 7.147368;
+	TFinger.invP[3][0] = 0.000888;
+	TFinger.invP[3][1] = 0.010623;
+	TFinger.invP[3][2] = 2.516361;
+	TFinger.invP[3][3] = 0.086986;
+	TFinger.invP[3][4] = -0.238571;
 
-	R_TFinger[4][0] = -0.069461;
-	R_TFinger[4][1] = 0.011717;
-	R_TFinger[4][2] = -0.762968;
-	R_TFinger[4][3] = -0.547753;
-	R_TFinger[4][4] = 0.004300;
-	R_TFinger[4][5] = -0.572166;
-
-	R_TFinger[5][0] = -788.814211;
-	R_TFinger[5][1] = 344.682000;
-	R_TFinger[5][2] = 116.334211;
-	R_TFinger[5][3] = 7.147368;
-	R_TFinger[5][4] = -0.572166;
-	R_TFinger[5][5] = 2032.871053;
+	TFinger.invP[4][0] = -0.002372;
+	TFinger.invP[4][1] = -0.020261;
+	TFinger.invP[4][2] = -8.195915;
+	TFinger.invP[4][3] = -0.238571;
+	TFinger.invP[4][4] = 0.712123;
 
 
-	invR_TFinger[0][0] = 0.317019;
-	invR_TFinger[0][1] = 0.474137;
-	invR_TFinger[0][2] = -0.316897;
-	invR_TFinger[0][3] = -0.467519;
-	invR_TFinger[0][4] = -107.693254;
-	invR_TFinger[0][5] = 0.032089;
+	TFinger.R[0][0] = 7895.858947;
+	TFinger.R[0][1] = 0.497900;
+	TFinger.R[0][2] = 7543.161053;
+	TFinger.R[0][3] = 201.359474;
+	TFinger.R[0][4] = -0.069461;
+	TFinger.R[0][5] = -788.814211;
 
-	invR_TFinger[1][0] = 0.474137;
-	invR_TFinger[1][1] = 0.954881;
-	invR_TFinger[1][2] = -0.473832;
-	invR_TFinger[1][3] = -0.924260;
-	invR_TFinger[1][4] = -197.176482;
-	invR_TFinger[1][5] = -0.003056;
+	TFinger.R[1][0] = 0.497900;
+	TFinger.R[1][1] = 303.854636;
+	TFinger.R[1][2] = 121.068737;
+	TFinger.R[1][3] = 247.388316;
+	TFinger.R[1][4] = 0.011717;
+	TFinger.R[1][5] = 344.682000;
 
-	invR_TFinger[2][0] = -0.316897;
-	invR_TFinger[2][1] = -0.473832;
-	invR_TFinger[2][2] = 0.316909;
-	invR_TFinger[2][3] = 0.467163;
-	invR_TFinger[2][4] = 107.649029;
-	invR_TFinger[2][5] = -0.032105;
+	TFinger.R[2][0] = 7543.161053;
+	TFinger.R[2][1] = 121.068737;
+	TFinger.R[2][2] = 7655.418421;
+	TFinger.R[2][3] = 232.400000;
+	TFinger.R[2][4] = -0.762968;
+	TFinger.R[2][5] = 116.334211;
 
-	invR_TFinger[3][0] = -0.467519;
-	invR_TFinger[3][1] = -0.924260;
-	invR_TFinger[3][2] = 0.467163;
-	invR_TFinger[3][3] = 0.899069;
-	invR_TFinger[3][4] = 192.339595;
-	invR_TFinger[3][5] = -0.000459;
+	TFinger.R[3][0] = 201.359474;
+	TFinger.R[3][1] = 247.388316;
+	TFinger.R[3][2] = 232.400000;
+	TFinger.R[3][3] = 356.568421;
+	TFinger.R[3][4] = -0.547753;
+	TFinger.R[3][5] = 7.147368;
 
-	invR_TFinger[4][0] = -107.693254;
-	invR_TFinger[4][1] = -197.176482;
-	invR_TFinger[4][2] = 107.649029;
-	invR_TFinger[4][3] = 192.339595;
-	invR_TFinger[4][4] = 42194.100515;
-	invR_TFinger[4][5] = -3.316862;
+	TFinger.R[4][0] = -0.069461;
+	TFinger.R[4][1] = 0.011717;
+	TFinger.R[4][2] = -0.762968;
+	TFinger.R[4][3] = -0.547753;
+	TFinger.R[4][4] = 0.004300;
+	TFinger.R[4][5] = -0.572166;
 
-	invR_TFinger[5][0] = 0.032089;
-	invR_TFinger[5][1] = -0.003056;
-	invR_TFinger[5][2] = -0.032105;
-	invR_TFinger[5][3] = -0.000459;
-	invR_TFinger[5][4] = -3.316862;
-	invR_TFinger[5][5] = 0.014367;
+	TFinger.R[5][0] = -788.814211;
+	TFinger.R[5][1] = 344.682000;
+	TFinger.R[5][2] = 116.334211;
+	TFinger.R[5][3] = 7.147368;
+	TFinger.R[5][4] = -0.572166;
+	TFinger.R[5][5] = 2032.871053;
+
+
+	TFinger.invR[0][0] = 0.317019;
+	TFinger.invR[0][1] = 0.474137;
+	TFinger.invR[0][2] = -0.316897;
+	TFinger.invR[0][3] = -0.467519;
+	TFinger.invR[0][4] = -107.693254;
+	TFinger.invR[0][5] = 0.032089;
+
+	TFinger.invR[1][0] = 0.474137;
+	TFinger.invR[1][1] = 0.954881;
+	TFinger.invR[1][2] = -0.473832;
+	TFinger.invR[1][3] = -0.924260;
+	TFinger.invR[1][4] = -197.176482;
+	TFinger.invR[1][5] = -0.003056;
+
+	TFinger.invR[2][0] = -0.316897;
+	TFinger.invR[2][1] = -0.473832;
+	TFinger.invR[2][2] = 0.316909;
+	TFinger.invR[2][3] = 0.467163;
+	TFinger.invR[2][4] = 107.649029;
+	TFinger.invR[2][5] = -0.032105;
+
+	TFinger.invR[3][0] = -0.467519;
+	TFinger.invR[3][1] = -0.924260;
+	TFinger.invR[3][2] = 0.467163;
+	TFinger.invR[3][3] = 0.899069;
+	TFinger.invR[3][4] = 192.339595;
+	TFinger.invR[3][5] = -0.000459;
+
+	TFinger.invR[4][0] = -107.693254;
+	TFinger.invR[4][1] = -197.176482;
+	TFinger.invR[4][2] = 107.649029;
+	TFinger.invR[4][3] = 192.339595;
+	TFinger.invR[4][4] = 42194.100515;
+	TFinger.invR[4][5] = -3.316862;
+
+	TFinger.invR[5][0] = 0.032089;
+	TFinger.invR[5][1] = -0.003056;
+	TFinger.invR[5][2] = -0.032105;
+	TFinger.invR[5][3] = -0.000459;
+	TFinger.invR[5][4] = -3.316862;
+	TFinger.invR[5][5] = 0.014367;
 
 	//mały palec
 
 
-	 P_SFinger[0][0] = 8930.221039;
-	 P_SFinger[0][1] = 104.922314;
-	 P_SFinger[0][2] = -1.480602;
-	 P_SFinger[0][3] = -300.765973;
-	 P_SFinger[0][4] = -194.988840;
+	 SFinger.P[0][0] = 8930.221039;
+	 SFinger.P[0][1] = 104.922314;
+	 SFinger.P[0][2] = -1.480602;
+	 SFinger.P[0][3] = -300.765973;
+	 SFinger.P[0][4] = -194.988840;
 
-	 P_SFinger[1][0] = 104.922314;
-	 P_SFinger[1][1] = 573.612657;
-	 P_SFinger[1][2] = 1.191833;
-	 P_SFinger[1][3] = -58.597483;
-	 P_SFinger[1][4] = -8.765255;
+	 SFinger.P[1][0] = 104.922314;
+	 SFinger.P[1][1] = 573.612657;
+	 SFinger.P[1][2] = 1.191833;
+	 SFinger.P[1][3] = -58.597483;
+	 SFinger.P[1][4] = -8.765255;
 
-	 P_SFinger[2][0] = -1.480602;
-	 P_SFinger[2][1] = 1.191833;
-	 P_SFinger[2][2] = 0.005316;
-	 P_SFinger[2][3] = 0.106997;
-	 P_SFinger[2][4] = 0.157024;
+	 SFinger.P[2][0] = -1.480602;
+	 SFinger.P[2][1] = 1.191833;
+	 SFinger.P[2][2] = 0.005316;
+	 SFinger.P[2][3] = 0.106997;
+	 SFinger.P[2][4] = 0.157024;
 
-	 P_SFinger[3][0] = -300.765973;
-	 P_SFinger[3][1] = -58.597483;
-	 P_SFinger[3][2] = 0.106997;
-	 P_SFinger[3][3] = 81.452438;
-	 P_SFinger[3][4] = 47.097304;
+	 SFinger.P[3][0] = -300.765973;
+	 SFinger.P[3][1] = -58.597483;
+	 SFinger.P[3][2] = 0.106997;
+	 SFinger.P[3][3] = 81.452438;
+	 SFinger.P[3][4] = 47.097304;
 
-	 P_SFinger[4][0] = -194.988840;
-	 P_SFinger[4][1] = -8.765255;
-	 P_SFinger[4][2] = 0.157024;
-	 P_SFinger[4][3] = 47.097304;
-	 P_SFinger[4][4] = 29.273343;
-
-
-	invP_SFinger[0][0] = 0.000134;
-	invP_SFinger[0][1] = -0.000103;
-	invP_SFinger[0][2] = 0.032291;
-	invP_SFinger[0][3] = -0.000287;
-	invP_SFinger[0][4] = 0.001151;
-
-	invP_SFinger[1][0] = -0.000103;
-	invP_SFinger[1][1] = 0.004855;
-	invP_SFinger[1][2] = -0.656576;
-	invP_SFinger[1][3] = 0.021439;
-	invP_SFinger[1][4] = -0.030206;
-
-	invP_SFinger[2][0] = 0.032291;
-	invP_SFinger[2][1] = -0.656576;
-	invP_SFinger[2][2] = 1445.444163;
-	invP_SFinger[2][3] = 31.852714;
-	invP_SFinger[2][4] = -58.982171;
-
-	invP_SFinger[3][0] = -0.000287;
-	invP_SFinger[3][1] = 0.021439;
-	invP_SFinger[3][2] = 31.852714;
-	invP_SFinger[3][3] = 1.161668;
-	invP_SFinger[3][4] = -2.035340;
-
-	invP_SFinger[4][0] = 0.001151;
-	invP_SFinger[4][1] = -0.030206;
-	invP_SFinger[4][2] = -58.982171;
-	invP_SFinger[4][3] = -2.035340;
-	invP_SFinger[4][4] = 3.623785;
+	 SFinger.P[4][0] = -194.988840;
+	 SFinger.P[4][1] = -8.765255;
+	 SFinger.P[4][2] = 0.157024;
+	 SFinger.P[4][3] = 47.097304;
+	 SFinger.P[4][4] = 29.273343;
 
 
+	SFinger.invP[0][0] = 0.000134;
+	SFinger.invP[0][1] = -0.000103;
+	SFinger.invP[0][2] = 0.032291;
+	SFinger.invP[0][3] = -0.000287;
+	SFinger.invP[0][4] = 0.001151;
 
-	R_SFinger[0][0] = 7895.858947;
-	R_SFinger[0][1] = 0.497900;
-	R_SFinger[0][2] = 8294.980000;
-	R_SFinger[0][3] = 209.081579;
-	R_SFinger[0][4] = -0.564469;
-	R_SFinger[0][5] = -788.814211;
+	SFinger.invP[1][0] = -0.000103;
+	SFinger.invP[1][1] = 0.004855;
+	SFinger.invP[1][2] = -0.656576;
+	SFinger.invP[1][3] = 0.021439;
+	SFinger.invP[1][4] = -0.030206;
 
-	R_SFinger[1][0] = 0.497900;
-	R_SFinger[1][1] = 303.854636;
-	R_SFinger[1][2] = -205.001263;
-	R_SFinger[1][3] = 316.732737;
-	R_SFinger[1][4] = 0.614738;
-	R_SFinger[1][5] = 344.682000;
+	SFinger.invP[2][0] = 0.032291;
+	SFinger.invP[2][1] = -0.656576;
+	SFinger.invP[2][2] = 1445.444163;
+	SFinger.invP[2][3] = 31.852714;
+	SFinger.invP[2][4] = -58.982171;
 
-	R_SFinger[2][0] = 8294.980000;
-	R_SFinger[2][1] = -205.001263;
-	R_SFinger[2][2] = 9258.957895;
-	R_SFinger[2][3] = 155.100000;
-	R_SFinger[2][4] = -1.681815;
-	R_SFinger[2][5] = -1808.468421;
+	SFinger.invP[3][0] = -0.000287;
+	SFinger.invP[3][1] = 0.021439;
+	SFinger.invP[3][2] = 31.852714;
+	SFinger.invP[3][3] = 1.161668;
+	SFinger.invP[3][4] = -2.035340;
 
-	R_SFinger[3][0] = 209.081579;
-	R_SFinger[3][1] = 316.732737;
-	R_SFinger[3][2] = 155.100000;
-	R_SFinger[3][3] = 699.502632;
-	R_SFinger[3][4] = 1.318676;
-	R_SFinger[3][5] = -164.713158;
-
-	R_SFinger[4][0] = -0.564469;
-	R_SFinger[4][1] = 0.614738;
-	R_SFinger[4][2] = -1.681815;
-	R_SFinger[4][3] = 1.318676;
-	R_SFinger[4][4] = 0.005316;
-	R_SFinger[4][5] = 1.308535;
-
-	R_SFinger[5][0] = -788.814211;
-	R_SFinger[5][1] = 344.682000;
-	R_SFinger[5][2] = -1808.468421;
-	R_SFinger[5][3] = -164.713158;
-	R_SFinger[5][4] = 1.308535;
-	R_SFinger[5][5] = 2032.871053;
+	SFinger.invP[4][0] = 0.001151;
+	SFinger.invP[4][1] = -0.030206;
+	SFinger.invP[4][2] = -58.982171;
+	SFinger.invP[4][3] = -2.035340;
+	SFinger.invP[4][4] = 3.623785;
 
 
-	invR_SFinger[0][0] = 0.219949;
-	invR_SFinger[0][1] = -0.112095;
-	invR_SFinger[0][2] = -0.220321;
-	invR_SFinger[0][3] = 0.115824;
-	invR_SFinger[0][4] = -49.750982;
-	invR_SFinger[0][5] = -0.050239;
 
-	invR_SFinger[1][0] = -0.112095;
-	invR_SFinger[1][1] = 0.342395;
-	invR_SFinger[1][2] = 0.112924;
-	invR_SFinger[1][3] = -0.328952;
-	invR_SFinger[1][4] = 86.338974;
-	invR_SFinger[1][5] = -0.083321;
+	SFinger.R[0][0] = 7895.858947;
+	SFinger.R[0][1] = 0.497900;
+	SFinger.R[0][2] = 8294.980000;
+	SFinger.R[0][3] = 209.081579;
+	SFinger.R[0][4] = -0.564469;
+	SFinger.R[0][5] = -788.814211;
 
-	invR_SFinger[2][0] = -0.220321;
-	invR_SFinger[2][1] = 0.112924;
-	invR_SFinger[2][2] = 0.220830;
-	invR_SFinger[2][3] = -0.116725;
-	invR_SFinger[2][4] = 50.019260;
-	invR_SFinger[2][5] = 0.050161;
+	SFinger.R[1][0] = 0.497900;
+	SFinger.R[1][1] = 303.854636;
+	SFinger.R[1][2] = -205.001263;
+	SFinger.R[1][3] = 316.732737;
+	SFinger.R[1][4] = 0.614738;
+	SFinger.R[1][5] = 344.682000;
 
-	invR_SFinger[3][0] = 0.115824;
-	invR_SFinger[3][1] = -0.328952;
-	invR_SFinger[3][2] = -0.116725;
-	invR_SFinger[3][3] = 0.320773;
-	invR_SFinger[3][4] = -85.307683;
-	invR_SFinger[3][5] = 0.077780;
+	SFinger.R[2][0] = 8294.980000;
+	SFinger.R[2][1] = -205.001263;
+	SFinger.R[2][2] = 9258.957895;
+	SFinger.R[2][3] = 155.100000;
+	SFinger.R[2][4] = -1.681815;
+	SFinger.R[2][5] = -1808.468421;
 
-	invR_SFinger[4][0] = -49.750982;
-	invR_SFinger[4][1] = 86.338974;
-	invR_SFinger[4][2] = 50.019260;
-	invR_SFinger[4][3] = -85.307683;
-	invR_SFinger[4][4] = 24966.972592;
-	invR_SFinger[4][5] = -12.429204;
+	SFinger.R[3][0] = 209.081579;
+	SFinger.R[3][1] = 316.732737;
+	SFinger.R[3][2] = 155.100000;
+	SFinger.R[3][3] = 699.502632;
+	SFinger.R[3][4] = 1.318676;
+	SFinger.R[3][5] = -164.713158;
 
-	invR_SFinger[5][0] = -0.050239;
-	invR_SFinger[5][1] = -0.083321;
-	invR_SFinger[5][2] = 0.050161;
-	invR_SFinger[5][3] = 0.077780;
-	invR_SFinger[5][4] = -12.429204;
-	invR_SFinger[5][5] = 0.054051;
+	SFinger.R[4][0] = -0.564469;
+	SFinger.R[4][1] = 0.614738;
+	SFinger.R[4][2] = -1.681815;
+	SFinger.R[4][3] = 1.318676;
+	SFinger.R[4][4] = 0.005316;
+	SFinger.R[4][5] = 1.308535;
+
+	SFinger.R[5][0] = -788.814211;
+	SFinger.R[5][1] = 344.682000;
+	SFinger.R[5][2] = -1808.468421;
+	SFinger.R[5][3] = -164.713158;
+	SFinger.R[5][4] = 1.308535;
+	SFinger.R[5][5] = 2032.871053;
+
+
+	SFinger.invR[0][0] = 0.219949;
+	SFinger.invR[0][1] = -0.112095;
+	SFinger.invR[0][2] = -0.220321;
+	SFinger.invR[0][3] = 0.115824;
+	SFinger.invR[0][4] = -49.750982;
+	SFinger.invR[0][5] = -0.050239;
+
+	SFinger.invR[1][0] = -0.112095;
+	SFinger.invR[1][1] = 0.342395;
+	SFinger.invR[1][2] = 0.112924;
+	SFinger.invR[1][3] = -0.328952;
+	SFinger.invR[1][4] = 86.338974;
+	SFinger.invR[1][5] = -0.083321;
+
+	SFinger.invR[2][0] = -0.220321;
+	SFinger.invR[2][1] = 0.112924;
+	SFinger.invR[2][2] = 0.220830;
+	SFinger.invR[2][3] = -0.116725;
+	SFinger.invR[2][4] = 50.019260;
+	SFinger.invR[2][5] = 0.050161;
+
+	SFinger.invR[3][0] = 0.115824;
+	SFinger.invR[3][1] = -0.328952;
+	SFinger.invR[3][2] = -0.116725;
+	SFinger.invR[3][3] = 0.320773;
+	SFinger.invR[3][4] = -85.307683;
+	SFinger.invR[3][5] = 0.077780;
+
+	SFinger.invR[4][0] = -49.750982;
+	SFinger.invR[4][1] = 86.338974;
+	SFinger.invR[4][2] = 50.019260;
+	SFinger.invR[4][3] = -85.307683;
+	SFinger.invR[4][4] = 24966.972592;
+	SFinger.invR[4][5] = -12.429204;
+
+	SFinger.invR[5][0] = -0.050239;
+	SFinger.invR[5][1] = -0.083321;
+	SFinger.invR[5][2] = 0.050161;
+	SFinger.invR[5][3] = 0.077780;
+	SFinger.invR[5][4] = -12.429204;
+	SFinger.invR[5][5] = 0.054051;
 
 
 	//palec serdeczny
 
-	 P_RFinger[0][0] = 8465.374582;
-	 P_RFinger[0][1] = 345.004152;
-	 P_RFinger[0][2] = -1.033221;
-	 P_RFinger[0][3] = -431.608269;
-	 P_RFinger[0][4] = -153.121165;
+	 RFinger.P[0][0] = 8465.374582;
+	 RFinger.P[0][1] = 345.004152;
+	 RFinger.P[0][2] = -1.033221;
+	 RFinger.P[0][3] = -431.608269;
+	 RFinger.P[0][4] = -153.121165;
 
-	 P_RFinger[1][0] = 345.004152;
-	 P_RFinger[1][1] = 548.874626;
-	 P_RFinger[1][2] = 0.788965;
-	 P_RFinger[1][3] = -210.942662;
-	 P_RFinger[1][4] = -54.042831;
+	 RFinger.P[1][0] = 345.004152;
+	 RFinger.P[1][1] = 548.874626;
+	 RFinger.P[1][2] = 0.788965;
+	 RFinger.P[1][3] = -210.942662;
+	 RFinger.P[1][4] = -54.042831;
 
-	 P_RFinger[2][0] = -1.033221;
-	 P_RFinger[2][1] = 0.788965;
-	 P_RFinger[2][2] = 0.004481;
-	 P_RFinger[2][3] = 0.065347;
-	 P_RFinger[2][4] = 0.101536;
+	 RFinger.P[2][0] = -1.033221;
+	 RFinger.P[2][1] = 0.788965;
+	 RFinger.P[2][2] = 0.004481;
+	 RFinger.P[2][3] = 0.065347;
+	 RFinger.P[2][4] = 0.101536;
 
-	 P_RFinger[3][0] = -431.608269;
-	 P_RFinger[3][1] = -210.942662;
-	 P_RFinger[3][2] = 0.065347;
-	 P_RFinger[3][3] = 243.952191;
-	 P_RFinger[3][4] = 80.730688;
+	 RFinger.P[3][0] = -431.608269;
+	 RFinger.P[3][1] = -210.942662;
+	 RFinger.P[3][2] = 0.065347;
+	 RFinger.P[3][3] = 243.952191;
+	 RFinger.P[3][4] = 80.730688;
 
-	 P_RFinger[4][0] = -153.121165;
-	 P_RFinger[4][1] = -54.042831;
-	 P_RFinger[4][2] = 0.101536;
-	 P_RFinger[4][3] = 80.730688;
-	 P_RFinger[4][4] = 29.273343;
-
-
-	invP_RFinger[0][0] = 0.000135;
-	invP_RFinger[0][1] = -0.000094;
-	invP_RFinger[0][2] = 0.057865;
-	invP_RFinger[0][3] = 0.000370;
-	invP_RFinger[0][4] = -0.000686;
-
-	invP_RFinger[1][0] = -0.000094;
-	invP_RFinger[1][1] = 0.004920;
-	invP_RFinger[1][2] = -0.911412;
-	invP_RFinger[1][3] = 0.005069;
-	invP_RFinger[1][4] = -0.002224;
-
-	invP_RFinger[2][0] = 0.057865;
-	invP_RFinger[2][1] = -0.911412;
-	invP_RFinger[2][2] = 689.786014;
-	invP_RFinger[2][3] = 4.326258;
-	invP_RFinger[2][4] = -15.703518;
-
-	invP_RFinger[3][0] = 0.000370;
-	invP_RFinger[3][1] = 0.005069;
-	invP_RFinger[3][2] = 4.326258;
-	invP_RFinger[3][3] = 0.105388;
-	invP_RFinger[3][4] = -0.294351;
-
-	invP_RFinger[4][0] = -0.000686;
-	invP_RFinger[4][1] = -0.002224;
-	invP_RFinger[4][2] = -15.703518;
-	invP_RFinger[4][3] = -0.294351;
-	invP_RFinger[4][4] = 0.892699;
-
-	R_RFinger[0][0] = 7895.858947;
-	R_RFinger[0][1] = 0.497900;
-	R_RFinger[0][2] = 8133.765263;
-	R_RFinger[0][3] = 532.851579;
-	R_RFinger[0][4] = -0.175140;
-	R_RFinger[0][5] = -788.814211;
-
-	R_RFinger[1][0] = 0.497900;
-	R_RFinger[1][1] = 303.854636;
-	R_RFinger[1][2] = -204.310947;
-	R_RFinger[1][3] = 194.939053;
-	R_RFinger[1][4] = 0.563388;
-	R_RFinger[1][5] = 344.682000;
-
-	R_RFinger[2][0] = 8133.765263;
-	R_RFinger[2][1] = -204.310947;
-	R_RFinger[2][2] = 8788.515789;
-	R_RFinger[2][3] = 525.594737;
-	R_RFinger[2][4] = -1.350547;
-	R_RFinger[2][5] = -1456.226316;
-
-	R_RFinger[3][0] = 532.851579;
-	R_RFinger[3][1] = 194.939053;
-	R_RFinger[3][2] = 525.594737;
-	R_RFinger[3][3] = 844.239474;
-	R_RFinger[3][4] = 0.872489;
-	R_RFinger[3][5] = -744.423684;
-
-	R_RFinger[4][0] = -0.175140;
-	R_RFinger[4][1] = 0.563388;
-	R_RFinger[4][2] = -1.350547;
-	R_RFinger[4][3] = 0.872489;
-	R_RFinger[4][4] = 0.004481;
-	R_RFinger[4][5] = 0.846130;
-
-	R_RFinger[5][0] = -788.814211;
-	R_RFinger[5][1] = 344.682000;
-	R_RFinger[5][2] = -1456.226316;
-	R_RFinger[5][3] = -744.423684;
-	R_RFinger[5][4] = 0.846130;
-	R_RFinger[5][5] = 2032.871053;
+	 RFinger.P[4][0] = -153.121165;
+	 RFinger.P[4][1] = -54.042831;
+	 RFinger.P[4][2] = 0.101536;
+	 RFinger.P[4][3] = 80.730688;
+	 RFinger.P[4][4] = 29.273343;
 
 
-	invR_RFinger[0][0] = 0.630912;
-	invR_RFinger[0][1] = -0.107137;
-	invR_RFinger[0][2] = -0.630910;
-	invR_RFinger[0][3] = 0.107016;
-	invR_RFinger[0][4] = -156.927437;
-	invR_RFinger[0][5] = -0.084462;
+	RFinger.invP[0][0] = 0.000135;
+	RFinger.invP[0][1] = -0.000094;
+	RFinger.invP[0][2] = 0.057865;
+	RFinger.invP[0][3] = 0.000370;
+	RFinger.invP[0][4] = -0.000686;
 
-	invR_RFinger[1][0] = -0.107137;
-	invR_RFinger[1][1] = 0.052635;
-	invR_RFinger[1][2] = 0.107410;
-	invR_RFinger[1][3] = -0.048107;
-	invR_RFinger[1][4] = 31.767143;
-	invR_RFinger[1][5] = -0.004394;
+	RFinger.invP[1][0] = -0.000094;
+	RFinger.invP[1][1] = 0.004920;
+	RFinger.invP[1][2] = -0.911412;
+	RFinger.invP[1][3] = 0.005069;
+	RFinger.invP[1][4] = -0.002224;
 
-	invR_RFinger[2][0] = -0.630910;
-	invR_RFinger[2][1] = 0.107410;
-	invR_RFinger[2][2] = 0.631045;
-	invR_RFinger[2][3] = -0.107372;
-	invR_RFinger[2][4] = 157.025706;
-	invR_RFinger[2][5] = 0.084342;
+	RFinger.invP[2][0] = 0.057865;
+	RFinger.invP[2][1] = -0.911412;
+	RFinger.invP[2][2] = 689.786014;
+	RFinger.invP[2][3] = 4.326258;
+	RFinger.invP[2][4] = -15.703518;
 
-	invR_RFinger[3][0] = 0.107016;
-	invR_RFinger[3][1] = -0.048107;
-	invR_RFinger[3][2] = -0.107372;
-	invR_RFinger[3][3] = 0.048565;
-	invR_RFinger[3][4] = -32.347568;
-	invR_RFinger[3][5] = 0.004015;
+	RFinger.invP[3][0] = 0.000370;
+	RFinger.invP[3][1] = 0.005069;
+	RFinger.invP[3][2] = 4.326258;
+	RFinger.invP[3][3] = 0.105388;
+	RFinger.invP[3][4] = -0.294351;
 
-	invR_RFinger[4][0] = -156.927437;
-	invR_RFinger[4][1] = 31.767143;
-	invR_RFinger[4][2] = 157.025706;
-	invR_RFinger[4][3] = -32.347568;
-	invR_RFinger[4][4] = 40412.922201;
-	invR_RFinger[4][5] = 17.538712;
+	RFinger.invP[4][0] = -0.000686;
+	RFinger.invP[4][1] = -0.002224;
+	RFinger.invP[4][2] = -15.703518;
+	RFinger.invP[4][3] = -0.294351;
+	RFinger.invP[4][4] = 0.892699;
 
-	invR_RFinger[5][0] = -0.084462;
-	invR_RFinger[5][1] = -0.004394;
-	invR_RFinger[5][2] = 0.084342;
-	invR_RFinger[5][3] = 0.004015;
-	invR_RFinger[5][4] = 17.538712;
-	invR_RFinger[5][5] = 0.023051;
+	RFinger.R[0][0] = 7895.858947;
+	RFinger.R[0][1] = 0.497900;
+	RFinger.R[0][2] = 8133.765263;
+	RFinger.R[0][3] = 532.851579;
+	RFinger.R[0][4] = -0.175140;
+	RFinger.R[0][5] = -788.814211;
+
+	RFinger.R[1][0] = 0.497900;
+	RFinger.R[1][1] = 303.854636;
+	RFinger.R[1][2] = -204.310947;
+	RFinger.R[1][3] = 194.939053;
+	RFinger.R[1][4] = 0.563388;
+	RFinger.R[1][5] = 344.682000;
+
+	RFinger.R[2][0] = 8133.765263;
+	RFinger.R[2][1] = -204.310947;
+	RFinger.R[2][2] = 8788.515789;
+	RFinger.R[2][3] = 525.594737;
+	RFinger.R[2][4] = -1.350547;
+	RFinger.R[2][5] = -1456.226316;
+
+	RFinger.R[3][0] = 532.851579;
+	RFinger.R[3][1] = 194.939053;
+	RFinger.R[3][2] = 525.594737;
+	RFinger.R[3][3] = 844.239474;
+	RFinger.R[3][4] = 0.872489;
+	RFinger.R[3][5] = -744.423684;
+
+	RFinger.R[4][0] = -0.175140;
+	RFinger.R[4][1] = 0.563388;
+	RFinger.R[4][2] = -1.350547;
+	RFinger.R[4][3] = 0.872489;
+	RFinger.R[4][4] = 0.004481;
+	RFinger.R[4][5] = 0.846130;
+
+	RFinger.R[5][0] = -788.814211;
+	RFinger.R[5][1] = 344.682000;
+	RFinger.R[5][2] = -1456.226316;
+	RFinger.R[5][3] = -744.423684;
+	RFinger.R[5][4] = 0.846130;
+	RFinger.R[5][5] = 2032.871053;
 
 
+	RFinger.invR[0][0] = 0.630912;
+	RFinger.invR[0][1] = -0.107137;
+	RFinger.invR[0][2] = -0.630910;
+	RFinger.invR[0][3] = 0.107016;
+	RFinger.invR[0][4] = -156.927437;
+	RFinger.invR[0][5] = -0.084462;
 
+	RFinger.invR[1][0] = -0.107137;
+	RFinger.invR[1][1] = 0.052635;
+	RFinger.invR[1][2] = 0.107410;
+	RFinger.invR[1][3] = -0.048107;
+	RFinger.invR[1][4] = 31.767143;
+	RFinger.invR[1][5] = -0.004394;
+
+	RFinger.invR[2][0] = -0.630910;
+	RFinger.invR[2][1] = 0.107410;
+	RFinger.invR[2][2] = 0.631045;
+	RFinger.invR[2][3] = -0.107372;
+	RFinger.invR[2][4] = 157.025706;
+	RFinger.invR[2][5] = 0.084342;
+
+	RFinger.invR[3][0] = 0.107016;
+	RFinger.invR[3][1] = -0.048107;
+	RFinger.invR[3][2] = -0.107372;
+	RFinger.invR[3][3] = 0.048565;
+	RFinger.invR[3][4] = -32.347568;
+	RFinger.invR[3][5] = 0.004015;
+
+	RFinger.invR[4][0] = -156.927437;
+	RFinger.invR[4][1] = 31.767143;
+	RFinger.invR[4][2] = 157.025706;
+	RFinger.invR[4][3] = -32.347568;
+	RFinger.invR[4][4] = 40412.922201;
+	RFinger.invR[4][5] = 17.538712;
+
+	RFinger.invR[5][0] = -0.084462;
+	RFinger.invR[5][1] = -0.004394;
+	RFinger.invR[5][2] = 0.084342;
+	RFinger.invR[5][3] = 0.004015;
+	RFinger.invR[5][4] = 17.538712;
+	RFinger.invR[5][5] = 0.023051;
+
+
+/*
+
+	 RFinger.P[0][0] = 7888.528068;
+	 RFinger.P[0][1] = 406.435705;
+	 RFinger.P[0][2] = -0.135018;
+	 RFinger.P[0][3] = -435.621592;
+	 RFinger.P[0][4] = -122.957084;
+
+	 RFinger.P[1][0] = 406.435705;
+	 RFinger.P[1][1] = 521.170785;
+	 RFinger.P[1][2] = 0.491322;
+	 RFinger.P[1][3] = -285.146180;
+	 RFinger.P[1][4] = -70.328615;
+
+	 RFinger.P[2][0] = -0.135018;
+	 RFinger.P[2][1] = 0.491322;
+	 RFinger.P[2][2] = 0.003764;
+	 RFinger.P[2][3] = 0.034951;
+	 RFinger.P[2][4] = 0.069659;
+
+	 RFinger.P[3][0] = -435.621592;
+	 RFinger.P[3][1] = -285.146180;
+	 RFinger.P[3][2] = 0.034951;
+	 RFinger.P[3][3] = 348.553026;
+	 RFinger.P[3][4] = 97.536609;
+
+	 RFinger.P[4][0] = -122.957084;
+	 RFinger.P[4][1] = -70.328615;
+	 RFinger.P[4][2] = 0.069659;
+	 RFinger.P[4][3] = 97.536609;
+	 RFinger.P[4][4] = 29.273343;
+
+
+	RFinger.invR[0][0] = 0.529629;
+	RFinger.invR[0][1] = 0.008552;
+	RFinger.invR[0][2] = -0.530462;
+	RFinger.invR[0][3] = -0.010065;
+	RFinger.invR[0][4] = -146.296595;
+	RFinger.invR[0][5] = -0.052785;
+
+	RFinger.invR[1][0] = 0.008552;
+	RFinger.invR[1][1] = 0.036847;
+	RFinger.invR[1][2] = -0.008406;
+	RFinger.invR[1][3] = -0.031746;
+	RFinger.invR[1][4] = 1.035149;
+	RFinger.invR[1][5] = -0.023261;
+
+	RFinger.invR[2][0] = -0.530462;
+	RFinger.invR[2][1] = -0.008406;
+	RFinger.invR[2][2] = 0.531433;
+	RFinger.invR[2][3] = 0.009892;
+	RFinger.invR[2][4] = 146.558360;
+	RFinger.invR[2][5] = 0.052817;
+
+	RFinger.invR[3][0] = -0.010065;
+	RFinger.invR[3][1] = -0.031746;
+	RFinger.invR[3][2] = 0.009892;
+	RFinger.invR[3][3] = 0.031387;
+	RFinger.invR[3][4] = -1.029756;
+	RFinger.invR[3][5] = 0.022456;
+
+	RFinger.invR[4][0] = -146.296595;
+	RFinger.invR[4][1] = 1.035149;
+	RFinger.invR[4][2] = 146.558360;
+	RFinger.invR[4][3] = -1.029756;
+	RFinger.invR[4][4] = 41198.890066;
+	RFinger.invR[4][5] = 11.950979;
+
+	RFinger.invR[5][0] = -0.052785;
+	RFinger.invR[5][1] = -0.023261;
+	RFinger.invR[5][2] = 0.052817;
+	RFinger.invR[5][3] = 0.022456;
+	RFinger.invR[5][4] = 11.950979;
+	RFinger.invR[5][5] = 0.020669;
+
+*/
 }
 
 

@@ -4,7 +4,7 @@
 	<Components>
 			
 		<Movie type="Movie" thread="Exec1" group="s1">
-		<filename>/home/kasia/Filmy/12.05/12.05_3.avi</filename>
+		<filename>/home/kasia/Filmy/6.05/6.05_1.avi</filename>
 		<loop>true</loop>
 		</Movie>
 	<!--
@@ -25,8 +25,7 @@
 		<ConColor type="KW_RGB_TSL" thread="Exec1" group="s1">
 				
 		</ConColor> 
-		
-		
+				
 		<SkinDec type="KW_MAP3_SkinDetection" thread="Exec1" group="s1">
 		</SkinDec>
 		
@@ -85,12 +84,13 @@
 	
 		<Exec1 type="continuous">
 			<main_component>Movie</main_component>
+
 		</Exec1>
 
 		
 		<Exec2 type="periodic">
 			<main_component>Window4</main_component>
-			<period>0.2</period>
+			<period>0.002</period>
 		</Exec2>
 		
 		
@@ -127,9 +127,7 @@
 		<Event source="Filtr.newImage"     destination="Window4.onNewImage2"/>
 		<Event source="BW.newImage"       destination="Window4.onNewImage3"/>
 		<Event source="MorphOpen.newImage"       destination="Window4.onNewImage4"/>
-		
-
-		
+			
 	
 	</Events>
 

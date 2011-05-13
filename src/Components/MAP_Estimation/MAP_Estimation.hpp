@@ -58,6 +58,42 @@ struct Props: public Base::Props
  * \brief Example processor class.
  */
 
+struct finger {
+
+    // wektor obserwacji palca
+    vector<double> z;
+
+    // wektor stanu palca
+    vector<double> s;
+
+    // poczatkowa hipoteza palca
+    vector<double> s0;
+
+    // wektor stanu dłoni obliczona na podstawie aktualnej obserwacji
+    vector<double> sTest;
+
+    // wektor obserwacji palca
+    vector<double> h_z;
+
+    //macierz H
+    double H[5][6];
+
+    //macierz P
+    double P[5][5];
+
+    //macierz R
+    double R[6][6];
+
+    //macierz odwrotna kowariancji P
+    double invP[5][5];
+
+    //macierz odwrotna kowariancji R
+    double invR[6][6];
+
+    // różnica punktów charakterystycznych estymacji i punktów aktualnego obrazka
+    vector<double> diff;
+
+};
 
 
 class MAP_Estimation: public Base::Component
@@ -156,7 +192,10 @@ protected:
 
 	Base::DataStreamOut < Types::DrawableContainer > out_draw;
 
+	//inicjalizacja stanów poczatkowych - hipotezy
 	void statesInit();
+
+	//inizjalizacja wartosci poczatkowych macierz P, R, invR, invP
 	void matrixInit();
 
 	/*!
@@ -215,22 +254,11 @@ protected:
 
 	void calculateFingerH(vector<double> s_Finger, double H_Finger[5][6], float a);
 
-	vector <double> calculateFingerDiff(vector <double> h_z_Finger, vector <double> z_Finger, double invR_Finger[6][6], double H_Finger[5][6], double P_Finger[5][5], double factor2);
+	vector <double> calculateFingerDiff(vector <double> h_z, vector <double> z, double invR[6][6], double H[5][6], double P[5][5], double factor2);
 
 	vector <double> updateFingerState(vector <double> diff_Finger, vector <double> s_Finger, double P_Finger[5][5]);
 
 	bool stopCondition(vector <double> s, vector <double> s0, double invP[5][5], vector <double> diff, float limit);
-
-
-	//*****************************************************************//
-	//*Funkcje uzależaniajace palce od wewetrznej czesci dłoni*********//
-	//*****************************************************************//
-
-	//Funkcja regulujaca wartosc kątów
-	void adjustableAngles();
-
-	//Funkcja regulujaca wartosc kątów
-	vector <double> adjustableFingerCenter(vector <double> s_Finger, double max, double min);
 
 
 private:
@@ -259,14 +287,25 @@ private:
 
 	bool newFingertip;
 
-	// czy funkcja jest pierwszy raz uruchomiana
-	bool first;
-
 	// największy blob czyli dłoń
 	Types::Blobs::BlobResult blobs;
 
 	// kontener przechowujący elementy do rysowania
 	Types::DrawableContainer drawcont;
+
+	//wspołczynnik zapominania
+	double factor;
+
+	//wspołczynnik skalujacy wielkosc zmiany parametrów stanu
+	double factorFinger;
+
+	double factorPalm;
+
+	// funkcja warunek stopu, jesli STOP = true estymacja MAP jest zakończona
+	bool STOP;
+
+	/***************************************************************/
+	/*Dłon WEW*/
 
 	// wektor obserwacji dłoni
 	vector<double> z;
@@ -306,211 +345,36 @@ private:
 	// różnica punktów charakterystycznych estymacji i punktów aktualnego obrazka
 	vector<double> diff;
 
-	//wspołczynnik zapominania
-	double factor;
-
-	//wspołczynnik skalujacy wielkosc zmiany parametrów stanu
-	double factorFinger;
-
-	double factorPalm;
-
-	// funkcja warunek stopu, jesli STOP = true estymacja MAP jest zakończona
-	bool STOP;
 
 	//*****************************************************************//
 	//*ZMIENNE SRODKOWEGO PALCA****************************************//
 	//*****************************************************************//
 
-	// wektor obserwacji dłoni
-	vector<double> z_MFinger;
-
-	// wektor stanu dłoni
-	vector<double> s_MFinger;
-
-	// poczatkowa hipoteza środkowego palca
-	vector<double> s0_MFinger;
-
-	//macierz H
-	double H_MFinger[5][6];
-
-	//macierz P
-	double P_MFinger[5][5];
-
-	//macierz R
-	double R_MFinger[6][6];
-
-	//macierz odwrotna kowariancji P
-	double invP_MFinger[5][5];
-
-	//macierz odwrotna kowariancji R
-	double invR_MFinger[6][6];
-
-	// wektor obserwacji dłoni
-	vector<double> h_z_MFinger;
-
-	// różnica punktów charakterystycznych estymacji i punktów aktualnego obrazka
-	vector<double> diff_MFinger;
-
-	// wektor stanu dłoni obliczona na podstawie aktualnej obserwacji
-	vector<double> sTest2;
-
-	bool STOP_MFinger;
+	finger MFinger;
 
 	//*****************************************************************//
 	//*ZMIENNE PALCA WSKAZUJĄCEG0**************************************//
 	//*****************************************************************//
-	//forefinger
-	// wektor obserwacji dłoni
-	vector<double> z_FFinger;
 
-	// wektor stanu dłoni
-	vector<double> s_FFinger;
-
-	// poczatkowa hipoteza środkowego palca
-	vector<double> s0_FFinger;
-
-	// wektor stanu dłoni obliczona na podstawie aktualnej obserwacji
-	vector<double> sTest3;
-
-	// wektor obserwacji palca
-	vector<double> h_z_FFinger;
-
-	//macierz H
-	double H_FFinger[5][6];
-
-	//macierz P
-	double P_FFinger[5][5];
-
-	//macierz R
-	double R_FFinger[6][6];
-
-	//macierz odwrotna kowariancji P
-	double invP_FFinger[5][5];
-
-	//macierz odwrotna kowariancji R
-	double invR_FFinger[6][6];
-
-	// różnica punktów charakterystycznych estymacji i punktów aktualnego obrazka
-	vector<double> diff_FFinger;
-
-	bool STOP_FFinger;
+	finger FFinger;
 
 	//*****************************************************************//
 	//*ZMIENNE KCIUKA**************************************************//
 	//*****************************************************************//
-	//forefinger
-	// wektor obserwacji dłoni
-	vector<double> z_TFinger;
 
-	// wektor stanu dłoni
-	vector<double> s_TFinger;
-
-	// poczatkowa hipoteza środkowego palca
-	vector<double> s0_TFinger;
-
-	// wektor stanu dłoni obliczona na podstawie aktualnej obserwacji
-	vector<double> sTest4;
-
-	// wektor obserwacji palca
-	vector<double> h_z_TFinger;
-
-	//macierz H
-	double H_TFinger[5][6];
-
-	//macierz P
-	double P_TFinger[5][5];
-
-	//macierz R
-	double R_TFinger[6][6];
-
-	//macierz odwrotna kowariancji P
-	double invP_TFinger[5][5];
-
-	//macierz odwrotna kowariancji R
-	double invR_TFinger[6][6];
-
-	// różnica punktów charakterystycznych estymacji i punktów aktualnego obrazka
-	vector<double> diff_TFinger;
-
-	bool STOP_TFinger;
+	finger TFinger;
 
 	//*****************************************************************//
 	//*ZMIENNE MAŁEGO PALCA********************************************//
 	//*****************************************************************//
 
-	// wektor obserwacji dłoni
-	vector<double> z_SFinger;
-
-	// wektor stanu dłoni
-	vector<double> s_SFinger;
-
-	// poczatkowa hipoteza środkowego palca
-	vector<double> s0_SFinger;
-
-	// wektor stanu dłoni obliczona na podstawie aktualnej obserwacji
-	vector<double> sTest5;
-
-	// wektor obserwacji palca
-	vector<double> h_z_SFinger;
-
-	//macierz H
-	double H_SFinger[5][6];
-
-	//macierz P
-	double P_SFinger[5][5];
-
-	//macierz R
-	double R_SFinger[6][6];
-
-	//macierz odwrotna kowariancji P
-	double invP_SFinger[5][5];
-
-	//macierz odwrotna kowariancji R
-	double invR_SFinger[6][6];
-
-	// różnica punktów charakterystycznych estymacji i punktów aktualnego obrazka
-	vector<double> diff_SFinger;
-
-	bool STOP_SFinger;
+	finger SFinger;
 
 	//*****************************************************************//
 	//*ZMIENNE PALEC SERDECZNY*****************************************//
 	//*****************************************************************//
 
-	// wektor obserwacji dłoni
-	vector<double> z_RFinger;
-
-	// wektor stanu dłoni
-	vector<double> s_RFinger;
-
-	// poczatkowa hipoteza środkowego palca
-	vector<double> s0_RFinger;
-
-	// wektor stanu dłoni obliczona na podstawie aktualnej obserwacji
-	vector<double> sTest6;
-
-	// wektor obserwacji palca
-	vector<double> h_z_RFinger;
-
-	//macierz H
-	double H_RFinger[5][6];
-
-	//macierz P
-	double P_RFinger[5][5];
-
-	//macierz R
-	double R_RFinger[6][6];
-
-	//macierz odwrotna kowariancji P
-	double invP_RFinger[5][5];
-
-	//macierz odwrotna kowariancji R
-	double invR_RFinger[6][6];
-
-	// różnica punktów charakterystycznych estymacji i punktów aktualnego obrazka
-	vector<double> diff_RFinger;
-
-	bool STOP_RFinger;
+	finger RFinger;
 
 	//***********
 	double z0, z1, z4;
