@@ -52,6 +52,7 @@
 		</DetectionPalm>
 
 		<DecPalm type="MAP_Estimation" thread="Exec1" group="s1"> 
+			<triggered>true</triggered>	
 		</DecPalm>
 		
 		<Kbd1 type="Keyboard" thread="Exec3" group="s1">
@@ -113,14 +114,16 @@
 		<Event source="MorphClose.newImage" destination="MorphOpen.onNewImage"/>
 		<Event source="MorphOpen.newImage" destination="Blob.onNewImage"/>
 
-		<Event source="MorphClose.newImage" destination="DecPalm.onNewImage"/>
+		<Event source="Blob.newImage" destination="DecPalm.onNewImage"/>
 		<Event source="Movie.newImage"        destination="DetectionPalm.onNewImage"/>
 		<Event source="Blob.newBlobs"        destination="DetectionPalm.onNewBlobs"/>
-		<Event source="MorphClose.newImage"   destination="DecPalm.onNewBlobs"/>
-		<Event source="MorphClose.newImage"   destination="DecPalm.onNewImage"/>
+		
+		<Event source="Kbd1.t_Pressed"       destination="DecPalm.onTrigger"/>
+		<Event source="DetectionPalm.newImage"   destination="DecPalm.onNewBlobs"/>
+		<Event source="DetectionPalm.newImage"   destination="DecPalm.onNewImage"/>
 			
-		<Event source="DetectionPalm.newImage"     destination="Window4.onNewImage0"/>
-		<Event source="DecPalm.newImage"        destination="Window4.onNewImage1"/>
+		<Event source="Movie.newImage"     destination="Window4.onNewImage0"/>
+		<Event source="Movie.newImage"        destination="Window4.onNewImage1"/>
 		<Event source="Filtr.newImage"     destination="Window4.onNewImage2"/>
 		<Event source="BW.newImage"       destination="Window4.onNewImage3"/>
 		<Event source="MorphOpen.newImage"       destination="Window4.onNewImage4"/>
@@ -176,13 +179,13 @@
 		<DetectionPalm>
 			<in_img type="in" group="Con6"/>
 			<in_blobs type="in" group="Con8"/>
-			<out_blobs1 type="out" group="Con9a"/>
-			<out_blobs2 type="out" group="Con9b"/>
+			<out_blobs1 type="out" group="Con9"/>
+			<out_blobs2 type="out" group="Con10"/>
 		</DetectionPalm>
 		
 		<DecPalm>
 			<in_img type="in" group="Con6"/>
-			<in_blobs type="in" group="Con9a"/>
+			<in_blobs type="in" group="Con9"/>
 			<out_draw type="out" group="Con10"/>
 		</DecPalm>
 		
@@ -191,7 +194,7 @@
 			<in_draw0 type="in" group="Con10"/>			
 			
 			<in_img1 type="in" group="Con1"/>
-			<in_draw1 type="in" group="Con9a"/>	
+			<in_draw1 type="in" group="Con9"/>	
 			
 			<in_img2 type="in" group="Con2"/>
 			

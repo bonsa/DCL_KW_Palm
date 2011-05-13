@@ -147,6 +147,36 @@ void MAP_Estimation::onTrigger() {
 			P_RFinger[4][3] = 80.730688;
 			P_RFinger[4][4] = 29.273343;
 
+			P_RFinger[1][0] = 345.004152;
+			P_RFinger[1][1] = 548.874626;
+			P_RFinger[1][2] = 0.788965;
+			P_RFinger[1][3] = -210.942662;
+			P_RFinger[1][4] = -54.042831;
+
+			P_RFinger[2][0] = -1.033221;
+			P_RFinger[2][1] = 0.788965;
+			P_RFinger[2][2] = 0.004481;
+			P_RFinger[2][3] = 0.065347;
+			P_RFinger[2][4] = 0.101536;
+
+			P_RFinger[3][0] = -431.608269;
+			P_RFinger[3][1] = -210.942662;
+			P_RFinger[3][2] = 0.065347;
+			P_RFinger[3][3] = 243.952191;
+			P_RFinger[3][4] = 80.730688;
+
+			P_RFinger[4][0] = -153.121165;
+			P_RFinger[4][1] = -54.042831;
+			P_RFinger[4][2] = 0.101536;
+			P_RFinger[4][3] = 80.730688;
+			P_RFinger[4][4] = 29.273343;
+
+			cout<<"P_RFinger"<<P_RFinger[1][0]<<"\n";
+			cout<<"P_RFinger"<<P_RFinger[1][1]<<"\n";
+			cout<<"P_RFinger"<<P_RFinger[1][2]<<"\n";
+			cout<<"P_RFinger"<<P_RFinger[1][3]<<"\n";
+			cout<<"P_RFinger"<<P_RFinger[1][4]<<"\n";
+
 			//srodkowy palec
 			s_MFinger.push_back(347.62);
 			s_MFinger.push_back(159.3);
@@ -474,15 +504,13 @@ bool MAP_Estimation::onStep()
 				projectionFingerState(s_RFinger, 255, 255, 255);
 			}
 
-			cout<<"Error "<<error<<"\n";
-			cout<<"Error2 "<<error2<<"\n";
 		}
 
 		out_draw.write(drawcont);
 		newImage->raise();
 		return true;
 	} catch (...) {
-		LOG(LERROR) << "KW_MAP::MAP_Estimation failed\n";
+		//LOG(LERROR) << "KW_MAP::MAP_Estimation failed\n";
 		return false;
 	}
 
@@ -1130,7 +1158,9 @@ vector <double> MAP_Estimation::calculateFingerDiff(vector <double> h_z_Finger, 
 		//różnica miedzy punktami charakterystycznymi aktualnego obraz
 		D[i] =  h_z_Finger[i] - z_Finger[i];
 		error2 += abs(D[i]);
+		cout<<"DIFF     "<<D[i]<<"\n";
 	}
+	cout<<"\n";
 
 	double t1[6];
 	for (unsigned int i = 0; i < 6; i++) {
@@ -1155,7 +1185,9 @@ vector <double> MAP_Estimation::calculateFingerDiff(vector <double> h_z_Finger, 
 		for (unsigned int j = 0; j < 5; j++) {
 			//mnożenie macierzy P * t2
 			t3[i] +=  P_Finger[i][j] * t2[j];
+			cout<<P_Finger[i][j]<<"\t";
 		}
+		cout<<"\n";
 		t3[i] *= factorFinger;//*factor;
 		diff_Finger.push_back(t3[i]);
 	}
@@ -1350,7 +1382,7 @@ MAP_Estimation::MAP_Estimation(const std::string & name) :
 	LOG(LTRACE) << "Hello KW_MAP\n";
 
 	error = 9999;
-	MAP = false;
+	MAP = true;
 	STOP = false;
 	STOP_MFinger = false;
 	STOP_FFinger = false;

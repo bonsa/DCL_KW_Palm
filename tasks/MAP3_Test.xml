@@ -42,7 +42,7 @@
 		</MorphClose>
 		
 		<MorphOpen type="CvMorphology" thread="Exec1" group="s1">
-			<type>MORPH_Open</type>
+			<type>MORPH_OPEN</type>
 			<iterations>1</iterations>
 		</MorphOpen>
 		
