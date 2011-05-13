@@ -156,6 +156,9 @@ protected:
 
 	Base::DataStreamOut < Types::DrawableContainer > out_draw;
 
+	void statesInit();
+	void matrixInit();
+
 	/*!
 	 * Otrzymanie obserwacji dłoni
 	 */

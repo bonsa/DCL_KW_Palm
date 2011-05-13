@@ -78,252 +78,9 @@ void MAP_Estimation::onTrigger() {
 			s_TFinger.clear();
 			s_SFinger.clear();
 
-			//wew czesc dloni
-			s.push_back(352.18);
-			s.push_back(331.46);
-			s.push_back(1.6848);
-			s.push_back(152.78);
-			s.push_back(178.57);
+			statesInit();
+			matrixInit();
 
-			P[0][0] = 7898.123517;
-			P[0][1] = 37.669557;
-			P[0][2] = 0.290219;
-			P[0][3] = -354.473747;
-			P[0][4] = -470.330553;
-
-			P[1][0] = 37.669557;
-			P[1][1] = 262.201038;
-			P[1][2] = 0.471210;
-			P[1][3] = 3.523747;
-			P[1][4] = 71.038316;
-
-			P[2][0] = 0.290219;
-			P[2][1] = 0.471210;
-			P[2][2] = 0.003764;
-			P[2][3] = 0.014130;
-			P[2][4] = 0.290246;
-
-			P[3][0] = -354.473747;
-			P[3][1] = 3.523747;
-			P[3][2] = 0.014130;
-			P[3][3] = 176.328000;
-			P[3][4] = 274.791053;
-
-			P[4][0] = -470.330553;
-			P[4][1] = 71.038316;
-			P[4][2] = 0.290246;
-			P[4][3] = 274.791053;
-			P[4][4] = 508.217763;
-
-
-			//palec serdeczny
-			s_RFinger.push_back(299.59);
-			s_RFinger.push_back(174.02);
-			s_RFinger.push_back(1.929);
-			s_RFinger.push_back(151.26);
-			s_RFinger.push_back(42.858);
-
-			P_RFinger[1][0] = 345.004152;
-			P_RFinger[1][1] = 548.874626;
-			P_RFinger[1][2] = 0.788965;
-			P_RFinger[1][3] = -210.942662;
-			P_RFinger[1][4] = -54.042831;
-
-			P_RFinger[2][0] = -1.033221;
-			P_RFinger[2][1] = 0.788965;
-			P_RFinger[2][2] = 0.004481;
-			P_RFinger[2][3] = 0.065347;
-			P_RFinger[2][4] = 0.101536;
-
-			P_RFinger[3][0] = -431.608269;
-			P_RFinger[3][1] = -210.942662;
-			P_RFinger[3][2] = 0.065347;
-			P_RFinger[3][3] = 243.952191;
-			P_RFinger[3][4] = 80.730688;
-
-			P_RFinger[4][0] = -153.121165;
-			P_RFinger[4][1] = -54.042831;
-			P_RFinger[4][2] = 0.101536;
-			P_RFinger[4][3] = 80.730688;
-			P_RFinger[4][4] = 29.273343;
-
-			P_RFinger[1][0] = 345.004152;
-			P_RFinger[1][1] = 548.874626;
-			P_RFinger[1][2] = 0.788965;
-			P_RFinger[1][3] = -210.942662;
-			P_RFinger[1][4] = -54.042831;
-
-			P_RFinger[2][0] = -1.033221;
-			P_RFinger[2][1] = 0.788965;
-			P_RFinger[2][2] = 0.004481;
-			P_RFinger[2][3] = 0.065347;
-			P_RFinger[2][4] = 0.101536;
-
-			P_RFinger[3][0] = -431.608269;
-			P_RFinger[3][1] = -210.942662;
-			P_RFinger[3][2] = 0.065347;
-			P_RFinger[3][3] = 243.952191;
-			P_RFinger[3][4] = 80.730688;
-
-			P_RFinger[4][0] = -153.121165;
-			P_RFinger[4][1] = -54.042831;
-			P_RFinger[4][2] = 0.101536;
-			P_RFinger[4][3] = 80.730688;
-			P_RFinger[4][4] = 29.273343;
-
-			cout<<"P_RFinger"<<P_RFinger[1][0]<<"\n";
-			cout<<"P_RFinger"<<P_RFinger[1][1]<<"\n";
-			cout<<"P_RFinger"<<P_RFinger[1][2]<<"\n";
-			cout<<"P_RFinger"<<P_RFinger[1][3]<<"\n";
-			cout<<"P_RFinger"<<P_RFinger[1][4]<<"\n";
-
-			//srodkowy palec
-			s_MFinger.push_back(347.62);
-			s_MFinger.push_back(159.3);
-			s_MFinger.push_back(1.6848);
-			s_MFinger.push_back(177.87);
-			s_MFinger.push_back(42.858);
-
-			 P_MFinger[0][0] = 7888.528068;
-			 P_MFinger[0][1] = 406.435705;
-			 P_MFinger[0][2] = -0.135018;
-			 P_MFinger[0][3] = -435.621592;
-			 P_MFinger[0][4] = -122.957084;
-
-			 P_MFinger[1][0] = 406.435705;
-			 P_MFinger[1][1] = 521.170785;
-			 P_MFinger[1][2] = 0.491322;
-			 P_MFinger[1][3] = -285.146180;
-			 P_MFinger[1][4] = -70.328615;
-
-			 P_MFinger[2][0] = -0.135018;
-			 P_MFinger[2][1] = 0.491322;
-			 P_MFinger[2][2] = 0.003764;
-			 P_MFinger[2][3] = 0.034951;
-			 P_MFinger[2][4] = 0.069659;
-
-			 P_MFinger[3][0] = -435.621592;
-			 P_MFinger[3][1] = -285.146180;
-			 P_MFinger[3][2] = 0.034951;
-			 P_MFinger[3][3] = 348.553026;
-			 P_MFinger[3][4] = 97.536609;
-
-			 P_MFinger[4][0] = -122.957084;
-			 P_MFinger[4][1] = -70.328615;
-			 P_MFinger[4][2] = 0.069659;
-			 P_MFinger[4][3] = 97.536609;
-			 P_MFinger[4][4] = 29.273343;
-
-			//palec wskazujacy
-			s_FFinger.push_back(409.44);
-			s_FFinger.push_back(162.31);
-			s_FFinger.push_back(1.3846);
-			s_FFinger.push_back(160.73);
-			s_FFinger.push_back(42.858);
-
-			 P_FFinger[0][0] = 7740.031841;
-			 P_FFinger[0][1] = 414.422322;
-			 P_FFinger[0][2] = -0.362811;
-			 P_FFinger[0][3] = -339.554147;
-			 P_FFinger[0][4] = -80.359658;
-
-			 P_FFinger[1][0] = 414.422322;
-			 P_FFinger[1][1] = 504.539142;
-			 P_FFinger[1][2] = 0.232257;
-			 P_FFinger[1][3] = -271.977598;
-			 P_FFinger[1][4] = -72.707694;
-
-			 P_FFinger[2][0] = -0.362811;
-			 P_FFinger[2][1] = 0.232257;
-			 P_FFinger[2][2] = 0.003018;
-			 P_FFinger[2][3] = -0.023281;
-			 P_FFinger[2][4] = 0.032337;
-
-			 P_FFinger[3][0] = -339.554147;
-			 P_FFinger[3][1] = -271.977598;
-			 P_FFinger[3][2] = -0.023281;
-			 P_FFinger[3][3] = 293.086467;
-			 P_FFinger[3][4] = 89.050813;
-
-			 P_FFinger[4][0] = -80.359658;
-			 P_FFinger[4][1] = -72.707694;
-			 P_FFinger[4][2] = 0.032337;
-			 P_FFinger[4][3] = 89.050813;
-			 P_FFinger[4][4] = 29.273343;
-
-			//kciuk
-			s_TFinger.push_back(497.46);
-			s_TFinger.push_back(299.07);
-			s_TFinger.push_back(0.48356);
-			s_TFinger.push_back(111.02);
-			s_TFinger.push_back(42.858);
-
-			 P_TFinger[0][0] = 7740.031841;
-			 P_TFinger[0][1] = 414.422322;
-			 P_TFinger[0][2] = -0.362811;
-			 P_TFinger[0][3] = -339.554147;
-			 P_TFinger[0][4] = -80.359658;
-
-			 P_TFinger[1][0] = 414.422322;
-			 P_TFinger[1][1] = 504.539142;
-			 P_TFinger[1][2] = 0.232257;
-			 P_TFinger[1][3] = -271.977598;
-			 P_TFinger[1][4] = -72.707694;
-
-			 P_TFinger[2][0] = -0.362811;
-			 P_TFinger[2][1] = 0.232257;
-			 P_TFinger[2][2] = 0.003018;
-			 P_TFinger[2][3] = -0.023281;
-			 P_TFinger[2][4] = 0.032337;
-
-			 P_TFinger[3][0] = -339.554147;
-			 P_TFinger[3][1] = -271.977598;
-			 P_TFinger[3][2] = -0.023281;
-			 P_TFinger[3][3] = 293.086467;
-			 P_TFinger[3][4] = 89.050813;
-
-			 P_TFinger[4][0] = -80.359658;
-			 P_TFinger[4][1] = -72.707694;
-			 P_TFinger[4][2] = 0.032337;
-			 P_TFinger[4][3] = 89.050813;
-			 P_TFinger[4][4] = 29.273343;
-
-			//mały palec
-			s_SFinger.push_back(230.25);
-			s_SFinger.push_back(229.59);
-			s_SFinger.push_back(2.3748);
-			s_SFinger.push_back(86.064);
-			s_SFinger.push_back(42.858);
-
-			 P_SFinger[0][0] = 8930.221039;
-			 P_SFinger[0][1] = 104.922314;
-			 P_SFinger[0][2] = -1.480602;
-			 P_SFinger[0][3] = -300.765973;
-			 P_SFinger[0][4] = -194.988840;
-
-			 P_SFinger[1][0] = 104.922314;
-			 P_SFinger[1][1] = 573.612657;
-			 P_SFinger[1][2] = 1.191833;
-			 P_SFinger[1][3] = -58.597483;
-			 P_SFinger[1][4] = -8.765255;
-
-			 P_SFinger[2][0] = -1.480602;
-			 P_SFinger[2][1] = 1.191833;
-			 P_SFinger[2][2] = 0.005316;
-			 P_SFinger[2][3] = 0.106997;
-			 P_SFinger[2][4] = 0.157024;
-
-			 P_SFinger[3][0] = -300.765973;
-			 P_SFinger[3][1] = -58.597483;
-			 P_SFinger[3][2] = 0.106997;
-			 P_SFinger[3][3] = 81.452438;
-			 P_SFinger[3][4] = 47.097304;
-
-			 P_SFinger[4][0] = -194.988840;
-			 P_SFinger[4][1] = -8.765255;
-			 P_SFinger[4][2] = 0.157024;
-			 P_SFinger[4][3] = 47.097304;
-			 P_SFinger[4][4] = 29.273343;
 
 		}
 }
@@ -1384,11 +1141,7 @@ MAP_Estimation::MAP_Estimation(const std::string & name) :
 	error = 9999;
 	MAP = true;
 	STOP = false;
-	STOP_MFinger = false;
-	STOP_FFinger = false;
-	STOP_TFinger = false;
-	STOP_SFinger = false;
-	STOP_RFinger = false;
+
 	
 	//MAP3
 	//wspołczynnik zapominania
@@ -1400,18 +1153,6 @@ MAP_Estimation::MAP_Estimation(const std::string & name) :
 
 	//dla MAP2_Sequence
 	//factor2 = 0.04;
-
-	s.push_back(352.18);
-	s.push_back(331.46);
-	s.push_back(1.6848);
-	s.push_back(152.78);
-	s.push_back(178.57);
-
-	s0.push_back(352.18);
-	s0.push_back(331.46);
-	s0.push_back(1.6848);
-	s0.push_back(152.78);
-	s0.push_back(178.57);
 
 
 	for (int i = 0; i < 5; i++) {
@@ -1430,6 +1171,118 @@ MAP_Estimation::MAP_Estimation(const std::string & name) :
 
 
 
+
+	statesInit();
+	matrixInit();
+
+
+}
+
+void MAP_Estimation:: statesInit()
+{
+	//wew dlon
+
+	s.push_back(352.18);
+	s.push_back(331.46);
+	s.push_back(1.6848);
+	s.push_back(152.78);
+	s.push_back(178.57);
+
+	s0.push_back(352.18);
+	s0.push_back(331.46);
+	s0.push_back(1.6848);
+	s0.push_back(152.78);
+	s0.push_back(178.57);
+
+
+	//srodkowy palec
+
+
+	s_MFinger.push_back(347.62);
+	s_MFinger.push_back(159.3);
+	s_MFinger.push_back(1.6848);
+	s_MFinger.push_back(177.87);
+	s_MFinger.push_back(42.858);
+
+	s0_MFinger.push_back(347.62);
+	s0_MFinger.push_back(159.3);
+	s0_MFinger.push_back(1.6848);
+	s0_MFinger.push_back(177.87);
+	s0_MFinger.push_back(42.858);
+
+
+
+	//*******************************************************************************************//
+	//palec wskazujacy
+
+	s_FFinger.push_back(409.44);
+	s_FFinger.push_back(162.31);
+	s_FFinger.push_back(1.3846);
+	s_FFinger.push_back(160.73);
+	s_FFinger.push_back(42.858);
+
+	s0_FFinger.push_back(409.44);
+	s0_FFinger.push_back(162.31);
+	s0_FFinger.push_back(1.3846);
+	s0_FFinger.push_back(160.73);
+	s0_FFinger.push_back(42.858);
+
+
+
+	//***************************************************************************************//
+	//kciuk
+
+	s_TFinger.push_back(497.46);
+	s_TFinger.push_back(299.07);
+	s_TFinger.push_back(0.48356);
+	s_TFinger.push_back(111.02);
+	s_TFinger.push_back(42.858);
+
+	s0_TFinger.push_back(497.46);
+	s0_TFinger.push_back(299.07);
+	s0_TFinger.push_back(0.48356);
+	s0_TFinger.push_back(111.02);
+	s0_TFinger.push_back(42.858);
+
+
+
+	//***************************************************************************************//
+	//mały palec
+
+	s_SFinger.push_back(230.25);
+	s_SFinger.push_back(229.59);
+	s_SFinger.push_back(2.3748);
+	s_SFinger.push_back(86.064);
+	s_SFinger.push_back(42.858);
+
+	s0_SFinger.push_back(230.25);
+	s0_SFinger.push_back(229.59);
+	s0_SFinger.push_back(2.3748);
+	s0_SFinger.push_back(86.064);
+	s0_SFinger.push_back(42.858);
+
+
+
+	//*******************************************************************************//
+	//palec serdeczny
+
+	s_RFinger.push_back(299.59);
+	s_RFinger.push_back(174.02);
+	s_RFinger.push_back(1.929);
+	s_RFinger.push_back(151.26);
+	s_RFinger.push_back(42.858);
+
+	s0_RFinger.push_back(299.59);
+	s0_RFinger.push_back(174.02);
+	s0_RFinger.push_back(1.929);
+	s0_RFinger.push_back(151.26);
+	s0_RFinger.push_back(42.858);
+}
+
+void MAP_Estimation:: matrixInit()
+{
+
+	//wew dlon
 	P[0][0] = 7898.123517;
 	P[0][1] = 37.669557;
 	P[0][2] = 0.290219;
@@ -1553,22 +1406,7 @@ MAP_Estimation::MAP_Estimation(const std::string & name) :
 	invR[4][3] = -0.005873;
 	invR[4][4] = 0.004521;
 
-
-	//srodkowy palec
-
-
-	s_MFinger.push_back(347.62);
-	s_MFinger.push_back(159.3);
-	s_MFinger.push_back(1.6848);
-	s_MFinger.push_back(177.87);
-	s_MFinger.push_back(42.858);
-
-	s0_MFinger.push_back(347.62);
-	s0_MFinger.push_back(159.3);
-	s0_MFinger.push_back(1.6848);
-	s0_MFinger.push_back(177.87);
-	s0_MFinger.push_back(42.858);
-
+	//palec srodkowu
 
 	 P_MFinger[0][0] = 7888.528068;
 	 P_MFinger[0][1] = 406.435705;
@@ -1716,21 +1554,7 @@ MAP_Estimation::MAP_Estimation(const std::string & name) :
 	invR_MFinger[5][3] = 0.022456;
 	invR_MFinger[5][4] = 11.950979;
 	invR_MFinger[5][5] = 0.020669;
-
-	//*******************************************************************************************//
 	//palec wskazujacy
-
-	s_FFinger.push_back(409.44);
-	s_FFinger.push_back(162.31);
-	s_FFinger.push_back(1.3846);
-	s_FFinger.push_back(160.73);
-	s_FFinger.push_back(42.858);
-
-	s0_FFinger.push_back(409.44);
-	s0_FFinger.push_back(162.31);
-	s0_FFinger.push_back(1.3846);
-	s0_FFinger.push_back(160.73);
-	s0_FFinger.push_back(42.858);
 
 
 	 P_FFinger[0][0] = 7740.031841;
@@ -1881,20 +1705,7 @@ MAP_Estimation::MAP_Estimation(const std::string & name) :
 	invR_FFinger[5][4] = 9.534846;
 	invR_FFinger[5][5] = 0.013028;
 
-	//***************************************************************************************//
 	//kciuk
-
-	s_TFinger.push_back(497.46);
-	s_TFinger.push_back(299.07);
-	s_TFinger.push_back(0.48356);
-	s_TFinger.push_back(111.02);
-	s_TFinger.push_back(42.858);
-
-	s0_TFinger.push_back(497.46);
-	s0_TFinger.push_back(299.07);
-	s0_TFinger.push_back(0.48356);
-	s0_TFinger.push_back(111.02);
-	s0_TFinger.push_back(42.858);
 
 	 P_TFinger[0][0] = 7740.031841;
 	 P_TFinger[0][1] = 414.422322;
@@ -2043,22 +1854,7 @@ MAP_Estimation::MAP_Estimation(const std::string & name) :
 	invR_TFinger[5][4] = -3.316862;
 	invR_TFinger[5][5] = 0.014367;
 
-	//***************************************************************************************//
 	//mały palec
-
-	s_SFinger.push_back(230.25);
-	s_SFinger.push_back(229.59);
-	s_SFinger.push_back(2.3748);
-	s_SFinger.push_back(86.064);
-	s_SFinger.push_back(42.858);
-
-	s0_SFinger.push_back(230.25);
-	s0_SFinger.push_back(229.59);
-	s0_SFinger.push_back(2.3748);
-	s0_SFinger.push_back(86.064);
-	s0_SFinger.push_back(42.858);
-
-
 
 
 	 P_SFinger[0][0] = 8930.221039;
@@ -2209,21 +2005,8 @@ MAP_Estimation::MAP_Estimation(const std::string & name) :
 	invR_SFinger[5][4] = -12.429204;
 	invR_SFinger[5][5] = 0.054051;
 
-	//*******************************************************************************//
+
 	//palec serdeczny
-
-	s_RFinger.push_back(299.59);
-	s_RFinger.push_back(174.02);
-	s_RFinger.push_back(1.929);
-	s_RFinger.push_back(151.26);
-	s_RFinger.push_back(42.858);
-
-	s0_RFinger.push_back(299.59);
-	s0_RFinger.push_back(174.02);
-	s0_RFinger.push_back(1.929);
-	s0_RFinger.push_back(151.26);
-	s0_RFinger.push_back(42.858);
-
 
 	 P_RFinger[0][0] = 8465.374582;
 	 P_RFinger[0][1] = 345.004152;
@@ -2285,11 +2068,6 @@ MAP_Estimation::MAP_Estimation(const std::string & name) :
 	invP_RFinger[4][2] = -15.703518;
 	invP_RFinger[4][3] = -0.294351;
 	invP_RFinger[4][4] = 0.892699;
-
-
-
-
-
 
 	R_RFinger[0][0] = 7895.858947;
 	R_RFinger[0][1] = 0.497900;
@@ -2375,7 +2153,6 @@ MAP_Estimation::MAP_Estimation(const std::string & name) :
 	invR_RFinger[5][3] = 0.004015;
 	invR_RFinger[5][4] = 17.538712;
 	invR_RFinger[5][5] = 0.023051;
-
 
 
 
