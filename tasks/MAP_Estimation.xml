@@ -2,17 +2,17 @@
 <Task>
 	<!-- List of components, data: 30.04.11 -->
 	<Components>
-<!--		
+		
 		<Movie type="Movie" thread="Exec1" group="s1">
 		<filename>/home/kasia/Filmy/12.05/12.05_3.avi</filename>
 		<loop>true</loop>
 		</Movie>
--->
+	<!--
 
 		<Movie type="CameraOpenCV" thread="Exec1" group="s1">
 			<device>1</device>
 		</Movie>
-
+-->
 
 		<Window4 type="CvWindow" thread="Exec2" group="s1">
 			<count>5</count>
@@ -29,9 +29,11 @@
 		<SkinDec type="KW_MAP3_SkinDetection" thread="Exec1" group="s1">
 		</SkinDec>
 		
-		<BW type="CvColorConv" thread="Exec1" group="s1">
+		<!--
+<BW type="CvColorConv" thread="Exec1" group="s1">
 		<type>BGR2GRAY</type>
-		</BW>
+		</BW>-->
+
 		
 		<MorphClose type="CvMorphology" thread="Exec1" group="s1">
 			<type>MORPH_CLOSE</type>
@@ -109,12 +111,13 @@
 		<Event source="Movie.newImage"       destination="Filtr.onNewImage"/>
 		<Event source="Filtr.newImage"       destination="ConColor.onNewImage"/>
 		<Event source="ConColor.newImage"    destination="SkinDec.onNewImage"/>	
-		<Event source="SkinDec.newImage"     destination="BW.onNewImage"/>			
-		<Event source="BW.newImage"          destination="MorphClose.onNewImage"/>		
+		<Event source="SkinDec.newImage"     destination="MorphClose.onNewImage"/>
 		<Event source="MorphClose.newImage" destination="MorphOpen.onNewImage"/>
 		<Event source="MorphOpen.newImage" destination="Blob.onNewImage"/>
+<!--
 
-		<Event source="Blob.newImage" destination="DecPalm.onNewImage"/>
+		<Event source="Blob.newImage" destination="DecPalm.onNewImage"/>-->
+
 		<Event source="Movie.newImage"        destination="DetectionPalm.onNewImage"/>
 		<Event source="Blob.newBlobs"        destination="DetectionPalm.onNewBlobs"/>
 		
@@ -125,7 +128,7 @@
 		<Event source="Movie.newImage"     destination="Window4.onNewImage0"/>
 		<Event source="Movie.newImage"        destination="Window4.onNewImage1"/>
 		<Event source="Filtr.newImage"     destination="Window4.onNewImage2"/>
-		<Event source="BW.newImage"       destination="Window4.onNewImage3"/>
+		<Event source="SkinDec.newImage"       destination="Window4.onNewImage3"/>
 		<Event source="MorphOpen.newImage"       destination="Window4.onNewImage4"/>
 		
 		<Event source="Movie.newImage" destination="Sink.onNewImage"/>
@@ -155,13 +158,15 @@
 				<out_img type="out" group="Con4"/>
 		</SkinDec> 
 		
-		<BW>
+		<!--
+<BW>
 				<in_img  type="in" group="Con4"/>
 				<out_img type="out" group="Con5"/>
-		</BW> 
+		</BW>-->
+ 
 				
 		<MorphClose>
-				<in_img  type="in" group="Con5"/>
+				<in_img  type="in" group="Con4"/>
 				<out_img type="out" group="Con6"/>
 		</MorphClose> 
 		
