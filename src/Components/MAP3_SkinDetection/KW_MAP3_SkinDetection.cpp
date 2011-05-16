@@ -22,7 +22,7 @@ KW_MAP3_SkinDetection::KW_MAP3_SkinDetection(const std::string & name) : Base::C
 	MIN_T("grupa1|  MIN_T", 0, "range"),
 	MAX_T("grupa1|  MAX_T", 33, "range"),
 
-	MIN_S("grupa2|  MIN_S", 28, "range"),
+	MIN_S("grupa2|  MIN_S", 36, "range"),
 	MAX_S("grupa2|  MAX_S", 80, "range"),
 
 	MIN_L("grupa3|  MIN_L", 49, "range"),

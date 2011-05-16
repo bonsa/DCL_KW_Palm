@@ -2,17 +2,17 @@
 <Task>
 	<!-- List of components, data: 30.04.11 -->
 	<Components>
-			
+<!--		
 		<Movie type="Movie" thread="Exec1" group="s1">
-		<filename>/home/kasia/Filmy/6.05/6.05_1.avi</filename>
+		<filename>/home/kasia/Filmy/12.05/12.05_3.avi</filename>
 		<loop>true</loop>
 		</Movie>
-	<!--
+-->
 
 		<Movie type="CameraOpenCV" thread="Exec1" group="s1">
 			<device>1</device>
 		</Movie>
--->
+
 
 		<Window4 type="CvWindow" thread="Exec2" group="s1">
 			<count>5</count>
@@ -88,7 +88,7 @@
 		</Exec1>
 
 		
-		<Exec2 type="periodic">
+		<Exec2 type="continuous">
 			<main_component>Window4</main_component>
 			<period>0.002</period>
 		</Exec2>
@@ -127,6 +127,8 @@
 		<Event source="Filtr.newImage"     destination="Window4.onNewImage2"/>
 		<Event source="BW.newImage"       destination="Window4.onNewImage3"/>
 		<Event source="MorphOpen.newImage"       destination="Window4.onNewImage4"/>
+		
+		<Event source="Movie.newImage" destination="Sink.onNewImage"/>
 			
 	
 	</Events>
@@ -200,6 +202,11 @@
 			
 			<in_img4 type="in" group="Con6"/>
 		</Window4>
+		
+		<Sink>
+			<in_img type="in" group="Con1"/>
+			<in_draw type="in" group="Con10"/>
+		</Sink>
 		
 		
 	</DataStreams>

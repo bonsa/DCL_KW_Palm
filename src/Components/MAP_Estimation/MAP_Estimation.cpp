@@ -146,8 +146,9 @@ bool MAP_Estimation::onStep()
 			RFinger.sTest.clear();
 
 		//	cout<<"STOP "<<STOP<<"\n";
-			if(error > 0.1)
+			if(error > 1.0)
 			{
+				cout<<"Error "<<error<<"\n";
 				error = 0.0;
 				error2 = 0.0;
 
@@ -226,23 +227,7 @@ bool MAP_Estimation::onStep()
 				RFinger.h_z = stateFingerToObservation(RFinger.s,73.0/54.0);
 			//	projectionFingerObservation(h_z_RFinger, 255, 255, 0);
 				calculateFingerH(RFinger.s, RFinger.H, 73.0/54.0);
-				RFinger.diff = calculateFingerDiff(RFinger.h_z, RFinger.z, RFinger.invR, RFinger.H, RFinger.P, 0.05);
-
-				cout<<"DIFF "<<RFinger.diff[0]<<"\n";
-				cout<<"DIFF "<<RFinger.diff[1]<<"\n";
-				cout<<"DIFF "<<RFinger.diff[2]<<"\n";
-				cout<<"DIFF "<<RFinger.diff[3]<<"\n";
-				cout<<"DIFF "<<RFinger.diff[4]<<"\n";
-
-				for(unsigned int i = 0; i<5; i++)
-				{
-					for(unsigned int j=0; j<5; j++)
-					{
-						cout<<RFinger.P[i][j]<<"\t";
-					}
-					cout<<"\n";
-				}
-
+				RFinger.diff = calculateFingerDiff(RFinger.h_z, RFinger.z, RFinger.invR, RFinger.H, RFinger.P, factorFinger);
 				RFinger.s = updateFingerState(RFinger.diff, RFinger.s, RFinger.P);
 
 				projectionState(s, 255, 255, 255);
