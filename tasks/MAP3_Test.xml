@@ -3,8 +3,8 @@
 	<!-- List of components, data: 30.04.11 -->
 	<Components>
 
-	<!--		
-	
+		
+<!--	
 		<Movie type="Movie" thread="Exec1" group="s1">
 		<filename>/home/kasia/Filmy/12.05/12.05_3.avi</filename>
 		<loop>true</loop>
